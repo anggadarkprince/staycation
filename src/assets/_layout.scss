@@ -1,0 +1,37 @@
+.navbar-light .navbar-brand {
+  font-size: 26px;
+  font-weight: 500;
+  color: $primary !important;
+}
+
+header {
+  border-bottom: 1px solid $gray-200;
+  width: 100%;
+  position: relative;
+
+  .navbar {
+    height: 80px;
+
+    ul.navbar-nav {
+      li.nav-item {
+        &.active {
+          a.nav-link {
+            color: $primary;
+          }
+        }
+
+        a {
+          &.nav-link {
+            color: $body-color;
+            padding-left: 1rem;
+            padding-right: 1rem;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+  }
+}
