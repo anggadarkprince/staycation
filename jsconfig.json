@@ -2,5 +2,7 @@
   "compilerOptions": {
     "baseUrl": "src"
   },
+  "target": "ES6",
+  "jsx": "preserve",
   "include": ["src/**/*"]
 }

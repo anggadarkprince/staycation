@@ -38,6 +38,8 @@ header {
 
 .btn {
   min-height: 50px;
+  display: inline-flex;
+  align-items: center;
 
   &.btn-shadow {
     box-shadow: 0px 8px 15px rgba($primary, .3);

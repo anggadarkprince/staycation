@@ -1,0 +1,31 @@
+footer {
+  border-top: 1px solid $gray-200;
+  padding-top: 50px;
+
+  .brand-tagline {
+    color: $gray-600;
+    margin-top: 10px;
+  }
+
+  .list-group-item {
+    border: none;
+    padding: 0.3rem 0;
+
+    a, span {
+      color: $gray-600;
+      font-weight: 300;
+    }
+
+    a {
+      @include hover-focus {
+        color: $body-color;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .copyright {
+    margin: 50px 0;
+    color: $body-color;
+  }
+}

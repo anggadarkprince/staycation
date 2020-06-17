@@ -1,0 +1,18 @@
+@import "../../assets/scss/variables";
+
+.stars {
+  position: relative;
+  min-width: 200px;
+  display: inline-flex;
+
+  .star {
+    position: absolute;
+    display: inline-flex;
+    mask: url("../../assets/img/icons/ic_star.svg") no-repeat center left;
+    background-color: $yellow;
+
+    &.star-placeholder {
+      background-color: $gray-200;
+    }
+  }
+}
