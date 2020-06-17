@@ -35,3 +35,15 @@ header {
     }
   }
 }
+
+.btn {
+  min-height: 50px;
+
+  &.btn-shadow {
+    box-shadow: 0px 8px 15px rgba($primary, .3);
+  }
+}
+
+section {
+  margin-bottom: 70px;
+}

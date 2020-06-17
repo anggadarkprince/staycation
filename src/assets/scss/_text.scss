@@ -5,3 +5,9 @@
 @each $color, $value in $grays {
   @include text-emphasis-variant(".text-gray-#{$color}", $value, true);
 }
+
+.link-text {
+  &:hover {
+    text-decoration: none;
+  }
+}
