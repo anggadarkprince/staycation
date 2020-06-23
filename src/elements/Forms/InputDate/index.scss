@@ -1,0 +1,42 @@
+@import "../../../assets/scss/variables";
+
+.input-date {
+  .input-group {
+    background-color: #ffffff;
+
+    .input-group-text {
+      pointer-events: none;
+      border: 0;
+      cursor: pointer;
+      bordder-radius: 4px !important;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      justify-content: center;
+      background-color: $body-color;
+      position: absolute;
+      z-index: 999;
+    }
+    .form-control {
+      border: 0;
+      border-radius: 0;
+      outline: 0;
+      box-shadow: none;
+      background-color: $gray-100;
+      padding: .575rem 45px;
+      text-align: center;
+      justify-content: center;
+      width: 100px;
+      height: 45px;
+    }
+    .date-range-wrapper {
+      padding: 4px;
+      background-color: #ffffff;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      position: absolute;
+      border-radius: 4px;
+      top: 45px;
+      z-index: 5;
+    }
+  }
+}

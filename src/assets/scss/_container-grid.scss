@@ -9,8 +9,8 @@
 
   &.grid-sm {
     grid-auto-rows: minmax(245px, auto);
-    row-grap: 10px;
-    column-gap: 10px;
+    grid-row-gap: 10px;
+    grid-column-gap: 10px;
   }
 
   .item {

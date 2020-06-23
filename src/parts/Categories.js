@@ -6,8 +6,8 @@ export default function Categories({data}) {
 
     return data.map(category => {
         return (
-            <Fade bottom>
-                <section className="container" key={`category-${category.id}`}>
+            <Fade bottom key={`category-${category._id}`}>
+                <section className="container">
                     <p className="mb-3 font-weight-medium">
                         {category.name}
                     </p>

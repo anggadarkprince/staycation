@@ -2,10 +2,16 @@ $font-family-sans-serif: 'Poppins', sans-serif;
 
 $indigo: #2B4CDE;
 $pink: #FF498B;
-$yellow:  #ffc107 !default;
+$yellow: #ffc107 !default;
+$red: #dc3545 !default;
+$teal: #20c997 !default;
 $gray-200: #e9ecef !default;
+$gray-100: #f8f9fa !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
 
 $body-color: #152C5B;
 $primary: $indigo !default;
 $line-height-base: 1.6 !default;
 $btn-border-radius: 4px;
+$breadcrumb-item-padding: 1.2rem;

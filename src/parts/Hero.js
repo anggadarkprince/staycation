@@ -18,7 +18,7 @@ export default function Hero(props) {
 
     return (
         <Fade bottom>
-            <section className='container pt-4 pt-lg-5'>
+            <section className='container pt-4'>
                 <div className="row align-items-center">
                     <div className="col-md-6 pr-md-5">
                         <h1 className='font-weight-bolder mb-3' style={{letterSpacing: '1px'}}>
