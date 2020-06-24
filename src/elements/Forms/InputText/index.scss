@@ -1,0 +1,45 @@
+@import "../../../assets/scss/variables";
+
+.input-text {
+  margin-bottom: 20px;
+  position: relative;
+
+  .input-group {
+    background-color: #ffffff;
+
+    .input-group-text {
+      pointer-events: none;
+      border: 0;
+      cursor: auto;
+      padding: 0;
+      border-radius: 4px !important;
+      display: flex;
+      justify-content: center;
+      background-color: $body-color;
+      position: absolute;
+      z-index: 999;
+    }
+
+    .form-control {
+      border: 0;
+      border-radius: 4px;
+      outline: 0;
+      box-shadow: none;
+      background-color: $gray-100;
+      padding: 0.575rem 14px;
+      &::placeholder {
+        color: $gray-200;
+      }
+    }
+  }
+
+  .error-helper {
+    position: absolute;
+    top: 45px;
+    background-color: rgba($red, .8);
+    color: #fff;
+    padding: 4px 6px;
+    border-radius: 2px;
+    font-size: .675rem;
+  }
+}

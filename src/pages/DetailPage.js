@@ -36,7 +36,7 @@ export default class DetailPage extends Component{
                         </div>
                         <div className="col-5">
                             <Fade bottom>
-                                <BookingForm itemDetails={itemDetails}/>
+                                <BookingForm itemDetails={itemDetails} startBooking={() => {this.props.history.push('/checkout')}}/>
                             </Fade>
                         </div>
                     </div>
