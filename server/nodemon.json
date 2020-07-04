@@ -1,0 +1,7 @@
+{
+  "env": {
+    "MONGO_URI": "mongodb://localhost:27017/shop-express",
+    "PORT": 3001,
+    "SENDGRID_KEY": "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"
+  }
+}

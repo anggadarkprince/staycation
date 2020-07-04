@@ -1,0 +1,30 @@
+{
+  "name": "staycation-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./bin/www",
+    "start:dev": "nodemon ./bin/www --ignore './logs/'",
+    "mongo-start": "./mongod",
+    "build": "webpack",
+    "production": "webpack -p",
+    "watch": "webpack --watch"
+  },
+  "author": "Angga Ari Wijaya",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "debug": "^4.1.1",
+    "ejs": "^3.1.3",
+    "express": "^4.17.1",
+    "http-errors": "^1.8.0",
+    "mongoose": "^5.9.21",
+    "morgan": "^1.10.0",
+    "startbootstrap-sb-admin-2": "^4.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
