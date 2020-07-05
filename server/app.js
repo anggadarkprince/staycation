@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const adminRouter = require('./routes/admin');
 
 var app = express();
 
@@ -20,8 +20,14 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/theme', express.static(path.join(__dirname, 'node_modules', 'startbootstrap-sb-admin-2')));
 
+app.use((req, res, next) => {
+    res.locals._baseUrl = `${req.protocol}://${req.get('host')}`;
+    res.locals._path = req.path;
+    next();
+});
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

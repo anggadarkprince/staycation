@@ -1,8 +1,7 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.sidebar .nav-item .nav-link {
+  padding: 0.4rem 1rem;
 }
 
-a {
-  color: #00B7FF;
+.sidebar .nav-item + .sidebar-heading {
+  margin-top: 15px;
 }
