@@ -1,7 +1,7 @@
 {
   "env": {
-    "MONGO_URI": "mongodb://localhost:27017/shop-express",
-    "PORT": 3001,
+    "MONGO_URI": "mongodb://localhost:27017/staycation",
+    "PORT": 3000,
     "SENDGRID_KEY": "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"
   }
 }

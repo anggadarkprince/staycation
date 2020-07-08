@@ -58,9 +58,25 @@
         $('form').each(function (index, form) {
             $(form).validate({
                 submitHandler: function(form) {
-                    $(form).find('fieldset').attr('disabled', true);
+                    setTimeout(function() {
+                        $(form).find('fieldset').attr('disabled', true);
+                        $(form).find('button[type=submit]').text('Submitting...');
+                    }, 50);
                     return true;
                 }
+            });
+        });
+
+
+        const modalDelete = $('#modal-delete');
+        const formDelete = modalDelete.find('form');
+        $(document).on('click', '.btn-delete', function() {
+            formDelete.attr('action', $(this).data('url'));
+            modalDelete.find('.delete-title').text($(this).data('title'));
+            modalDelete.find('.delete-label').text($(this).data('label'));
+            modalDelete.modal({
+                backdrop: 'static',
+                keyboard: false
             });
         });
     });

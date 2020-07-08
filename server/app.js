@@ -4,8 +4,25 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var multer  = require('multer');
+const session = require('express-session');
+const flash = require('connect-flash');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const methodOverride = require('method-override');
+const mongoose = require('mongoose');
 
-var indexRouter = require('./routes/index');
+//mongoose.set('debug', true);
+const store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: 'sessions'
+});
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(() => {
+        console.log('Database initialized');
+    })
+    .catch(console.log);
+mongoose.Promise = Promise;
+
+const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 
 var app = express();
@@ -20,12 +37,31 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/theme', express.static(path.join(__dirname, 'node_modules', 'startbootstrap-sb-admin-2')));
+app.use(session({secret: 'secret98sh968sdf7s8df6', resave: false, saveUninitialized: false, store: store}));
+app.use(flash());
 
 app.use((req, res, next) => {
     res.locals._baseUrl = `${req.protocol}://${req.get('host')}`;
     res.locals._path = req.path;
+    res.locals._flashSuccess = req.flash('success');
+    res.locals._flashWarning = req.flash('warning');
+    res.locals._flashDanger = req.flash('danger');
+    res.locals._old = req.flash('old')[0] || {};
     next();
 });
+
+app.use(methodOverride('X-HTTP-Method'));
+app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(methodOverride('X-Method-Override'));
+app.use(methodOverride('_method'));
+app.use(methodOverride(function (req, res) {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+        // look in urlencoded POST bodies and delete it
+        let method = req.body._method;
+        delete req.body._method;
+        return method;
+    }
+}));
 
 app.use('/', indexRouter);
 app.use('/admin', adminRouter);
