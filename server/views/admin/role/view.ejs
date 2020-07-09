@@ -15,7 +15,7 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h4 mb-3 text-gray-800">View Category</h1>
+                <h1 class="h4 mb-3 text-gray-800">View Role</h1>
 
                 <%- include('../../partials/alert.ejs') %>
 
@@ -24,10 +24,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-2 mb-md-0 row">
-                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Category</p>
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Role</p>
                                     <div class="col-sm-9">
                                         <p class="form-control-plaintext">
-                                            <%= category.category %>
+                                            <%= role.role %>
                                         </p>
                                     </div>
                                 </div>
@@ -35,7 +35,7 @@
                                     <label class="col-sm-3 col-form-label pb-0 font-weight-bold" for="description">Description</label>
                                     <div class="col-sm-9">
                                         <p class="form-control-plaintext">
-                                            <%= category.description || 'No description' %>
+                                            <%= role.description || 'No description' %>
                                         </p>
                                     </div>
                                 </div>
@@ -45,7 +45,7 @@
                                     <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Created At</p>
                                     <div class="col-sm-9">
                                         <p class="form-control-plaintext">
-                                            <%= moment(category.createdAt).format('DD MMMM Y HH:mm') %>
+                                            <%= moment(role.createdAt).format('DD MMMM Y HH:mm') %>
                                         </p>
                                     </div>
                                 </div>
@@ -53,7 +53,7 @@
                                     <label class="col-sm-3 col-form-label pb-0 font-weight-bold" for="description">Updated At</label>
                                     <div class="col-sm-9">
                                         <p class="form-control-plaintext" id="description">
-                                            <%= category.updatedAt ? moment(category.updatedAt).format('DD MMMM Y HH:mm') : '-' %>
+                                            <%= role.updatedAt ? moment(role.updatedAt).format('DD MMMM Y HH:mm') : '-' %>
                                         </p>
                                     </div>
                                 </div>

@@ -22,61 +22,68 @@
                     </a>
                 </div>
 
-                <!-- DataTales Example -->
-                <div class="card shadow mb-4">
+                <%- include('../../partials/alert.ejs') %>
+                
+                <div class="card shadow border-0 mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Role Data</h6>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
+                        <table class="table table-sm table-hover" id="dataTable">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>Role</th>
+                                <th>Description</th>
+                                <th>Created At</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for (const [i, role] of roles.entries()) { %>
                                 <tr>
-                                    <th style="width: 35px">No</th>
-                                    <th>Role</th>
-                                    <th>Description</th>
-                                    <th class="text-md-right" style="max-width: 80px">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Administrator</td>
-                                    <td>Staycation</td>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= role.role %></td>
+                                    <td class="text-truncate" style="max-width: 200px"><%= role.description || '-' %></td>
+                                    <td><%= moment(role.createdAt).format('DD MMMM Y HH:mm') %></td>
                                     <td class="text-md-right">
                                         <div class="dropdown">
                                             <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
                                                 Action
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="/master/role/view">
+                                                <a class="dropdown-item" href="/admin/role/view/<%= role._id %>">
                                                     View
                                                 </a>
-                                                <a class="dropdown-item" href="http://master/role/edit">
+                                                <a class="dropdown-item" href="/admin/role/edit/<%= role._id %>">
                                                     Edit
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <button class="dropdown-item btn-delete" data-toggle="modal" data-title="Role" data-url="/master/role/delete">
+                                                <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                        data-title="Category" data-label="<%= role.role %>"
+                                                        data-url="/admin/role/delete/<%= role._id %>">
                                                     Delete
                                                 </button>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Role</th>
-                                    <th>Description</th>
-                                    <th class="text-md-right">Action</th>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                            <% } %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>No</th>
+                                <th>Role</th>
+                                <th>Description</th>
+                                <th>Created At</th>
+                                <th class="text-md-right">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
 
+                <%- include('../../partials/delete.ejs') %>
             </div>
             <!-- /.container-fluid -->
 

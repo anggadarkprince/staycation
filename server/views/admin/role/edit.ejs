@@ -17,23 +17,27 @@
                 <!-- Page Heading -->
                 <h1 class="h3 mb-3 text-gray-800">Edit Role</h1>
 
-                <form action="/admin/role/update" method="post">
-                    <div class="card shadow mb-4">
+                <form action="/admin/role/update/<%= role._id %>" method="post">
+                    <input type="hidden" name="_method" value="put">
+
+                    <div class="card shadow border-0 mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Edit Role</h6>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="role">Role Name</label>
-                                <input type="text" class="form-control" id="role" name="role" required="" maxlength="50" value="" placeholder="Enter a role name">
+                                <input type="text" class="form-control" id="role" name="role" required="" maxlength="50"
+                                       value="<%= _old.description || role.role %>" placeholder="Enter a role name">
                             </div>
                             <div class="form-group">
                                 <label for="description">Description</label>
-                                <textarea class="form-control" id="description" name="description" maxlength="500" placeholder="Enter role description"></textarea>
+                                <textarea class="form-control" id="description" name="description" maxlength="500"
+                                          placeholder="Enter role description"><%= _old.role || role.description %></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="card shadow mb-4">
+                    <div class="card shadow border-0 mb-4">
                         <div class="card-body d-flex justify-content-between">
                             <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
                             <button type="submit" class="btn btn-primary" data-toggle="one-touch">Update Role</button>
@@ -53,10 +57,5 @@
 
 </div>
 <!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
 
 <%- include('../../partials/js.ejs') %>
