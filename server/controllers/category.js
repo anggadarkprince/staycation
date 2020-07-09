@@ -5,6 +5,12 @@ module.exports = {
         const categories = await Category.find();
         res.render('admin/category/index', {categories});
     },
+    view: async (req, res) => {
+        const id = req.params.id;
+        const category = await Category.findOne({_id: id});
+
+        res.render('admin/category/view', {category});
+    },
     create: (req, res) => {
         res.render('admin/category/create');
     },
@@ -40,7 +46,7 @@ module.exports = {
             return res.redirect('/admin/category');
         }
         catch (err) {
-            req.flash('old', {category, description});
+            req.flash('old', req.body);
             req.flash('danger', `Update category ${category} failed, try again later`);
             res.redirect('back');
         }
@@ -49,7 +55,6 @@ module.exports = {
         const id = req.params.id;
 
         try {
-            throw Error('a');
             const result = await Category.findOne({_id: id});
             result.remove();
 

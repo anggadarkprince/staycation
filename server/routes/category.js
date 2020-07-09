@@ -3,6 +3,7 @@ const router = express.Router();
 const category = require('../controllers/category');
 
 router.get('/', category.index);
+router.get('/view/:id', category.view);
 router.get('/create', category.create);
 router.post('/save', category.save);
 router.get('/edit/:id', category.edit);

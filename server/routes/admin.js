@@ -5,7 +5,8 @@ const dashboard = require('../controllers/dashboard');
 const roleRouter = require('./role');
 const userRouter = require('./user');
 const categoryRouter = require('./category');
-const bank = require('../controllers/bank');
+const bankRouter = require('./bank');
+
 const item = require('../controllers/item');
 const booking = require('../controllers/booking');
 const setting = require('../controllers/setting');
@@ -17,8 +18,8 @@ router.get('/dashboard', dashboard.index);
 router.use('/role', roleRouter);
 router.use('/user', userRouter);
 router.use('/category', categoryRouter);
+router.use('/bank', bankRouter);
 
-router.get('/bank', bank.index);
 router.get('/item', item.index);
 router.get('/booking', booking.index);
 router.get('/settings', setting.index);

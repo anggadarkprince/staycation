@@ -31,62 +31,60 @@
                         <h6 class="m-0 font-weight-bold text-primary">Category Data</h6>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
+                        <table class="table table-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>Category</th>
+                                <th>Total Item</th>
+                                <th>Description</th>
+                                <th>Created At</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for (const [i, category] of categories.entries()) { %>
                                 <tr>
-                                    <th style="width: 35px">No</th>
-                                    <th>Category</th>
-                                    <th>Total Item</th>
-                                    <th>Description</th>
-                                    <th>Created At</th>
-                                    <th class="text-md-right" style="max-width: 80px">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <% for (const [i, category] of categories.entries()) { %>
-                                    <tr>
-                                        <td><%= i + 1 %></td>
-                                        <td><%= category.category %></td>
-                                        <td>0</td>
-                                        <td class="text-truncate" style="max-width: 200px"><%= category.description || '-' %></td>
-                                        <td><%= (new Date(category.createdAt)).toDateString() %></td>
-                                        <td class="text-md-right">
-                                            <div class="dropdown">
-                                                <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
-                                                    Action
+                                    <td><%= i + 1 %></td>
+                                    <td><%= category.category %></td>
+                                    <td>0</td>
+                                    <td class="text-truncate" style="max-width: 200px"><%= category.description || '-' %></td>
+                                    <td><%= (new Date(category.createdAt)).toDateString() %></td>
+                                    <td class="text-md-right">
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" href="/admin/category/view/<%= category._id %>">
+                                                    View
+                                                </a>
+                                                <a class="dropdown-item" href="/admin/category/edit/<%= category._id %>">
+                                                    Edit
+                                                </a>
+                                                <div class="dropdown-divider"></div>
+                                                <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                        data-title="Category" data-label="<%= category.category %>"
+                                                        data-url="/admin/category/delete/<%= category._id %>">
+                                                    Delete
                                                 </button>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="/admin/category/view/<%= category._id %>">
-                                                        View
-                                                    </a>
-                                                    <a class="dropdown-item" href="/admin/category/edit/<%= category._id %>">
-                                                        Edit
-                                                    </a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <button class="dropdown-item btn-delete" data-toggle="modal"
-                                                            data-title="Category" data-label="<%= category.category %>"
-                                                            data-url="/admin/category/delete/<%= category._id %>">
-                                                        Delete
-                                                    </button>
-                                                </div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                <% } %>
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Category</th>
-                                    <th>Total Item</th>
-                                    <th>Description</th>
-                                    <th>Created At</th>
-                                    <th class="text-md-right" style="max-width: 80px">Action</th>
+                                        </div>
+                                    </td>
                                 </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                            <% } %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>No</th>
+                                <th>Category</th>
+                                <th>Total Item</th>
+                                <th>Description</th>
+                                <th>Created At</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
 
@@ -109,24 +107,5 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <%- include('../../partials/js.ejs') %>

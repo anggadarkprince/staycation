@@ -9,8 +9,9 @@ const flash = require('connect-flash');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
+const moment = require('moment');
 
-//mongoose.set('debug', true);
+mongoose.set('debug', true);
 const store = new MongoDBStore({
     uri: process.env.MONGO_URI,
     collection: 'sessions'
@@ -47,6 +48,7 @@ app.use((req, res, next) => {
     res.locals._flashWarning = req.flash('warning');
     res.locals._flashDanger = req.flash('danger');
     res.locals._old = req.flash('old')[0] || {};
+    res.locals.moment = moment;
     next();
 });
 
