@@ -22,67 +22,74 @@
                     </a>
                 </div>
 
-                <!-- DataTales Example -->
+                <%- include('../../partials/alert.ejs') %>
+
                 <div class="card shadow border-0 mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">User Data</h6>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
+                        <table class="table table-sm table-hover" id="dataTable">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Registered At</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% users.forEach((user, i) => { %>
                                 <tr>
-                                    <th style="width: 35px">No</th>
-                                    <th>Name</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th class="text-md-right" style="max-width: 80px">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Administrator</td>
-                                    <td>admin</td>
-                                    <td>Staycation</td>
-                                    <td><span class="badge badge-success">ACTIVE</span></td>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= user.name %></td>
+                                    <td><%= user.username %></td>
+                                    <td><%= user.email %></td>
+                                    <td><%= user.status %></td>
+                                    <td><%= moment(user.createdAt).format('DD MMMM Y') %></td>
                                     <td class="text-md-right">
                                         <div class="dropdown">
                                             <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
                                                 Action
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="/master/role/view">
+                                                <a class="dropdown-item" href="/admin/user/view/<%= user._id %>">
                                                     View
                                                 </a>
-                                                <a class="dropdown-item" href="http://master/role/edit">
+                                                <a class="dropdown-item" href="/admin/user/edit/<%= user._id %>">
                                                     Edit
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <button class="dropdown-item btn-delete" data-toggle="modal" data-title="Role" data-url="/master/role/delete">
+                                                <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                        data-title="User" data-label="<%= user.name %>"
+                                                        data-url="/admin/user/delete/<%= user._id %>">
                                                     Delete
                                                 </button>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Name</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th class="text-md-right" style="max-width: 80px">Action</th>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                            <% }) %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Registered At</th>
+                                <th class="text-md-right">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
 
+                <%- include('../../partials/delete.ejs') %>
             </div>
             <!-- /.container-fluid -->
 

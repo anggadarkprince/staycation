@@ -17,6 +17,8 @@
                 <!-- Page Heading -->
                 <h1 class="h3 mb-3 text-gray-800">Edit Role</h1>
 
+                <%- include('../../partials/alert.ejs') %>
+
                 <form action="/admin/role/update/<%= role._id %>" method="post">
                     <input type="hidden" name="_method" value="put">
 

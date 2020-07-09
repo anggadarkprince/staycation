@@ -15,11 +15,13 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-3 text-gray-800">Create User</h1>
+                <h1 class="h3 mb-3 text-gray-800">Edit User</h1>
 
                 <%- include('../../partials/alert.ejs') %>
 
-                <form action="/admin/user/save" method="post">
+                <form action="/admin/user/update/<%= user._id %>" method="post">
+                    <input type="hidden" name="_method" value="put">
+
                     <fieldset>
                         <div class="card shadow border-0 mb-4">
                             <div class="card-header py-3">
@@ -31,21 +33,21 @@
                                         <div class="form-group">
                                             <label for="name">Full Name</label>
                                             <input type="text" class="form-control" id="name" name="name" required="" maxlength="50"
-                                                   value="<%= _old.name || '' %>" placeholder="Enter your full name">
+                                                   value="<%= _old.name || user.name %>" placeholder="Enter your full name">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="username">Username</label>
                                             <input type="text" class="form-control" id="username" name="username" maxlength="20"
-                                                   value="<%= _old.username || '' %>" placeholder="User unique ID">
+                                                   value="<%= _old.username || user.username %>" placeholder="User unique ID">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="email">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" required="" maxlength="50"
-                                           value="<%= _old.email || '' %>" placeholder="Enter email address">
+                                           value="<%= _old.email || user.email %>" placeholder="Enter email address">
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -53,13 +55,13 @@
                                             <label for="status">Status</label>
                                             <select class="custom-select" name="status" id="status" required="">
                                                 <option value="">Select Status</option>
-                                                <option value="PENDING"<%= (_old.status || '') == 'PENDING' ? ' selected' : '' %>>
+                                                <option value="PENDING"<%= (_old.status || user.status) == 'PENDING' ? ' selected' : '' %>>
                                                     PENDING
                                                 </option>
-                                                <option value="ACTIVATED"<%= (_old.status || '') == 'ACTIVATED' ? ' selected' : '' %>>
+                                                <option value="ACTIVATED"<%= (_old.status || user.status) == 'ACTIVATED' ? ' selected' : '' %>>
                                                     ACTIVATED
                                                 </option>
-                                                <option value="SUSPENDED"<%= (_old.status || '') == 'SUSPENDED' ? ' selected' : '' %>>
+                                                <option value="SUSPENDED"<%= (_old.status || user.status) == 'SUSPENDED' ? ' selected' : '' %>>
                                                     SUSPENDED
                                                 </option>
                                             </select>
@@ -88,6 +90,7 @@
                                         <div class="form-group">
                                             <label for="password">New Password</label>
                                             <input type="password" class="form-control" id="password" name="password" minlength="6" maxlength="50" placeholder="New password">
+                                            <span class="form-text">Leave it blank if you don't change the password.</span>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -103,12 +106,11 @@
                         <div class="card shadow border-0 mb-4">
                             <div class="card-body d-flex justify-content-between">
                                 <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
-                                <button type="submit" class="btn btn-success" data-toggle="one-touch">Save User</button>
+                                <button type="submit" class="btn btn-primary" data-toggle="one-touch">Update User</button>
                             </div>
                         </div>
                     </fieldset>
                 </form>
-
             </div>
             <!-- /.container-fluid -->
 

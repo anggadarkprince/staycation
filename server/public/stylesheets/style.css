@@ -9,3 +9,13 @@
 .sidebar .nav-item.active .nav-link {
   font-weight: 600;
 }
+
+.table thead th,
+.table tfoot th,
+.table th {
+  font-weight: 600;
+}
+.table tbody td {
+  font-size: .96rem;
+  vertical-align: middle;
+}
