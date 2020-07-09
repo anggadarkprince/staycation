@@ -1,4 +1,4 @@
-<%- include('../../partials/header.ejs') %>
+<%- include('../../partials/head.ejs') %>
 
 <!-- Page Wrapper -->
 <div id="wrapper">
@@ -44,7 +44,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <% for (const [i, bank] of banks.entries()) { %>
+                            <% banks.forEach((bank, i) => { %>
                                 <tr>
                                     <td><%= i + 1 %></td>
                                     <td><%= bank.bank %></td>
@@ -72,7 +72,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            <% } %>
+                            <% }) %>
                             </tbody>
                             <tfoot>
                             <tr>
@@ -101,10 +101,5 @@
 
 </div>
 <!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
 
 <%- include('../../partials/js.ejs') %>

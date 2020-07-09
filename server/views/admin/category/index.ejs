@@ -1,4 +1,4 @@
-<%- include('../../partials/header.ejs') %>
+<%- include('../../partials/head.ejs') %>
 
 <!-- Page Wrapper -->
 <div id="wrapper">
@@ -31,7 +31,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">Category Data</h6>
                     </div>
                     <div class="card-body">
-                        <table class="table table-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <table class="table table-sm table-hover" id="dataTable">
                             <thead>
                             <tr>
                                 <th style="width: 35px">No</th>
@@ -49,7 +49,7 @@
                                     <td><%= category.category %></td>
                                     <td>0</td>
                                     <td class="text-truncate" style="max-width: 200px"><%= category.description || '-' %></td>
-                                    <td><%= (new Date(category.createdAt)).toDateString() %></td>
+                                    <td><%= moment(category.createdAt).format('DD MMMM Y HH:mm') %></td>
                                     <td class="text-md-right">
                                         <div class="dropdown">
                                             <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
@@ -102,10 +102,5 @@
 
 </div>
 <!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
 
 <%- include('../../partials/js.ejs') %>
