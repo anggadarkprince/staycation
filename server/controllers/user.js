@@ -4,16 +4,16 @@ const bcrypt = require('bcryptjs');
 module.exports = {
     index: async (req, res) => {
         const users = await User.find();
-        res.render('admin/user/index', {users});
+        res.render('admin/user/index', {users, title: 'User'});
     },
     view: async (req, res) => {
         const id = req.params.id;
         const user = await User.findOne({_id: id});
 
-        res.render('admin/user/view', {user});
+        res.render('admin/user/view', {user, title: `View user ${user.name}`});
     },
     create: (req, res) => {
-        res.render('admin/user/create');
+        res.render('admin/user/create', {title: `Create user`});
     },
     save: async (req, res) => {
         const {name, username, email, password, status} = req.body;
@@ -32,7 +32,7 @@ module.exports = {
         const id = req.params.id;
         const user = await User.findOne({_id: id});
 
-        res.render('admin/user/edit', {user});
+        res.render('admin/user/edit', {user, title: `Edit user ${user.name}`});
     },
     update: async (req, res) => {
         const id = req.params.id;

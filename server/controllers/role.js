@@ -3,16 +3,16 @@ const Role = require('../models/Role');
 module.exports = {
     index: async (req, res) => {
         const roles = await Role.find();
-        res.render('admin/role/index', {roles});
+        res.render('admin/role/index', {roles, title: 'Role'});
     },
     view: async (req, res) => {
         const id = req.params.id;
         const role = await Role.findOne({_id: id});
 
-        res.render('admin/role/view', {role});
+        res.render('admin/role/view', {role, title: `View role ${role.role}`});
     },
     create: (req, res) => {
-        res.render('admin/role/create');
+        res.render('admin/role/create', {title: 'Create role'});
     },
     save: async (req, res) => {
         const {role, description} = req.body;
@@ -30,7 +30,7 @@ module.exports = {
         const id = req.params.id;
         const role = await Role.findOne({_id: id});
 
-        res.render('admin/role/edit', {role});
+        res.render('admin/role/edit', {role, title: `Edit role ${user.name}`});
     },
     update: async (req, res) => {
         const id = req.params.id;

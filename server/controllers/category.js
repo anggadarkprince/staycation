@@ -3,16 +3,16 @@ const Category = require('../models/Category');
 module.exports = {
     index: async (req, res) => {
         const categories = await Category.find();
-        res.render('admin/category/index', {categories});
+        res.render('admin/category/index', {categories, title: 'Category'});
     },
     view: async (req, res) => {
         const id = req.params.id;
         const category = await Category.findOne({_id: id});
 
-        res.render('admin/category/view', {category});
+        res.render('admin/category/view', {category, title: `View category ${category.category}`});
     },
     create: (req, res) => {
-        res.render('admin/category/create');
+        res.render('admin/category/create', {title: 'Create category'});
     },
     save: async (req, res) => {
         const {category, description} = req.body;
@@ -30,7 +30,7 @@ module.exports = {
         const id = req.params.id;
         const category = await Category.findOne({_id: id});
 
-        res.render('admin/category/edit', {category});
+        res.render('admin/category/edit', {category, title: `Edit category ${category.category}`});
     },
     update: async (req, res) => {
         const id = req.params.id;

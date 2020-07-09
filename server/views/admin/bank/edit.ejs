@@ -19,7 +19,7 @@
 
                 <%- include('../../partials/alert.ejs') %>
 
-                <form action="/admin/bank/update/<%= bank._id %>" method="post">
+                <form action="/admin/bank/update/<%= bank._id %>" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="_method" value="put">
                     <fieldset>
                         <div class="card shadow border-0 mb-4">
@@ -51,8 +51,8 @@
                                 <div class="form-group">
                                     <label>Logo</label>
                                     <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="customFile">
-                                        <label class="custom-file-label" for="customFile">Pick Image</label>
+                                        <input type="file" class="custom-file-input" id="customFile" name="image">
+                                        <label class="custom-file-label" for="customFile"><%= bank.logo || 'Pick Image' %></label>
                                     </div>
                                 </div>
                                 <div class="form-group">

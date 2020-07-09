@@ -19,7 +19,7 @@
 
                 <%- include('../../partials/alert.ejs') %>
 
-                <form action="/admin/bank/save" method="post">
+                <form action="/admin/bank/save" method="post" enctype="multipart/form-data">
                     <fieldset>
                         <div class="card shadow border-0 mb-4">
                             <div class="card-header py-3">
@@ -50,7 +50,7 @@
                                 <div class="form-group">
                                     <label>Logo</label>
                                     <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="customFile">
+                                        <input type="file" class="custom-file-input" id="customFile" name="image">
                                         <label class="custom-file-label" for="customFile">Pick Image</label>
                                     </div>
                                 </div>
