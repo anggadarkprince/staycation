@@ -42,13 +42,22 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <% userStatuses = {
+                                'PENDING': 'warning',
+                                'ACTIVE': 'success',
+                                'SUSPENDED': 'danger',
+                            } %>
                             <% users.forEach((user, i) => { %>
                                 <tr>
                                     <td><%= i + 1 %></td>
                                     <td><%= user.name %></td>
                                     <td><%= user.username %></td>
                                     <td><%= user.email %></td>
-                                    <td><%= user.status %></td>
+                                    <td>
+                                        <span class="badge badge-<%= userStatuses[user.status] %>">
+                                        <%= user.status %>
+                                        </span>
+                                    </td>
                                     <td><%= moment(user.createdAt).format('DD MMMM Y') %></td>
                                     <td class="text-md-right">
                                         <div class="dropdown">

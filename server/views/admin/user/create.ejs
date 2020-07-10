@@ -19,7 +19,7 @@
 
                 <%- include('../../partials/alert.ejs') %>
 
-                <form action="/admin/user/save" method="post">
+                <form action="/admin/user/save" method="post" enctype="multipart/form-data">
                     <fieldset>
                         <div class="card shadow border-0 mb-4">
                             <div class="card-header py-3">
@@ -69,8 +69,8 @@
                                         <div class="form-group">
                                             <label>Avatar</label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="avatar" name="avatar">
-                                                <label class="custom-file-label" for="avatar">Pick Image</label>
+                                                <input type="file" class="custom-file-input" id="image" name="image" accept="image/*">
+                                                <label class="custom-file-label" for="image">Pick Image</label>
                                             </div>
                                         </div>
                                     </div>
@@ -95,6 +95,29 @@
                                             <label for="confirm_password">Confirm Password</label>
                                             <input type="password" class="form-control" id="confirm_password" name="confirm_password" maxlength="50" placeholder="Confirm new password">
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Role</h5>
+                                <p class="text-muted">User at least must has one role</p>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <% roles.forEach((role, i) => { %>
+                                            <div class="col-sm-3">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                           id="role_<%= i %>" name="roles[<%= i %>]" value="<%= role._id %>"
+                                                            <%= _old.roles && _old.roles.includes(role._id.toString()) ? 'checked' : '' %>>
+                                                    <label class="custom-control-label" for="role_<%= i %>">
+                                                        <%= role.role %>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        <% }) %>
                                     </div>
                                 </div>
                             </div>

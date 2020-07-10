@@ -47,6 +47,14 @@
                                         </p>
                                     </div>
                                 </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-3 col-form-label pb-0 font-weight-bold">Avatar</label>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <img class="img-fluid rounded" style="max-width: 200px" src="<%= user.avatar %>" alt="<%= user.name %>">
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-2 mb-md-0 row">
@@ -54,6 +62,18 @@
                                     <div class="col-sm-9">
                                         <p class="form-control-plaintext">
                                             <%= user.status %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Roles</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <% user.roleId.forEach((role, i) => { %>
+                                                <a href="/admin/role/view/<%= role._id %>" class="d-block">
+                                                    <%= role.role %>
+                                                </a>
+                                            <% }) %>
                                         </p>
                                     </div>
                                 </div>

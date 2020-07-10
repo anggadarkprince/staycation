@@ -52,7 +52,7 @@ module.exports = {
             result.description = description;
             if (req.file) {
                 if (result.logo) {
-                    await fs.unlink(path.join('/', result.logo), console.log);
+                    await fs.unlink(result.logo.replace(/^(\\)/, ''), console.log);
                 }
                 result.logo = path.join('/', req.file.path);
             }
