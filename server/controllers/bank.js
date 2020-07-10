@@ -23,7 +23,7 @@ module.exports = {
                 bank,
                 accountNumber,
                 accountHolder,
-                logo: req.file.path.replace(/^(uploads)/, ''),
+                logo: path.join('/', req.file.path),
                 description
             });
             req.flash('success', `Bank ${bank} successfully created`);
@@ -51,16 +51,16 @@ module.exports = {
             result.accountNumber = accountNumber;
             result.description = description;
             if (req.file) {
-                await fs.unlink(path.join('uploads', result.logo), console.log);
-                result.logo = req.file.path.replace(/^(uploads)/, '');
+                if (result.logo) {
+                    await fs.unlink(path.join('/', result.logo), console.log);
+                }
+                result.logo = path.join('/', req.file.path);
             }
             result.save();
 
             req.flash('success', `Bank ${bank} successfully updated`);
             return res.redirect('/admin/bank');
-        }
-        catch (err) {
-            console.log(err);
+        } catch (err) {
             req.flash('old', req.body);
             req.flash('danger', `Update bank ${bank} failed, try again later`);
             res.redirect('back');
@@ -73,12 +73,13 @@ module.exports = {
             const result = await Bank.findOne({_id: id});
             result.remove();
 
-            await fs.unlink(path.join('uploads', result.logo), console.log);
+            if (result.logo) {
+                await fs.unlink(result.logo.replace(/^(\\)/, ''), console.log);
+            }
 
             req.flash('warning', `Bank ${result.bank} successfully deleted`);
             return res.redirect('/admin/bank');
-        }
-        catch (err) {
+        } catch (err) {
             req.flash('danger', `Delete bank failed, try again later`);
             res.redirect('back');
         }
