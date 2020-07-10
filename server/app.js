@@ -9,6 +9,22 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const moment = require('moment');
+const { Seeder } = require('mongo-seeding');
+
+const seeder = new Seeder({
+    database: process.env.MONGO_URI,
+    dropDatabase: false,
+    dropCollections: true,
+});
+const collections = seeder.readCollectionsFromPath(
+    path.resolve("./seed"),
+    {transformers: [Seeder.Transformers.replaceDocumentIdWithUnderscoreId]}
+);
+seeder.import(collections)
+    .then(() => {
+        console.log('Seed database is completed');
+    })
+    .catch(console.log);
 
 mongoose.set('debug', true);
 const store = new MongoDBStore({
@@ -33,7 +49,7 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

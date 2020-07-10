@@ -1,3 +1,11 @@
+body {
+  color: #6a6c79;
+}
+
+.text-muted {
+  color: #a2a4b0 !important;
+}
+
 .sidebar .nav-item .nav-link {
   padding: 0.4rem 1rem;
 }

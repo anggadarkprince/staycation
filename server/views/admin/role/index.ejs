@@ -34,6 +34,7 @@
                             <tr>
                                 <th style="width: 35px">No</th>
                                 <th>Role</th>
+                                <th>Permission</th>
                                 <th>Description</th>
                                 <th>Created At</th>
                                 <th class="text-md-right" style="max-width: 80px">Action</th>
@@ -44,6 +45,7 @@
                                 <tr>
                                     <td><%= i + 1 %></td>
                                     <td><%= role.role %></td>
+                                    <td><%= role.permissionId.length %></td>
                                     <td class="text-truncate" style="max-width: 200px"><%= role.description || '-' %></td>
                                     <td><%= moment(role.createdAt).format('DD MMMM Y HH:mm') %></td>
                                     <td class="text-md-right">
@@ -74,6 +76,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Role</th>
+                                <th>Permission</th>
                                 <th>Description</th>
                                 <th>Created At</th>
                                 <th class="text-md-right">Action</th>

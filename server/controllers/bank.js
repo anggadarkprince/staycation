@@ -4,7 +4,7 @@ const fs = require("fs");
 
 module.exports = {
     index: async (req, res) => {
-        const banks = await Bank.find();
+        const banks = await Bank.find().sort([['_id', -1]]);
         res.render('admin/bank/index', {banks, title: 'Bank'});
     },
     view: async (req, res) => {

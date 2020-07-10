@@ -2,6 +2,7 @@
   "env": {
     "MONGO_URI": "mongodb://localhost:27017/staycation",
     "PORT": 3000,
+    "DEBUG": "mongo-seeding",
     "SENDGRID_KEY": "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"
   }
 }

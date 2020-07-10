@@ -2,7 +2,7 @@ const Category = require('../models/Category');
 
 module.exports = {
     index: async (req, res) => {
-        const categories = await Category.find();
+        const categories = await Category.find().sort([['_id', -1]]);
         res.render('admin/category/index', {categories, title: 'Category'});
     },
     view: async (req, res) => {

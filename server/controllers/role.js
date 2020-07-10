@@ -1,23 +1,25 @@
 const Role = require('../models/Role');
+const Permission = require('../models/Permission');
 
 module.exports = {
     index: async (req, res) => {
-        const roles = await Role.find();
+        const roles = await Role.find().sort([['_id', -1]]);
         res.render('admin/role/index', {roles, title: 'Role'});
     },
     view: async (req, res) => {
         const id = req.params.id;
-        const role = await Role.findOne({_id: id});
+        const role = await Role.findOne({_id: id}).populate('permissionId');
 
         res.render('admin/role/view', {role, title: `View role ${role.role}`});
     },
-    create: (req, res) => {
-        res.render('admin/role/create', {title: 'Create role'});
+    create: async (req, res) => {
+        const permissions = await Permission.find();
+        res.render('admin/role/create', {title: 'Create role', permissions});
     },
     save: async (req, res) => {
-        const {role, description} = req.body;
+        const {role, description, permissions: permissionId} = req.body;
         try {
-            await Role.create({role, description});
+            await Role.create({role, description, permissionId});
             req.flash('success', `Role ${role} successfully created`);
             res.redirect('/admin/role');
         } catch (err) {
@@ -29,17 +31,19 @@ module.exports = {
     edit: async (req, res) => {
         const id = req.params.id;
         const role = await Role.findOne({_id: id});
+        const permissions = await Permission.find();
 
-        res.render('admin/role/edit', {role, title: `Edit role ${user.name}`});
+        res.render('admin/role/edit', {title: `Edit role ${role.role}`, role, permissions});
     },
     update: async (req, res) => {
         const id = req.params.id;
-        const {role, description} = req.body;
+        const {role, description, permissions} = req.body;
 
         try {
             const result = await Role.findOne({_id: id});
             result.role = role;
             result.description = description;
+            result.permissionId = permissions;
             result.save();
 
             req.flash('success', `Role ${role} successfully updated`);

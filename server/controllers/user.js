@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 module.exports = {
     index: async (req, res) => {
-        const users = await User.find();
+        const users = await User.find().sort([['_id', -1]]);
         res.render('admin/user/index', {users, title: 'User'});
     },
     view: async (req, res) => {

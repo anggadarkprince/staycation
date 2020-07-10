@@ -63,6 +63,37 @@
                 </div>
 
                 <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Permissions</h5>
+                        <div class="form-group">
+                            <div class="row">
+                                <% lastGroup = ''; lastSubGroup = ''; %>
+                                <% role.permissionId.forEach((permission, i) => { %>
+                                    <% if(lastGroup != permission.module){ %>
+                                        <div class="col-12 mt-4 border-top border-bottom font-weight-bold">
+                                            <h5 class="m-0 py-2">Module <%= permission.module %></h5>
+                                        </div>
+                                        <% lastGroup = permission.module %>
+                                    <% } %>
+
+                                    <% if(lastSubGroup != permission.submodule){ %>
+                                        <div class="col-12 mt-2 font-weight-bold text-gray-500">
+                                            Module <%= permission.submodule %>
+                                        </div>
+                                        <% lastSubGroup = permission.submodule %>
+                                    <% } %>
+
+                                    <div class="col-sm-6">
+                                        <i class="fas fa-check-square mr-1"></i>
+                                        <%= permission.permission.replace(/[-_]/, ' ') %> : <span class="text-muted"><%= permission.description %></span>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
                     <div class="card-body d-flex justify-content-between">
                         <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
                     </div>
