@@ -10,6 +10,7 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const moment = require('moment');
 const { Seeder } = require('mongo-seeding');
+const { numberFormat } = require('./helpers/formatter');
 
 const seeder = new Seeder({
     database: process.env.MONGO_URI,
@@ -65,6 +66,7 @@ app.use((req, res, next) => {
     res.locals._flashDanger = req.flash('danger');
     res.locals._old = req.flash('old')[0] || {};
     res.locals.moment = moment;
+    res.locals.numberFormat = numberFormat;
     next();
 });
 

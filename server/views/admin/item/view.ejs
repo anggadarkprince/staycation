@@ -1,0 +1,121 @@
+<%- include('../../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h4 mb-3 text-gray-800">View Item</h1>
+
+                <%- include('../../partials/alert.ejs') %>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Title</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= item.title %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">City</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= item.city %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Country</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= item.country %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Price</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= numberFormat(item.price, 'IDR ') %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Is Popular</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= item.isPopular ? 'Popular' : 'Regular' %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Created At</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= moment(item.createdAt).format('DD MMMM Y HH:mm') %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-3 col-form-label pb-0 font-weight-bold" for="description">Updated At</label>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext" id="description">
+                                            <%= item.updatedAt ? moment(item.updatedAt).format('DD MMMM Y HH:mm') : '-' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <div class="form-group mb-2 mb-md-0 row">
+                            <p class="col-sm-3 col-md-2 col-form-label pb-0 font-weight-bold">Description</p>
+                            <div class="col-sm-9 col-md-10">
+                                <p class="form-control-plaintext">
+                                    <%= item.description || 'No description' %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body d-flex justify-content-between">
+                        <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../../partials/js.ejs') %>

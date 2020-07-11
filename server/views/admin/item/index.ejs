@@ -28,58 +28,61 @@
                         <h6 class="m-0 font-weight-bold text-primary">Hotel & Apartment Data</h6>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-sm table-hover" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
+                        <table class="table table-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>Title</th>
+                                <th>Location</th>
+                                <th>Price</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% items.forEach((item, i) => { %>
                                 <tr>
-                                    <th style="width: 35px">No</th>
-                                    <th>Title</th>
-                                    <th>Location</th>
-                                    <th>Price</th>
-                                    <th class="text-md-right" style="max-width: 80px">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>61</td>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= item.title %></td>
+                                    <td><%= item.city %>, <%= item.country %></td>
+                                    <td><%= numberFormat(item.price, 'IDR ') %></td>
                                     <td class="text-md-right">
                                         <div class="dropdown">
                                             <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
                                                 Action
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="/master/role/view">
+                                                <a class="dropdown-item" href="/admin/item/view/<%= item._id %>">
                                                     View
                                                 </a>
-                                                <a class="dropdown-item" href="http://master/role/edit">
+                                                <a class="dropdown-item" href="/admin/item/edit/<%= item._id %>">
                                                     Edit
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <button class="dropdown-item btn-delete" data-toggle="modal" data-title="Role" data-url="/master/role/delete">
+                                                <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                        data-title="Bank" data-label="<%= item.title %>"
+                                                        data-url="/admin/item/delete/<%= item._id %>">
                                                     Delete
                                                 </button>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th style="width: 35px">No</th>
-                                    <th>Title</th>
-                                    <th>Location</th>
-                                    <th>Price</th>
-                                    <th class="text-md-right" style="max-width: 80px">Action</th>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                            <% }) %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>Title</th>
+                                <th>Location</th>
+                                <th>Price</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
 
+                <%- include('../../partials/delete.ejs') %>
             </div>
             <!-- /.container-fluid -->
 

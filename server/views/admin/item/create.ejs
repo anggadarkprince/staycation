@@ -1,0 +1,104 @@
+<%- include('../../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-3 text-gray-800">Create Item</h1>
+
+                <%- include('../../partials/alert.ejs') %>
+
+                <form action="/admin/item/save" method="post" enctype="multipart/form-data">
+                    <fieldset>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">New Item Data</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="title">Title</label>
+                                    <input type="text" class="form-control" id="title" name="title" required maxlength="50"
+                                           value="<%= _old.title || '' %>" placeholder="Enter item title">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="city">City</label>
+                                            <input type="text" class="form-control" id="city" name="city" required maxlength="50"
+                                                   value="<%= _old.city || '' %>" placeholder="City location">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="country">Country</label>
+                                            <input type="text" class="form-control" id="country" name="country" maxlength="50"
+                                                   value="<%= _old.country || '' %>" placeholder="Country of the city">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="is_popular">Is Popular</label>
+                                            <select class="custom-select" name="is_popular" id="is_popular" required="">
+                                                <option value="">Select Popular</option>
+                                                <option value="1"<%= (_old.is_popular || '') == '1' ? ' selected' : '' %>>
+                                                    YES
+                                                </option>
+                                                <option value="0"<%= (_old.is_popular || '') == '0' ? ' selected' : '' %>>
+                                                    NO
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="price">Price</label>
+                                            <input type="number" class="form-control" id="price" name="price" min="0" max="990000000" maxlength="12"
+                                                   value="<%= _old.price || '' %>" placeholder="Price per night">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea class="form-control" id="description" name="description" maxlength="500" rows="5"
+                                              placeholder="Enter item description"><%= _old.description || '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body d-flex justify-content-between">
+                                <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                                <button type="submit" class="btn btn-success" data-toggle="one-touch">Save Item</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../../partials/js.ejs') %>
