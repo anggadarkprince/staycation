@@ -27,42 +27,59 @@
     <!-- Outer Row -->
     <div class="row justify-content-center">
 
-        <div class="col-xl-5 col-lg-6 col-md-9">
+        <div class="col-lg-6 col-md-9">
 
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
                     <div class="p-5">
                         <div class="text-center mb-4">
                             <h1 class="h3 mb-0 text-primary font-weight-bold text-uppercase">
-                                <i class="fas fa-hiking mr-2"></i><%= process.env.APP_NAME %>
+                                <i class="fas fa-id-card mr-2"></i><%= process.env.APP_NAME %>
                             </h1>
-                            <small class="text-muted">Welcome back, login to access control panel</small>
+                            <small class="text-muted">Register your data, we will email you later</small>
                         </div>
 
                         <%- include('../partials/alert.ejs') %>
 
-                        <form action="/auth/login" method="post" class="user">
+                        <form action="/auth/register" method="post" class="user">
                             <fieldset>
-                                <div class="form-group mb-2">
-                                    <input type="text" class="form-control form-control-user" id="username" name="username"
-                                           required maxlength="50" placeholder="Username or email">
+                                <div class="form-row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-2">
+                                            <input type="text" class="form-control form-control-user" id="name" name="name"
+                                                   required maxlength="50" placeholder="Your full name">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-2">
+                                            <input type="text" class="form-control form-control-user" id="username" name="username"
+                                                   required maxlength="50" placeholder="Username">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group mb-2">
+                                    <input type="text" class="form-control form-control-user" id="email" name="email"
+                                           required maxlength="50" placeholder="Email address">
+                                </div>
+                                <div class="form-group mb-2">
                                     <input type="password" class="form-control form-control-user" id="password" name="password"
                                            required maxlength="50" placeholder="Password">
                                 </div>
-                                <div class="mb-3 d-flex justify-content-between">
-                                    <div class="custom-control custom-checkbox small">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck">
-                                        <label class="custom-control-label" for="customCheck">Remember Me</label>
-                                    </div>
-                                    <a class="small" href="/auth/forgot-password">Forgot Password?</a>
+                                <div class="form-group mb-2">
+                                    <input type="password" class="form-control form-control-user" id="confirm_password" name="confirm_password"
+                                           required maxlength="50" placeholder="Confirm password">
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-user btn-block">
-                                    Login
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox small">
+                                        <input type="checkbox" class="custom-control-input" name="accept" id="customCheck" required>
+                                        <label class="custom-control-label" for="customCheck">I accept terms and conditions</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-user btn-block">
+                                    Register
                                 </button>
                                 <div class="text-center mt-3">
-                                    <a class="font-weight-bold" href="/auth/register">Create an Account</a>
+                                    <a class="font-weight-bold" href="/auth/login">Already have an account? Login here</a>
                                 </div>
                                 <hr>
                                 <a href="/login/google" class="btn btn-google border-0 btn-user btn-block">

@@ -28,7 +28,6 @@ const userSchema = new mongoose.Schema({
     roleId: [{
         type: ObjectId,
         ref: 'Role',
-        required: true,
     }],
 }, {timestamps: true});
 
