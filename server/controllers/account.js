@@ -5,8 +5,12 @@ const bcrypt = require('bcryptjs');
 
 module.exports = {
     index: async (req, res) => {
-        const account = await User.findOne({_id: '5f07d8ac1e01fd83f8bb63e0'});
-        res.render('admin/account/index', {title: 'My Account', account});
+        try {
+            const account = await User.findById(req.user._id);
+            res.render('admin/account/index', {title: 'My Account', account});
+        } catch (err) {
+            res.redirect('/auth/login');
+        }
     },
     update: async (req, res) => {
         const {name, username, email, password} = req.body;
@@ -28,7 +32,6 @@ module.exports = {
             req.flash('success', `Your account successfully updated`);
             return res.redirect('/admin/account');
         } catch (err) {
-            console.log(err);
             req.flash('old', req.body);
             req.flash('danger', `Update account failed, try again later`);
             res.redirect('back');

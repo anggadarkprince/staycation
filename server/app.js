@@ -42,6 +42,8 @@ mongoose.Promise = Promise;
 const errorController = require('./controllers/error');
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
+const authRouter = require('./routes/auth');
+const User = require('./models/User');
 
 var app = express();
 
@@ -60,12 +62,28 @@ app.use(session({secret: 'secret98sh968sdf7s8df6', resave: false, saveUninitiali
 app.use(flash());
 
 app.use((req, res, next) => {
+    if (!req.session.userId) {
+        req.user = {};
+        res.locals._loggedUser = {};
+        return next();
+    }
+    User.findById(req.session.userId)
+        .then(user => {
+            req.user = user;
+            res.locals._loggedUser = user;
+            next();
+        })
+        .catch(console.log);
+});
+
+app.use((req, res, next) => {
     res.locals._baseUrl = `${req.protocol}://${req.get('host')}`;
     res.locals._path = req.path;
     res.locals._flashSuccess = req.flash('success');
     res.locals._flashWarning = req.flash('warning');
     res.locals._flashDanger = req.flash('danger');
     res.locals._old = req.flash('old')[0] || {};
+    res.locals._isAuthenticated = req.session.isLoggedIn;
     res.locals.moment = moment;
     res.locals.numberFormat = numberFormat;
     next();
@@ -84,8 +102,10 @@ app.use(methodOverride(function (req, res) {
     }
 }));
 
+const mustAuthenticated = require('./middleware/mustAuthenticated');
 app.use('/', indexRouter);
-app.use('/admin', adminRouter);
+app.use('/admin', [mustAuthenticated, adminRouter]);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -94,6 +114,11 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+    // put auth state fallback
+    if (!res.locals._isAuthenticated) {
+        res.locals._isAuthenticated = false;
+    }
+
     if (err.status === 404) {
         errorController.get404(req, res);
     } else {

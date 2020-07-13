@@ -12,7 +12,7 @@ module.exports = {
             const category = await Category.findOne({_id: id});
             res.render('admin/category/view', {category, title: `View category ${category.category}`});
         } catch (err) {
-            next(createError(404))
+            next(createError(404));
         }
     },
     create: (req, res) => {

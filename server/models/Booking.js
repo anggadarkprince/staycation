@@ -25,10 +25,10 @@ const bookingSchema = new mongoose.Schema({
             required: true,
         }
     }],
-    memberId: [{
+    memberId: {
         type: ObjectId,
         ref: 'Member',
-    }],
+    },
     bankId: [{
         type: ObjectId,
         ref: 'Bank',
