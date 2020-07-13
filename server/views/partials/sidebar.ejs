@@ -75,16 +75,21 @@
         Preferences
     </div>
     <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item<%= _path.startsWith('/admin/settings') || _path.startsWith('/admin/account') || _path.startsWith('/admin/activity-log') ? ' active' : '' %>">
-        <a class="nav-link<%= _path.startsWith('/admin/settings') || _path.startsWith('/admin/account') || _path.startsWith('/admin/activity-log') ? '' : ' collapsed' %>" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+    <li class="nav-item<%= _path.startsWith('/admin/account') ? ' active' : '' %>">
+        <a class="nav-link" href="/admin/account">
+            <i class="fas fa-fw fa-user-circle"></i>
+            <span>My Account</span>
+        </a>
+    </li>
+    <li class="nav-item<%= _path.startsWith('/admin/settings') || _path.startsWith('/admin/activity-log') ? ' active' : '' %>">
+        <a class="nav-link<%= _path.startsWith('/admin/settings') || _path.startsWith('/admin/activity-log') ? '' : ' collapsed' %>" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
             <i class="fas fa-fw fa-wrench"></i>
             <span>Utilities</span>
         </a>
-        <div id="collapseUtilities" class="collapse<%= _path.startsWith('/admin/settings') || _path.startsWith('/admin/account') || _path.startsWith('/admin/activity-log') ? ' show' : '' %>" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="collapseUtilities" class="collapse<%= _path.startsWith('/admin/settings') || _path.startsWith('/admin/activity-log') ? ' show' : '' %>" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Custom Utilities</h6>
                 <a class="collapse-item<%= _path.startsWith('/admin/settings') ? ' active' : '' %>" href="/admin/settings">Settings</a>
-                <a class="collapse-item<%= _path.startsWith('/admin/account') ? ' active' : '' %>" href="/admin/account">My Account</a>
                 <a class="collapse-item<%= _path.startsWith('/admin/activity-log') ? ' active' : '' %>" href="/admin/activity-log">Activity Log</a>
             </div>
         </div>
