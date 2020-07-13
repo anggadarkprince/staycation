@@ -1,3 +1,4 @@
+const createError = require('http-errors');
 const Item = require('../models/Item');
 
 module.exports = {
@@ -5,11 +6,14 @@ module.exports = {
         const items = await Item.find();
         res.render('admin/item/index', {title: 'Item', items});
     },
-    view: async (req, res) => {
+    view: async (req, res, next) => {
         const id = req.params.id;
-        const item = await Item.findOne({_id: id});
-
-        res.render('admin/item/view', {title: `View item ${item.title}`, item});
+        try {
+            const item = await Item.findOne({_id: id});
+            res.render('admin/item/view', {title: `View item ${item.title}`, item});
+        } catch (err) {
+            next(createError(404))
+        }
     },
     create: (req, res) => {
         res.render('admin/item/create', {title: 'Create Item'});

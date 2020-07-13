@@ -1,3 +1,4 @@
+const createError = require('http-errors');
 const Role = require('../models/Role');
 const Permission = require('../models/Permission');
 
@@ -6,11 +7,14 @@ module.exports = {
         const roles = await Role.find().sort([['_id', -1]]);
         res.render('admin/role/index', {roles, title: 'Role'});
     },
-    view: async (req, res) => {
+    view: async (req, res, next) => {
         const id = req.params.id;
-        const role = await Role.findOne({_id: id}).populate('permissionId');
-
-        res.render('admin/role/view', {role, title: `View role ${role.role}`});
+        try {
+            const role = await Role.findOne({_id: id}).populate('permissionId');
+            res.render('admin/role/view', {role, title: `View role ${role.role}`});
+        } catch (err) {
+            next(createError(404))
+        }
     },
     create: async (req, res) => {
         const permissions = await Permission.find();

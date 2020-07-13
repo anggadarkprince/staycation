@@ -1,3 +1,4 @@
+const createError = require('http-errors');
 const Category = require('../models/Category');
 
 module.exports = {
@@ -5,11 +6,14 @@ module.exports = {
         const categories = await Category.find().sort([['_id', -1]]);
         res.render('admin/category/index', {categories, title: 'Category'});
     },
-    view: async (req, res) => {
+    view: async (req, res, next) => {
         const id = req.params.id;
-        const category = await Category.findOne({_id: id});
-
-        res.render('admin/category/view', {category, title: `View category ${category.category}`});
+        try {
+            const category = await Category.findOne({_id: id});
+            res.render('admin/category/view', {category, title: `View category ${category.category}`});
+        } catch (err) {
+            next(createError(404))
+        }
     },
     create: (req, res) => {
         res.render('admin/category/create', {title: 'Create category'});

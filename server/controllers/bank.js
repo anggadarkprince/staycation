@@ -1,17 +1,21 @@
 const Bank = require('../models/Bank');
 const path = require("path");
 const fs = require("fs");
+const createError = require('http-errors');
 
 module.exports = {
     index: async (req, res) => {
         const banks = await Bank.find().sort([['_id', -1]]);
         res.render('admin/bank/index', {banks, title: 'Bank'});
     },
-    view: async (req, res) => {
+    view: async (req, res, next) => {
         const id = req.params.id;
-        const bank = await Bank.findOne({_id: id});
-
-        res.render('admin/bank/view', {bank, title: `View bank ${bank.bank}`});
+        try {
+            const bank = await Bank.findOne({_id: id});
+            res.render('admin/bank/view', {bank, title: `View bank ${bank.bank}`});
+        } catch (err) {
+            next(createError(404))
+        }
     },
     create: (req, res) => {
         res.render('admin/bank/create', {title: `Create bank`});

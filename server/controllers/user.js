@@ -1,3 +1,4 @@
+const createError = require('http-errors');
 const User = require('../models/User');
 const Role = require('../models/Role');
 const bcrypt = require('bcryptjs');
@@ -9,11 +10,14 @@ module.exports = {
         const users = await User.find().sort([['_id', -1]]);
         res.render('admin/user/index', {users, title: 'User'});
     },
-    view: async (req, res) => {
+    view: async (req, res, next) => {
         const id = req.params.id;
-        const user = await User.findOne({_id: id}).populate('roleId', 'role');
-
-        res.render('admin/user/view', {user, title: `View user ${user.name}`});
+        try {
+            const user = await User.findOne({_id: id}).populate('roleId', 'role');
+            res.render('admin/user/view', {user, title: `View user ${user.name}`});
+        } catch (err) {
+            next(createError(404))
+        }
     },
     create: async (req, res) => {
         const roles = await Role.find();

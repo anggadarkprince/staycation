@@ -1,16 +1,16 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const moment = require('moment');
-const { Seeder } = require('mongo-seeding');
-const { numberFormat } = require('./helpers/formatter');
+const {Seeder} = require('mongo-seeding');
+const {numberFormat} = require('./helpers/formatter');
 
 const seeder = new Seeder({
     database: process.env.MONGO_URI,
@@ -39,6 +39,7 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
     .catch(console.log);
 mongoose.Promise = Promise;
 
+const errorController = require('./controllers/error');
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 
@@ -50,7 +51,7 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -87,19 +88,28 @@ app.use('/', indexRouter);
 app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    if (err.status === 404) {
+        errorController.get404(req, res);
+    } else {
+        // set locals, only providing error in development
+        const isDev = req.app.get('env') === 'development';
+        res.locals.message = err.message;
+        res.locals.error = isDev ? err : {};
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+        // render the error page
+        if (isDev) {
+            res.status(err.status || 500);
+            res.render('error');
+        } else {
+            errorController.get500(req, res);
+        }
+    }
 });
 
 module.exports = app;
