@@ -13,7 +13,7 @@ router.post('/register', redirectIfAuthenticated, auth.saveRegistration);
 router.get('/forgot-password', redirectIfAuthenticated, auth.forgotPassword);
 router.post('/forgot-password', redirectIfAuthenticated, auth.sendEmailRecovery);
 router.get('/reset-password/:token', redirectIfAuthenticated, auth.passwordRecovery);
-router.put('/reset-password', redirectIfAuthenticated, auth.resetPassword);
+router.put('/reset-password/:token', redirectIfAuthenticated, auth.resetPassword);
 router.post('/logout', mustAuthenticated, auth.logout);
 
 module.exports = router;

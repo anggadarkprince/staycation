@@ -25,6 +25,20 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    tokens: [{
+        type: {
+            type: String,
+            required: true,
+        },
+        token: {
+            type: String,
+            required: true,
+        },
+        expiredAt: {
+            type: Date,
+            required: true,
+        },
+    }],
     roleId: [{
         type: ObjectId,
         ref: 'Role',

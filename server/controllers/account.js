@@ -16,7 +16,7 @@ module.exports = {
         const {name, username, email, password} = req.body;
 
         try {
-            const result = await User.findOne({_id: '5f07d8ac1e01fd83f8bb63e0'});
+            const result = await User.findById(req.user._id);
             result.name = name;
             result.username = username;
             result.email = email;
