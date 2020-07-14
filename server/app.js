@@ -17,7 +17,7 @@ const {numberFormat} = require('./helpers/formatter');
 const seeder = new Seeder({
     database: process.env.MONGO_URI,
     dropDatabase: false,
-    dropCollections: true,
+    dropCollections: false,
 });
 const collections = seeder.readCollectionsFromPath(
     path.resolve("./seed"),
