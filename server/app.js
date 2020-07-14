@@ -10,6 +10,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const moment = require('moment');
+const useragent = require('express-useragent');
 const {Seeder} = require('mongo-seeding');
 const {numberFormat} = require('./helpers/formatter');
 
@@ -61,6 +62,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/theme', express.static(path.join(__dirname, 'node_modules', 'startbootstrap-sb-admin-2')));
 app.use(session({secret: 'secret98sh968sdf7s8df6', resave: false, saveUninitialized: false, store: store}));
 app.use(flash());
+app.use(useragent.express());
 
 app.use((req, res, next) => {
     if (!req.session.userId) {

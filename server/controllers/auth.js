@@ -72,7 +72,14 @@ module.exports = {
                 Log.create({
                     userId: loggedUser._id,
                     type: 'Login',
-                    data: JSON.stringify(loggedUser),
+                    ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+                    userAgent: {
+                        browser: req.useragent.browser,
+                        version: req.useragent.version,
+                        os: req.useragent.os,
+                        platform: req.useragent.platform
+                    },
+                    data: loggedUser,
                     time: new Date(),
                 });
                 res.redirect('/admin/dashboard');

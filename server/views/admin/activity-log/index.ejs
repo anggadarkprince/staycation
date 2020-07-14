@@ -15,7 +15,7 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-3 text-gray-800">Activity Log</h1>
+                <h1 class="h4 mb-3 text-gray-800">Activity Log</h1>
 
                 <!-- DataTales Example -->
                 <div class="card shadow border-0 mb-4">
@@ -23,7 +23,47 @@
                         <h6 class="m-0 font-weight-bold text-primary">Logger</h6>
                     </div>
                     <div class="card-body">
-
+                        <table class="table table-sm table-hover" id="dataTable">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>IP</th>
+                                <th>Agent</th>
+                                <th>Time</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% logs.forEach((log, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= log.userId.name %></td>
+                                    <td><%= log.type %></td>
+                                    <td><%= log.ip %></td>
+                                    <td><%= typeof log.userAgent === 'object' ? `${log.userAgent.os} ${log.userAgent.browser}` : '' %></td>
+                                    <td><%= moment(log.time).format('DD MMMM Y HH:mm') %></td>
+                                    <td class="text-md-right">
+                                        <a href="/admin/activity-log/view/<%= log._id %>" class="btn btn-primary btn-sm">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>No</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>IP</th>
+                                <th>Agent</th>
+                                <th>Time</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
 

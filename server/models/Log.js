@@ -4,14 +4,21 @@ const {ObjectId} = mongoose.Schema;
 const logSchema = new mongoose.Schema({
     userId: {
         type: ObjectId,
-        ref: 'Member',
+        ref: 'User',
     },
     type: {
         type: String,
         required: true,
     },
-    data: {
+    ip: {
         type: String,
+        required: true,
+    },
+    userAgent: {
+        type: Object,
+    },
+    data: {
+        type: Object,
         required: true,
     },
     time: {
