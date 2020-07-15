@@ -19,8 +19,9 @@
 
                 <%- include('../../partials/alert.ejs') %>
 
-                <form action="/admin/bank/update/<%= bank._id %>" method="post" enctype="multipart/form-data">
+                <form action="/admin/bank/update/<%= bank._id %>?_csrf=<%= _csrfToken %>" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
                     <fieldset>
                         <div class="card shadow border-0 mb-4">
                             <div class="card-header py-3">

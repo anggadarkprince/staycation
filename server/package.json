@@ -19,6 +19,7 @@
     "connect-flash": "^0.1.1",
     "connect-mongodb-session": "^2.3.3",
     "cookie-parser": "^1.4.5",
+    "csurf": "^1.11.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.3",

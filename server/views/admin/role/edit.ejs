@@ -21,6 +21,7 @@
 
                 <form action="/admin/role/update/<%= role._id %>" method="post">
                     <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
 
                     <div class="card shadow border-0 mb-4">
                         <div class="card-header py-3">

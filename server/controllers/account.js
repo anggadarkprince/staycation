@@ -13,14 +13,14 @@ module.exports = {
         }
     },
     update: async (req, res) => {
-        const {name, username, email, password} = req.body;
+        const {name, username, email, new_password: newPassword} = req.body;
 
         try {
             const result = await User.findById(req.user._id);
             result.name = name;
             result.username = username;
             result.email = email;
-            result.password = password ? bcrypt.hashSync(password, 12) : result.password;
+            result.password = newPassword ? bcrypt.hashSync(newPassword, 12) : result.password;
             if (req.file) {
                 if (result.avatar) {
                     await fs.unlink(result.avatar.replace(/^(\\)/, ''), console.log);

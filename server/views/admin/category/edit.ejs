@@ -20,6 +20,7 @@
                 <%- include('../../partials/alert.ejs') %>
 
                 <form action="/admin/category/update/<%= category._id %>" method="post">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
                     <input type="hidden" name="_method" value="put">
                     <fieldset>
                         <div class="card shadow border-0 mb-4">

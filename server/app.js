@@ -5,6 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
+const csrf = require('csurf');
 const flash = require('connect-flash');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const methodOverride = require('method-override');
@@ -17,7 +18,7 @@ const {numberFormat} = require('./helpers/formatter');
 const seeder = new Seeder({
     database: process.env.MONGO_URI,
     dropDatabase: false,
-    dropCollections: false,
+    dropCollections: true,
 });
 const collections = seeder.readCollectionsFromPath(
     path.resolve("./seed"),
@@ -30,10 +31,6 @@ seeder.import(collections)
     .catch(console.log);
 
 mongoose.set('debug', true);
-const store = new MongoDBStore({
-    uri: process.env.MONGO_URI,
-    collection: 'sessions'
-});
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => {
         console.log('Database initialized');
@@ -60,8 +57,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/theme', express.static(path.join(__dirname, 'node_modules', 'startbootstrap-sb-admin-2')));
-app.use(session({secret: 'secret98sh968sdf7s8df6', resave: false, saveUninitialized: false, store: store}));
+app.use(session({
+    secret: 'secret98sh968sdf7s8df6',
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoDBStore({
+        uri: process.env.MONGO_URI,
+        collection: 'sessions'
+    })
+}));
 app.use(flash());
+
+// Add router api before middleware csrf
+const csrfProtection = csrf({sessionKey: 'session'});
+app.use(csrfProtection);
+
 app.use(useragent.express());
 
 app.use((req, res, next) => {
@@ -82,6 +92,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     res.locals._baseUrl = `${req.protocol}://${req.get('host')}`;
     res.locals._path = req.path;
+    res.locals._csrfToken = req.csrfToken();
     res.locals._flashSuccess = req.flash('success');
     res.locals._flashWarning = req.flash('warning');
     res.locals._flashDanger = req.flash('danger');
@@ -124,6 +135,8 @@ app.use(function (err, req, res, next) {
 
     if (err.status === 404) {
         errorController.get404(req, res);
+    } else if (err.status === 403) {
+        errorController.get403(req, res);
     } else {
         // set locals, only providing error in development
         const isDev = req.app.get('env') === 'development';

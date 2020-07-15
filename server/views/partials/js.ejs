@@ -48,6 +48,11 @@
 <script src="/theme/js/demo/datatables-demo.js"></script>
 <script>
     $(document).ready(function () {
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        $.ajaxSetup({
+            headers: {"X-CSRF-Token": token }
+        });
+
         bsCustomFileInput.init();
 
         $.validator.setDefaults({
