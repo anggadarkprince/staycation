@@ -40,6 +40,8 @@ jspm_packages/
 public/dist/*
 uploads/*
 
+logs/*
+
 data/*
 !data/.gitkeep
 !data/db/.gitkeep

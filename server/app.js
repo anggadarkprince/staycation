@@ -10,8 +10,14 @@ const flash = require('connect-flash');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
+const compression = require('compression');
+const cors = require('cors');
+const errorhandler = require('errorhandler');
+const winston = require('winston');
+const favicon = require('serve-favicon');
 const moment = require('moment');
 const useragent = require('express-useragent');
+const helmet = require('helmet');
 const {Seeder} = require('mongo-seeding');
 const {numberFormat} = require('./helpers/formatter');
 
@@ -45,6 +51,8 @@ const authRouter = require('./routes/auth');
 const User = require('./models/User');
 
 const app = express();
+app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
+app.use(helmet());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -67,6 +75,31 @@ app.use(session({
     })
 }));
 app.use(flash());
+app.use(compression());
+app.use(cors({
+    origin: process.env.APP_URL,
+    optionsSuccessStatus: 200
+}));
+
+const isDev = process.env.NODE_ENV === 'development';
+if (isDev) {
+    app.use(errorhandler());
+}
+
+const loggerWinston = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    defaultMeta: { service: 'user-service' },
+    transports: [
+        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'logs/combined.log' }),
+    ],
+});
+if (process.env.NODE_ENV !== 'production') {
+    loggerWinston.add(new winston.transports.Console({
+        format: winston.format.simple(),
+    }));
+}
 
 // Add router api before middleware csrf
 const csrfProtection = csrf({sessionKey: 'session'});
@@ -139,12 +172,11 @@ app.use(function (err, req, res, next) {
         errorController.get403(req, res);
     } else {
         // set locals, only providing error in development
-        const isDev = req.app.get('env') === 'development';
         res.locals.message = err.message;
         res.locals.error = isDev ? err : {};
 
         // render the error page
-        if (isDev) {
+        if (isDev || req.app.get('env') === 'development') {
             res.status(err.status || 500);
             res.render('error');
         } else {
