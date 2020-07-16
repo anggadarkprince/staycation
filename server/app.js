@@ -19,7 +19,7 @@ const moment = require('moment');
 const useragent = require('express-useragent');
 const helmet = require('helmet');
 const {Seeder} = require('mongo-seeding');
-const {numberFormat} = require('./helpers/formatter');
+const {numberFormat, validationError} = require('./helpers/formatter');
 
 const seeder = new Seeder({
     database: process.env.MONGO_URI,
@@ -133,6 +133,7 @@ app.use((req, res, next) => {
     res.locals._isAuthenticated = req.session.isLoggedIn;
     res.locals.moment = moment;
     res.locals.numberFormat = numberFormat;
+    res.locals.validationError = validationError.bind(req.flash('error')[0] || {});
     next();
 });
 

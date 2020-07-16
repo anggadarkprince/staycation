@@ -2,6 +2,7 @@ const Bank = require('../models/Bank');
 const path = require("path");
 const fs = require("fs");
 const createError = require('http-errors');
+const {validationError} = require('../helpers/formatter');
 
 module.exports = {
     index: async (req, res) => {
@@ -27,12 +28,13 @@ module.exports = {
                 bank,
                 accountNumber,
                 accountHolder,
-                logo: path.join('/', req.file.path),
+                logo: req.file ? path.join('/', req.file.path) : '',
                 description
             });
             req.flash('success', `Bank ${bank} successfully created`);
             res.redirect('/admin/bank');
         } catch (err) {
+            req.flash('error', err);
             req.flash('old', req.body);
             req.flash('danger', `Save bank ${bank} failed, try again later`);
             res.redirect('back');
@@ -44,7 +46,7 @@ module.exports = {
 
         res.render('admin/bank/edit', {bank, title: `Edit bank ${bank.bank}`});
     },
-    update: async (req, res) => {
+    update: async (req, res, next) => {
         const id = req.params.id;
         const {bank, account_number: accountNumber, account_holder: accountHolder, description} = req.body;
 
@@ -60,11 +62,12 @@ module.exports = {
                 }
                 result.logo = path.join('/', req.file.path);
             }
-            result.save();
+            await result.save();
 
             req.flash('success', `Bank ${bank} successfully updated`);
             return res.redirect('/admin/bank');
         } catch (err) {
+            req.flash('error', err);
             req.flash('old', req.body);
             req.flash('danger', `Update bank ${bank} failed, try again later`);
             res.redirect('back');

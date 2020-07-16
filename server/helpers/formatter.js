@@ -13,6 +13,14 @@ function numberFormat(value, prefix = '', ths = ',', dec = '.', thsTarget = '.',
     return prefix + (value < 0 ? '-' : '') + currency;
 }
 
+function validationError(name, errorBag = null, prefix = '<p class="text-danger form-error mt-1 mb-0">', suffix = '</p>') {
+    const err = errorBag || this;
+    if (err.errors && err.errors.hasOwnProperty(name)) {
+        return `${prefix} ${err.errors[name].properties.message} ${suffix}`;
+    }
+    return ' ';
+}
+
 module.exports = {
-    numberFormat
+    numberFormat, validationError
 };

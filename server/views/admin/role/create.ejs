@@ -29,11 +29,13 @@
                                     <label for="role">Role Name</label>
                                     <input type="text" class="form-control" id="role" name="role" required maxlength="50"
                                            value="<%= _old.role || '' %>" placeholder="Enter a role name">
+                                    <%- validationError('role') %>
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
                                     <textarea class="form-control" id="description" name="description" maxlength="500"
                                               placeholder="Enter role description"><%= _old.description || '' %></textarea>
+                                    <%- validationError('description') %>
                                 </div>
                             </div>
                         </div>
@@ -41,6 +43,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">Permissions</h5>
                                 <p class="text-muted mb-0">Role at least must has one permission</p>
+                                <%- validationError('permissions') %>
 
                                 <div class="form-group">
                                     <div class="row">

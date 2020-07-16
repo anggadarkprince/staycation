@@ -32,11 +32,13 @@
                                     <label for="category">Category Name</label>
                                     <input type="text" class="form-control" id="category" name="category" required maxlength="50"
                                            placeholder="Enter category" value="<%= _old.category || category.category %>">
+                                    <%- validationError('category') %>
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
                                     <textarea class="form-control" id="description" name="description" maxlength="500"
                                               placeholder="Enter category description"><%= _old.description || category.description %></textarea>
+                                    <%- validationError('description') %>
                                 </div>
                             </div>
                         </div>

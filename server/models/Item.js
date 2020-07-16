@@ -4,26 +4,32 @@ const {ObjectId} = mongoose.Schema;
 const itemSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true,
+        required: [true, 'Item required'],
+        maxlength: [100, 'Item maximum 30 characters'],
     },
     price: {
         type: Number,
-        required: true,
+        required: [true, 'Price required'],
+        max: [99000000, 'Price maximum 99.000.000'],
     },
     country: {
         type: String,
         default: 'Indonesia',
+        required: [true, 'Country required'],
+        maxlength: [50, 'Country maximum 50 characters'],
     },
     city: {
         type: String,
-        required: true,
+        required: [true, 'City required'],
+        maxlength: [50, 'City maximum 50 characters'],
     },
     isPopular: {
         type: Boolean,
     },
     description: {
         type: String,
-        required: true,
+        required: [true, 'Description required'],
+        maxlength: [5000, 'Description maximum 5000 characters'],
     },
     imageId: [{
         type: ObjectId,

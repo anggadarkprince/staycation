@@ -32,6 +32,7 @@
                                     <label for="bank">Bank Name</label>
                                     <input type="text" class="form-control" id="bank" name="bank" required maxlength="50"
                                            placeholder="Enter bank" value="<%= _old.bank || bank.bank %>">
+                                    <%- validationError('bank') %>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -39,6 +40,7 @@
                                             <label for="account_holder">Account Holder</label>
                                             <input type="text" class="form-control" id="account_holder" name="account_holder" required maxlength="50"
                                                    placeholder="Account holder name" value="<%= _old.account_holder || bank.accountHolder %>">
+                                            <%- validationError('accountHolder') %>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -46,6 +48,7 @@
                                             <label for="account_number">Account Number</label>
                                             <input type="text" class="form-control" id="account_number" name="account_number" required maxlength="50"
                                                    placeholder="Account holder name" value="<%= _old.account_number || bank.accountNumber %>">
+                                            <%- validationError('accountNumber') %>
                                         </div>
                                     </div>
                                 </div>
@@ -55,11 +58,13 @@
                                         <input type="file" class="custom-file-input" id="customFile" name="image">
                                         <label class="custom-file-label" for="customFile"><%= bank.logo || 'Pick Image' %></label>
                                     </div>
+                                    <%- validationError('logo') %>
                                 </div>
                                 <div class="form-group">
                                     <label for="description">Description</label>
                                     <textarea class="form-control" id="description" name="description" maxlength="500"
                                               placeholder="Enter bank description"><%= _old.description || bank.description %></textarea>
+                                    <%- validationError('description') %>
                                 </div>
                             </div>
                         </div>

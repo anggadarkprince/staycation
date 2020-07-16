@@ -36,6 +36,7 @@
                                                     <label for="name">Full Name</label>
                                                     <input type="text" class="form-control" id="name" name="name" required maxlength="50"
                                                            value="<%= _old.name || account.name %>" placeholder="Enter your full name">
+                                                    <%- validationError('name') %>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -43,6 +44,7 @@
                                                     <label for="username">Username</label>
                                                     <input type="text" class="form-control" id="username" name="username" maxlength="50"
                                                            value="<%= _old.username || account.username %>" placeholder="User unique ID">
+                                                    <%- validationError('username') %>
                                                 </div>
                                             </div>
                                         </div>
@@ -50,6 +52,7 @@
                                             <label for="email">Email</label>
                                             <input type="email" class="form-control" id="email" name="email" required maxlength="50"
                                                    value="<%= _old.email || account.email %>" placeholder="Enter email address">
+                                            <%- validationError('email') %>
                                         </div>
                                     </div>
                                 </div>
@@ -69,6 +72,7 @@
                                                     <label class="custom-file-label text-truncate" for="image">Change Avatar</label>
                                                 </div>
                                                 <small class="form-text">Leave it unselected if you don't change avatar.</small>
+                                                <%- validationError('avatar') %>
                                             </div>
                                         </div>
                                     </div>
@@ -85,6 +89,7 @@
                                     <label for="password">Current Password</label>
                                     <input type="password" class="form-control" id="password" name="password" required maxlength="50"
                                            placeholder="Enter your current password">
+                                    <%- validationError('password') %>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -94,12 +99,14 @@
                                                    placeholder="Replace password with">
                                             <small class="form-text text-gray mt-2">Leave it blank if you don't intent to change your password.</small>
                                         </div>
+                                        <%- validationError('newPassword') %>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="confirm_password">Confirm Password</label>
                                             <input type="password" class="form-control" id="confirm_password" name="confirm_password" maxlength="50"
                                                    placeholder="Confirm new password">
+                                            <%- validationError('confirmPassword') %>
                                         </div>
                                     </div>
                                 </div>

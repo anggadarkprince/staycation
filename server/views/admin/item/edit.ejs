@@ -32,6 +32,7 @@
                                     <label for="title">Title</label>
                                     <input type="text" class="form-control" id="title" name="title" required maxlength="50"
                                            value="<%= _old.title || item.title %>" placeholder="Enter item title">
+                                    <%- validationError('title') %>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -39,6 +40,7 @@
                                             <label for="city">City</label>
                                             <input type="text" class="form-control" id="city" name="city" required maxlength="50"
                                                    value="<%= _old.city || item.city %>" placeholder="City location">
+                                            <%- validationError('city') %>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -46,6 +48,7 @@
                                             <label for="country">Country</label>
                                             <input type="text" class="form-control" id="country" name="country" maxlength="50"
                                                    value="<%= _old.country || item.country %>" placeholder="Country of the city">
+                                            <%- validationError('country') %>
                                         </div>
                                     </div>
                                 </div>
@@ -62,6 +65,7 @@
                                                     NO
                                                 </option>
                                             </select>
+                                            <%- validationError('isPopular') %>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -69,6 +73,7 @@
                                             <label for="price">Price</label>
                                             <input type="number" class="form-control" id="price" name="price" min="0" max="990000000" maxlength="12"
                                                    value="<%= _old.price || item.price %>" placeholder="Price per night">
+                                            <%- validationError('price') %>
                                         </div>
                                     </div>
                                 </div>
@@ -76,6 +81,7 @@
                                     <label for="description">Description</label>
                                     <textarea class="form-control" id="description" name="description" maxlength="500" rows="5"
                                               placeholder="Enter item description"><%= _old.description || item.description %></textarea>
+                                    <%- validationError('description') %>
                                 </div>
                             </div>
                         </div>

@@ -33,6 +33,7 @@
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="app_name" name="app_name"
                                            value="<%= _old.app_name || systemSetting.appName %>" placeholder="Public app name, include in email or customer invoice">
+                                    <%- validationError('appName') %>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -42,10 +43,12 @@
                                         <div class="col-md-6">
                                             <input type="text" class="form-control" id="contact" name="contact" required maxlength="50"
                                                    value="<%= _old.contact || systemSetting.contact %>" placeholder="Phone contact">
+                                            <%- validationError('contact') %>
                                         </div>
                                         <div class="col-md-6">
                                             <input type="email" class="form-control" id="email" name="email" required maxlength="50"
                                                    value="<%= _old.email || systemSetting.email %>" placeholder="Email address">
+                                            <%- validationError('email') %>
                                         </div>
                                     </div>
                                 </div>
@@ -55,6 +58,7 @@
                                 <div class="col-md-9">
                                     <textarea class="form-control" id="address" name="address" required maxlength="300"
                                               placeholder="Full address"><%= _old.address || systemSetting.address %></textarea>
+                                    <%- validationError('address') %>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -62,6 +66,7 @@
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="currency" name="currency" required maxlength="5"
                                            value="<%= _old.currency || systemSetting.currencySymbol %>" placeholder="Currency symbol">
+                                    <%- validationError('currency') %>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -74,6 +79,7 @@
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
+                                    <%- validationError('taxPercent') %>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -94,6 +100,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <%- validationError('publicRegistration') %>
                             </div>
                         </div>
                     </div>
@@ -109,16 +116,19 @@
                                         <input type="checkbox" class="custom-control-input" id="notification_new_booking"
                                                name="notification_new_booking" value="1"<%= (_old.notification_new_booking || userSetting.notificationNewBooking) == 1 ? ' checked' : '' %>>
                                         <label class="custom-control-label" for="notification_new_booking">Notify me about new booking</label>
+                                        <%- validationError('notificationNewBooking') %>
                                     </div>
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="notification_new_user"
                                                name="notification_new_user" value="1"<%= (_old.notification_new_user || userSetting.notificationNewUser) == 1 ? ' checked' : '' %>>
                                         <label class="custom-control-label" for="notification_new_user">Notify me about new user</label>
+                                        <%- validationError('notificationNewUser') %>
                                     </div>
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="notification_insight"
                                                name="notification_insight" value="1"<%= (_old.notification_insight || userSetting.notificationInsight) == 1 ? ' checked' : '' %>>
                                         <label class="custom-control-label" for="notification_insight">I want to know weekly insight</label>
+                                        <%- validationError('notificationInsight') %>
                                     </div>
                                 </div>
                             </div>

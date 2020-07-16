@@ -4,7 +4,8 @@ const {ObjectId} = mongoose.Schema;
 const roleSchema = new mongoose.Schema({
     role: {
         type: String,
-        required: true,
+        required: [true, 'Role required'],
+        maxlength: [30, 'Role maximum 30 characters'],
     },
     description: {
         type: String,
@@ -12,7 +13,7 @@ const roleSchema = new mongoose.Schema({
     permissionId: [{
         type: ObjectId,
         ref: 'Permission',
-        required: true,
+        required: [true, 'Permissions required'],
     }],
 }, {timestamps: true});
 
