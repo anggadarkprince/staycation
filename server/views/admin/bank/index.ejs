@@ -17,9 +17,11 @@
                 <!-- Page Heading -->
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h1 class="h4 mb-md-0 text-gray-800">Bank</h1>
-                    <a href="/admin/bank/create" class="btn btn-sm btn-primary shadow-sm">
-                        Create Bank
-                    </a>
+                    <% if(authorize(PERMISSION_BANK_CREATE)) { %>
+                        <a href="/admin/bank/create" class="btn btn-sm btn-primary shadow-sm">
+                            Create Bank
+                        </a>
+                    <% } %>
                 </div>
                 <p class="mb-4">Bank data is collection of destination transfer of payment that
                     related to <a target="_blank" href="/admin/booking">Booking Page</a>.
@@ -55,18 +57,24 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="/admin/bank/view/<%= bank._id %>">
-                                                    View
-                                                </a>
-                                                <a class="dropdown-item" href="/admin/bank/edit/<%= bank._id %>">
-                                                    Edit
-                                                </a>
-                                                <div class="dropdown-divider"></div>
-                                                <button class="dropdown-item btn-delete" data-toggle="modal"
-                                                        data-title="Bank" data-label="<%= bank.bank %> (<%= bank.accountNumber %>)"
-                                                        data-url="/admin/bank/delete/<%= bank._id %>">
-                                                    Delete
-                                                </button>
+                                                <% if(authorize(PERMISSION_BANK_VIEW)) { %>
+                                                    <a class="dropdown-item" href="/admin/bank/view/<%= bank._id %>">
+                                                        View
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_BANK_EDIT)) { %>
+                                                    <a class="dropdown-item" href="/admin/bank/edit/<%= bank._id %>">
+                                                        Edit
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_BANK_DELETE)) { %>
+                                                    <div class="dropdown-divider"></div>
+                                                    <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                            data-title="Bank" data-label="<%= bank.bank %> (<%= bank.accountNumber %>)"
+                                                            data-url="/admin/bank/delete/<%= bank._id %>">
+                                                        Delete
+                                                    </button>
+                                                <% } %>
                                             </div>
                                         </div>
                                     </td>

@@ -17,9 +17,11 @@
                 <!-- Page Heading -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h1 class="h4 mb-md-0 text-gray-800">Item</h1>
-                    <a href="/admin/item/create" class="btn btn-sm btn-primary shadow-sm">
-                        Create Item
-                    </a>
+                    <% if(authorize(PERMISSION_ITEM_CREATE)) { %>
+                        <a href="/admin/item/create" class="btn btn-sm btn-primary shadow-sm">
+                            Create Item
+                        </a>
+                    <% } %>
                 </div>
 
                 <!-- DataTales Example -->
@@ -28,7 +30,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">Hotel & Apartment Data</h6>
                     </div>
                     <div class="card-body">
-                        <table class="table table-sm table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <table class="table table-sm table-hover" id="dataTable">
                             <thead>
                             <tr>
                                 <th style="width: 35px">No</th>
@@ -51,18 +53,24 @@
                                                 Action
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" href="/admin/item/view/<%= item._id %>">
-                                                    View
-                                                </a>
-                                                <a class="dropdown-item" href="/admin/item/edit/<%= item._id %>">
-                                                    Edit
-                                                </a>
-                                                <div class="dropdown-divider"></div>
-                                                <button class="dropdown-item btn-delete" data-toggle="modal"
-                                                        data-title="Bank" data-label="<%= item.title %>"
-                                                        data-url="/admin/item/delete/<%= item._id %>">
-                                                    Delete
-                                                </button>
+                                                <% if(authorize(PERMISSION_ITEM_VIEW)) { %>
+                                                    <a class="dropdown-item" href="/admin/item/view/<%= item._id %>">
+                                                        View
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_ITEM_EDIT)) { %>
+                                                    <a class="dropdown-item" href="/admin/item/edit/<%= item._id %>">
+                                                        Edit
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_ITEM_DELETE)) { %>
+                                                    <div class="dropdown-divider"></div>
+                                                    <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                            data-title="Bank" data-label="<%= item.title %>"
+                                                            data-url="/admin/item/delete/<%= item._id %>">
+                                                        Delete
+                                                    </button>
+                                                <% } %>
                                             </div>
                                         </div>
                                     </td>

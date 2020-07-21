@@ -49,6 +49,8 @@ const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 const User = require('./models/User');
+const Auth = require('./modules/Auth');
+const permissions = require('./config/permissions');
 
 const app = express();
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
@@ -107,9 +109,11 @@ app.use(csrfProtection);
 
 app.use(useragent.express());
 
+// populate user data to request and local data
 app.use((req, res, next) => {
     if (!req.session.userId) {
         req.user = {};
+        req.session.permissions = {};
         res.locals._loggedUser = {};
         return next();
     }
@@ -117,12 +121,18 @@ app.use((req, res, next) => {
         .then(user => {
             req.user = user;
             res.locals._loggedUser = user;
-            next();
+            Auth.getPermissions(req.user._id)
+                .then(permissions => {
+                    req.session.permissions = permissions;
+                    next();
+                })
+                .catch(console.log);
         })
         .catch(console.log);
 });
 
 app.use((req, res, next) => {
+    // add general variable to the view
     res.locals._baseUrl = `${req.protocol}://${req.get('host')}`;
     res.locals._path = req.path;
     res.locals._csrfToken = req.csrfToken();
@@ -131,12 +141,19 @@ app.use((req, res, next) => {
     res.locals._flashDanger = req.flash('danger');
     res.locals._old = req.flash('old')[0] || {};
     res.locals._isAuthenticated = req.session.isLoggedIn;
+    res.locals = {...res.locals, ...permissions};
+
+    // attach helper function to the view
     res.locals.moment = moment;
     res.locals.numberFormat = numberFormat;
     res.locals.validationError = validationError.bind(req.flash('error')[0] || {});
+    res.locals.authorize = function (permission) {
+        return req.session.permissions.hasOwnProperty(permission)
+    };
     next();
 });
 
+// add method overriding _method: such as PUT, PATCH, DELETE
 app.use(methodOverride('X-HTTP-Method'));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(methodOverride('X-Method-Override'));
@@ -150,6 +167,7 @@ app.use(methodOverride(function (req, res) {
     }
 }));
 
+// add app high level router
 const mustAuthenticated = require('./middleware/mustAuthenticated');
 app.use('/', indexRouter);
 app.use('/admin', [mustAuthenticated, adminRouter]);

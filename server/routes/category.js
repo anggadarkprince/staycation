@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const category = require('../controllers/category');
+const permissions = require('../config/permissions');
+const authorization = require('../middleware/authorization');
 
 router.get('/', category.index);
 router.get('/view/:id', category.view);

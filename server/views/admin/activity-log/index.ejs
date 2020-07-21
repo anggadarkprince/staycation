@@ -45,9 +45,11 @@
                                     <td><%= typeof log.userAgent === 'object' ? `${log.userAgent.os} ${log.userAgent.browser}` : '' %></td>
                                     <td><%= moment(log.time).format('DD MMMM Y HH:mm') %></td>
                                     <td class="text-md-right">
-                                        <a href="/admin/activity-log/view/<%= log._id %>" class="btn btn-primary btn-sm">
-                                            View
-                                        </a>
+                                        <% if(authorize(PERMISSION_LOG_VIEW)) { %>
+                                            <a href="/admin/activity-log/view/<%= log._id %>" class="btn btn-primary btn-sm">
+                                                View
+                                            </a>
+                                        <% } %>
                                     </td>
                                 </tr>
                             <% }) %>
