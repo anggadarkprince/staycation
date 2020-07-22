@@ -1,0 +1,81 @@
+<div class="modal fade" id="modal-filter" aria-labelledby="modalFilter">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="<%= _currentUrl %>" id="form-filter">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalFilter">Filter <?= $title ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="search">Search</label>
+                        <input type="text" class="form-control" name="search" id="search"
+                               value="<%= getUrlParam('search') %>" placeholder="Search data">
+                    </div>
+                    <div class="form-row">
+                        <div class="col-8 col-sm-6">
+                            <div class="form-group">
+                                <label for="sort_by">Sort By</label>
+								<select class="custom-select" name="sort_by" id="sort_by" required>
+									<% const sortFields = {
+                                        'createdAt': 'CREATED AT',
+                                        'role': 'ROLE',
+                                        'description': 'DESCRIPTION',
+                                        'totalPermission': 'TOTAL PERMISSION',
+                                    } %>
+									<% for (const sortKey in sortFields) { %>
+										<option value="<%= sortKey %>"<%= getUrlParam('sort_by') == sortKey ? ' selected' : '' %>>
+											<%= sortFields[sortKey] %>
+										</option>
+									<% } %>
+								</select>
+                            </div>
+                        </div>
+                        <div class="col-4 col-sm-6">
+                            <div class="form-group">
+                                <label for="order_method">Order</label>
+                                <select class="custom-select" name="order_method" id="order_method" required>
+                                    <option value="-1"<%= getUrlParam('order_method') == '-1' ? ' selected' : '' %>>
+                                        DESCENDING
+                                    </option>
+                                    <option value="1"<%= getUrlParam('order_method') == '1' ? ' selected' : '' %>>
+                                        ASCENDING
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="date_from">Date From</label>
+                                <input type="text" class="form-control datepicker" name="date_from" id="date_from" autocomplete="off"
+                                       value="<%= getUrlParam('date_from') %>" placeholder="Pick create date from">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="date_to">Date To</label>
+                                <input type="text" class="form-control datepicker" name="date_to" id="date_to" autocomplete="off"
+                                       value="<%= getUrlParam('date_to') %>" placeholder="Pick create date to">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="<%= _currentUrl %>" class="btn btn-sm btn-light">
+                        RESET
+                    </a>
+                    <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">
+                        CLOSE
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        APPLY FILTER
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

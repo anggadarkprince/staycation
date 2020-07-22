@@ -1,11 +1,58 @@
 const createError = require('http-errors');
 const Role = require('../models/Role');
 const Permission = require('../models/Permission');
+const exporter = require('../modules/Exporter');
+const moment = require('moment');
 
 module.exports = {
     index: async (req, res) => {
-        const roles = await Role.find().sort([['_id', -1]]);
-        res.render('admin/role/index', {roles, title: 'Role'});
+        const sortBy = req.query.sort_by || 'createdAt';
+        const sortMethod = Number(req.query.order_method) || -1;
+        const dateFrom = req.query.date_from;
+        const dateTo = req.query.date_to;
+        const isExported = req.query.export;
+
+        const roles = await Role.aggregate([
+            {
+                $project: {
+                    role: 1,
+                    description: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    permissionId: 1,
+                    totalPermission: {$size: "$permissionId"}
+                }
+            },
+            {
+                $match: {
+                    ...((dateFrom || dateTo) && {
+                        createdAt: {
+                            ...(dateFrom && {$gte: new Date(dateFrom)}),
+                            ...(dateTo && {$lte: moment(dateTo).endOf('day').toDate()}),
+                        }
+                    })
+                }
+            },
+            {$sort: {[sortBy]: sortMethod}},
+        ]);
+
+        if (isExported) {
+            const dataRoles = [];
+            roles.forEach((role, index) => {
+                dataRoles.push({
+                    no: index + 1,
+                    role: role.role,
+                    description: role.description,
+                    createdAt: role.createdAt,
+                    updatedAt: role.updatedAt
+                })
+            });
+            return res
+                .attachment('role.xlsx')
+                .send(exporter.toExcel('Roles', dataRoles));
+        } else {
+            res.render('admin/role/index', {roles, title: 'Role'});
+        }
     },
     view: async (req, res, next) => {
         const id = req.params.id;

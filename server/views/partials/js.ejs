@@ -43,79 +43,13 @@
 <!-- Page level plugins -->
 <script src="/theme/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="/theme/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 <!-- Page level custom scripts -->
 <script src="/theme/js/demo/datatables-demo.js"></script>
-<script>
-    $(document).ready(function () {
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        $.ajaxSetup({
-            headers: {"X-CSRF-Token": token }
-        });
+<script src="/js/app.js"></script>
 
-        bsCustomFileInput.init();
-
-        $.validator.setDefaults({
-            submitHandler: function (form) {
-                return true;
-            },
-            invalidHandler: function (event, validator) {
-                $(this).addClass('was-validated');
-            },
-            highlight: function (element) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element) {
-                $(element).removeClass('is-invalid');
-            },
-            ignore: ":hidden, .ignore-validation",
-            errorElement: "span",
-            errorClass: "invalid-feedback",
-            validClass: "valid-feedback",
-            errorPlacement: function (error, element) {
-                if (element.hasClass('select2') || element.hasClass("select2-hidden-accessible")) {
-                    error.insertAfter(element.next('span.select2'));
-                }
-                else if (element.parent(".input-group").length || element.parent(".custom-control").length) {
-                    error.insertAfter(element.parent());
-                }
-                else if (element.parent(".input-group-prepend").length || element.parent(".input-group-append").length) {
-                    error.insertAfter(element.parent().parent());
-                }
-                else if (element.parent(".form-check-label").length) {
-                    element.closest('.form-group').append(error);
-                }
-                else {
-                    error.insertAfter(element);
-                }
-            }
-        });
-        $('form').each(function (index, form) {
-            $(form).validate({
-                submitHandler: function(form) {
-                    setTimeout(function() {
-                        $(form).find('fieldset').attr('disabled', true);
-                        $(form).find('button[type=submit]').text('Submitting...');
-                    }, 50);
-                    return true;
-                }
-            });
-        });
-
-
-        const modalDelete = $('#modal-delete');
-        const formDelete = modalDelete.find('form');
-        $(document).on('click', '.btn-delete', function() {
-            formDelete.attr('action', $(this).data('url'));
-            modalDelete.find('.delete-title').text($(this).data('title'));
-            modalDelete.find('.delete-label').text($(this).data('label'));
-            modalDelete.modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-        });
-    });
-</script>
 </body>
 
 </html>

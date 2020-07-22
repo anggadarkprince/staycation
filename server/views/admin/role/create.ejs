@@ -13,7 +13,12 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <h1 class="h4 mb-3 text-gray-800">Create Role</h1>
+                <div class="mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Role', url: '/admin/role'},
+                        {title: 'Create', url: '/admin/role/create'},
+                    ]}) %>
+                </div>
 
                 <%- include('../../partials/alert.ejs') %>
 

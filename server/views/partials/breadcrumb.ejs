@@ -1,0 +1,18 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-transparent small py-2 px-2 mb-0">
+        <li class="breadcrumb-item d-flex align-items-center">
+            <a href="/admin/dashboard">Dashboard</a>
+        </li>
+        <% breadcrumb.forEach((item, index) => { %>
+            <li class="breadcrumb-item<%= index === breadcrumb.length - 1 ? ' active' : '' %>">
+                <% if(index === breadcrumb.length - 1) { %>
+                    <%= item.title %>
+                <% } else { %>
+                    <a href="<%= item.url %>">
+                        <%= item.title %>
+                    </a>
+                <% } %>
+            </li>
+        <% }) %>
+    </ol>
+</nav>

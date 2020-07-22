@@ -135,6 +135,9 @@ app.use((req, res, next) => {
     // add general variable to the view
     res.locals._baseUrl = `${req.protocol}://${req.get('host')}`;
     res.locals._path = req.path;
+    res.locals._query = req._parsedUrl.query || '';
+    res.locals._currentUrl = `${res.locals._baseUrl}${res.locals._path}`;
+    res.locals._currentFullUrl = `${res.locals._baseUrl}${res.locals._path}?${res.locals._query}`;
     res.locals._csrfToken = req.csrfToken();
     res.locals._flashSuccess = req.flash('success');
     res.locals._flashWarning = req.flash('warning');
@@ -149,6 +152,11 @@ app.use((req, res, next) => {
     res.locals.validationError = validationError.bind(req.flash('error')[0] || {});
     res.locals.authorize = function (permission) {
         return req.session.permissions.hasOwnProperty(permission)
+    };
+    res.locals.getUrlParam = (key, defaultValue = '', urlString) => {
+        if (!urlString) urlString = res.locals._currentFullUrl;
+        const url = new URL(urlString);
+        return url.searchParams.get(key) || defaultValue;
     };
     next();
 });
