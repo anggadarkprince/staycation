@@ -13,9 +13,12 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <h1 class="h3 mb-3 text-gray-800">Create User</h1>
+                <div class="mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'User', url: '/admin/user'},
+                        {title: 'Create', url: '/admin/user/create'},
+                    ]}) %>
+                </div>
 
                 <%- include('../../partials/alert.ejs') %>
 

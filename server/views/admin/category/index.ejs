@@ -15,15 +15,24 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h1 class="h4 mb-md-0 text-gray-800">Category</h1>
-                    <% if(authorize(PERMISSION_CATEGORY_CREATE)) { %>
-                        <a href="/admin/category/create" class="btn btn-sm btn-primary shadow-sm">
-                            Create Category
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Category', url: '/admin/category'},
+                    ]}) %>
+                    <div>
+                        <a href="#modal-filter" data-toggle="modal" class="btn btn-warning btn-sm pr-2 pl-2">
+                            <i class="fas fa-sort-amount-down-alt" data-toggle="tooltip" data-title="Filter data"></i>
                         </a>
-                    <% } %>
+                        <a href="<%= `${_currentUrl}?${_query}&export=true` %>" class="btn btn-danger btn-sm pr-2 pl-2">
+                            <i class="fas fa-file-export" data-toggle="tooltip" data-title="Export data"></i>
+                        </a>
+                        <% if(authorize(PERMISSION_CATEGORY_CREATE)) { %>
+                            <a href="/admin/category/create" class="btn btn-sm btn-primary shadow-sm">
+                                Create Category
+                            </a>
+                        <% } %>
+                    </div>
                 </div>
-                <p class="mb-4">List of group hotels and apartment in Staycation platform.</p>
 
                 <%- include('../../partials/alert.ejs') %>
 
@@ -97,6 +106,7 @@
                 </div>
 
                 <%- include('../../partials/delete.ejs') %>
+                <%- include('_modal_filter.ejs') %>
             </div>
             <!-- /.container-fluid -->
 

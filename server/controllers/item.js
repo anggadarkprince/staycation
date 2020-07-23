@@ -1,10 +1,42 @@
 const createError = require('http-errors');
 const Item = require('../models/Item');
+const exporter = require('../modules/Exporter');
+const moment = require('moment');
 
 module.exports = {
     index: async (req, res) => {
-        const items = await Item.find();
-        res.render('admin/item/index', {title: 'Item', items});
+        const sortBy = req.query.sort_by || 'createdAt';
+        const sortMethod = Number(req.query.order_method) || -1;
+        const search = req.query.search;
+        const dateFrom = req.query.date_from;
+        const dateTo = req.query.date_to;
+        const isExported = req.query.export;
+
+        const items = await Item.find({
+            ...((dateFrom || dateTo) && {
+                createdAt: {
+                    ...(dateFrom && {$gte: new Date(dateFrom)}),
+                    ...(dateTo && {$lte: moment(dateTo).endOf('day').toDate()}),
+                }
+            }),
+            ...(search && {
+                $and: [{
+                    $or: [
+                        {title: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {city: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {country: {$regex: `.*${search}.*`, $options: 'i'}},
+                    ]
+                }]
+            }),
+        }).sort([[sortBy, sortMethod]]);
+
+        if (isExported) {
+            return res
+                .attachment('items.xlsx')
+                .send(exporter.toExcel('Items', items, ['title', 'city', 'country', 'price', 'createdAt', 'updatedAt']));
+        } else {
+            res.render('admin/item/index', {title: 'Item', items});
+        }
     },
     view: async (req, res, next) => {
         const id = req.params.id;

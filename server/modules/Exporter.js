@@ -15,27 +15,24 @@ module.exports = {
             }
         };
 
-        const heading = [];
-        if (headers) {
-            headers.forEach(header => {
-                heading.push({
-                    value: typeof header === 'object' ? header.value : header,
-                    style: styles.headerDark
-                });
-            });
+        const heading = headers || [];
+        if (!headers) {
+            for (const key in dataset[0]) {
+                heading.push(key);
+            }
         }
 
         const specifications = {};
-        for (const key in dataset[0]){
-            if(dataset[0].hasOwnProperty(key)) {
-                const label = key.replace( /([A-Z])/g, " $1" );
+        if (dataset.length) {
+            heading.forEach(key => {
+                const label = key.replace(/([A-Z])/g, " $1");
                 const finalLabel = label.charAt(0).toUpperCase() + label.slice(1);
                 specifications[key] = {
                     displayName: finalLabel.toUpperCase(),
                     headerStyle: styles.headerDark,
                     width: finalLabel.length * 13 // increase multiplier based font size
                 }
-            }
+            });
         }
 
         return excel.buildExport([
