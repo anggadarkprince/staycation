@@ -13,8 +13,11 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <!-- Page Heading -->
-                <h1 class="h4 mb-3 text-gray-800">My Account</h1>
+                <div class="mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Account', url: '/admin/account'},
+                    ]}) %>
+                </div>
 
                 <%- include('../../partials/alert.ejs') %>
 
@@ -64,7 +67,7 @@
                                     </div>
                                     <div class="card-body d-flex">
                                         <div class="d-flex flex-column align-self-center flex-sm-row align-items-center w-100 mb-2">
-                                            <div class="rounded mb-3 mb-sm-0 flex-shrink-0" style="height:135px; width: 135px; background: url('<%= account.avatar.replace(/\\/g, "/") %>') center center / cover"></div>
+                                            <div class="rounded mb-3 mb-sm-0 flex-shrink-0" style="height:135px; width: 135px; background: url('<%= (account.avatar || '').replace(/\\/g, "/") %>') center center / cover"></div>
                                             <div class="mr-lg-3 ml-sm-4 flex-fill" style="max-width: 500px">
                                                 <label for="avatar" class="d-none d-md-block">Select a photo</label>
                                                 <div class="custom-file">

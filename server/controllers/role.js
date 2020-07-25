@@ -8,6 +8,7 @@ module.exports = {
     index: async (req, res) => {
         const sortBy = req.query.sort_by || 'createdAt';
         const sortMethod = Number(req.query.order_method) || -1;
+        const search = req.query.search;
         const dateFrom = req.query.date_from;
         const dateTo = req.query.date_to;
         const isExported = req.query.export;
@@ -30,7 +31,15 @@ module.exports = {
                             ...(dateFrom && {$gte: new Date(dateFrom)}),
                             ...(dateTo && {$lte: moment(dateTo).endOf('day').toDate()}),
                         }
-                    })
+                    }),
+                    ...(search && {
+                        $and: [{
+                            $or: [
+                                {role: {$regex: `.*${search}.*`, $options: 'i'}},
+                                {description: {$regex: `.*${search}.*`, $options: 'i'}},
+                            ]
+                        }]
+                    }),
                 }
             },
             {$sort: {[sortBy]: sortMethod}},
@@ -48,7 +57,7 @@ module.exports = {
                 })
             });
             return res
-                .attachment('role.xlsx')
+                .attachment('roles.xlsx')
                 .send(exporter.toExcel('Roles', dataRoles));
         } else {
             res.render('admin/role/index', {roles, title: 'Role'});

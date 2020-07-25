@@ -1,10 +1,41 @@
 const createError = require('http-errors');
 const Category = require('../models/Category');
+const exporter = require('../modules/Exporter');
+const moment = require('moment');
 
 module.exports = {
     index: async (req, res) => {
-        const categories = await Category.find().sort([['_id', -1]]);
-        res.render('admin/category/index', {categories, title: 'Category'});
+        const sortBy = req.query.sort_by || 'createdAt';
+        const sortMethod = Number(req.query.order_method) || -1;
+        const search = req.query.search;
+        const dateFrom = req.query.date_from;
+        const dateTo = req.query.date_to;
+        const isExported = req.query.export;
+
+        const categories = await Category.find({
+            ...((dateFrom || dateTo) && {
+                createdAt: {
+                    ...(dateFrom && {$gte: new Date(dateFrom)}),
+                    ...(dateTo && {$lte: moment(dateTo).endOf('day').toDate()}),
+                }
+            }),
+            ...(search && {
+                $and: [{
+                    $or: [
+                        {category: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {description: {$regex: `.*${search}.*`, $options: 'i'}},
+                    ]
+                }]
+            }),
+        }).sort([[sortBy, sortMethod]]);
+
+        if (isExported) {
+            return res
+                .attachment('categories.xlsx')
+                .send(exporter.toExcel('Categories', categories, ['category', 'description', 'createdAt', 'updatedAt']));
+        } else {
+            res.render('admin/category/index', {categories, title: 'Category'});
+        }
     },
     view: async (req, res, next) => {
         const id = req.params.id;

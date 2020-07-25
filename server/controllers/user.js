@@ -1,14 +1,47 @@
 const createError = require('http-errors');
 const User = require('../models/User');
 const Role = require('../models/Role');
+const exporter = require('../modules/Exporter');
 const bcrypt = require('bcryptjs');
 const path = require("path");
 const fs = require("fs");
+const moment = require('moment');
 
 module.exports = {
     index: async (req, res) => {
-        const users = await User.find().sort([['_id', -1]]);
-        res.render('admin/user/index', {users, title: 'User'});
+        const sortBy = req.query.sort_by || 'createdAt';
+        const sortMethod = Number(req.query.order_method) || -1;
+        const search = req.query.search;
+        const dateFrom = req.query.date_from;
+        const dateTo = req.query.date_to;
+        const isExported = req.query.export;
+
+        const users = await User.find({
+            ...((dateFrom || dateTo) && {
+                createdAt: {
+                    ...(dateFrom && {$gte: new Date(dateFrom)}),
+                    ...(dateTo && {$lte: moment(dateTo).endOf('day').toDate()}),
+                }
+            }),
+            ...(search && {
+                $and: [{
+                    $or: [
+                        {name: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {username: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {email: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {status: {$regex: `.*${search}.*`, $options: 'i'}},
+                    ]
+                }]
+            }),
+        }).sort([[sortBy, sortMethod]]);
+
+        if (isExported) {
+            return res
+                .attachment('users.xlsx')
+                .send(exporter.toExcel('Users', users, ['name', 'username', 'email', 'status', 'createdAt', 'updatedAt']));
+        } else {
+            res.render('admin/user/index', {users, title: 'User'});
+        }
     },
     view: async (req, res, next) => {
         const id = req.params.id;

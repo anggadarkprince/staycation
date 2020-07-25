@@ -13,9 +13,12 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <h1 class="h4 mb-3 text-gray-800">View Bank</h1>
+                <div class="mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Bank', url: '/admin/bank'},
+                        {title: 'View', url: '/admin/bank/view/' + bank.id},
+                    ]}) %>
+                </div>
 
                 <%- include('../../partials/alert.ejs') %>
 

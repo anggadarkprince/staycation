@@ -1,13 +1,45 @@
 const Bank = require('../models/Bank');
+const exporter = require('../modules/Exporter');
+const moment = require('moment');
 const path = require("path");
 const fs = require("fs");
 const createError = require('http-errors');
-const {validationError} = require('../helpers/formatter');
 
 module.exports = {
     index: async (req, res) => {
-        const banks = await Bank.find().sort([['_id', -1]]);
-        res.render('admin/bank/index', {banks, title: 'Bank'});
+        const sortBy = req.query.sort_by || 'createdAt';
+        const sortMethod = Number(req.query.order_method) || -1;
+        const search = req.query.search;
+        const dateFrom = req.query.date_from;
+        const dateTo = req.query.date_to;
+        const isExported = req.query.export;
+
+        const banks = await Bank.find({
+            ...((dateFrom || dateTo) && {
+                createdAt: {
+                    ...(dateFrom && {$gte: new Date(dateFrom)}),
+                    ...(dateTo && {$lte: moment(dateTo).endOf('day').toDate()}),
+                }
+            }),
+            ...(search && {
+                $and: [{
+                    $or: [
+                        {bank: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {accountName: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {accountNumber: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {description: {$regex: `.*${search}.*`, $options: 'i'}},
+                    ]
+                }]
+            }),
+        }).sort([[sortBy, sortMethod]]);
+
+        if (isExported) {
+            return res
+                .attachment('banks.xlsx')
+                .send(exporter.toExcel('Banks', banks, ['bank', 'accountHolder', 'accountNumber', 'description', 'createdAt', 'updatedAt']));
+        } else {
+            res.render('admin/bank/index', {banks, title: 'Bank'});
+        }
     },
     view: async (req, res, next) => {
         const id = req.params.id;

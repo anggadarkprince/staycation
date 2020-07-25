@@ -15,13 +15,14 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h1 class="h4 mb-md-0 text-gray-800">Booking</h1>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Booking', url: '/admin/booking'},
+                    ]}) %>
                     <a href="/admin/booking/create" class="btn btn-sm btn-primary shadow-sm">
                         Create Booking
                     </a>
                 </div>
-                <p class="mb-4">Order request by customers.</p>
 
                 <!-- DataTales Example -->
                 <div class="card shadow border-0 mb-4">

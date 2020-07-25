@@ -13,9 +13,12 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <h1 class="h4 mb-3 text-gray-800">View log</h1>
+                <div class="mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Activity Log', url: '/admin/activity-loca'},
+                        {title: 'View', url: '/admin/activity-log/view/' + log.id},
+                    ]}) %>
+                </div>
 
                 <%- include('../../partials/alert.ejs') %>
 

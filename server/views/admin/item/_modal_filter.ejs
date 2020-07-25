@@ -21,9 +21,10 @@
 								<select class="custom-select" name="sort_by" id="sort_by" required>
 									<% const sortFields = {
                                         'createdAt': 'Created At',
-                                        'role': 'Role',
-                                        'description': 'Description',
-                                        'totalPermission': 'Total Permission',
+                                        'title': 'Title',
+                                        'location': 'Location',
+                                        'country': 'Country',
+                                        'price': 'Price',
                                     } %>
 									<% for (const sortKey in sortFields) { %>
 										<option value="<%= sortKey %>"<%= getUrlParam('sort_by') == sortKey ? ' selected' : '' %>>
@@ -38,10 +39,10 @@
                                 <label for="order_method">Order</label>
                                 <select class="custom-select" name="order_method" id="order_method" required>
                                     <option value="-1"<%= getUrlParam('order_method') == '-1' ? ' selected' : '' %>>
-                                        DESCENDING
+                                        Descending
                                     </option>
                                     <option value="1"<%= getUrlParam('order_method') == '1' ? ' selected' : '' %>>
-                                        ASCENDING
+                                        Ascending
                                     </option>
                                 </select>
                             </div>
