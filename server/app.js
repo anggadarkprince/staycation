@@ -53,7 +53,7 @@ const Auth = require('./modules/Auth');
 const permissions = require('./config/permissions');
 
 const app = express();
-app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
+app.use(favicon(path.join(__dirname, 'public', 'dist/img/favicon.png')));
 app.use(helmet());
 
 // view engine setup
@@ -144,6 +144,7 @@ app.use((req, res, next) => {
     res.locals._flashDanger = req.flash('danger');
     res.locals._old = req.flash('old')[0] || {};
     res.locals._isAuthenticated = req.session.isLoggedIn;
+    res.locals._assetsPath = require('./public/dist/manifest.json');
     res.locals = {...res.locals, ...permissions};
 
     // attach helper function to the view
