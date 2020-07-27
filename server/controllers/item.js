@@ -1,7 +1,10 @@
 const createError = require('http-errors');
 const Item = require('../models/Item');
+const Image = require('../models/Image');
 const exporter = require('../modules/Exporter');
 const moment = require('moment');
+const path = require("path");
+const fs = require("fs");
 
 module.exports = {
     index: async (req, res) => {
@@ -41,7 +44,9 @@ module.exports = {
     view: async (req, res, next) => {
         const id = req.params.id;
         try {
-            const item = await Item.findOne({_id: id});
+            const item = await Item.findOne({_id: id}).populate('imageId');
+            console.log('aaa');
+            console.log(item);
             res.render('admin/item/view', {title: `View item ${item.title}`, item});
         } catch (err) {
             next(createError(404))
@@ -51,11 +56,32 @@ module.exports = {
         res.render('admin/item/create', {title: 'Create Item'});
     },
     save: async (req, res) => {
-        const {title, price, country, city, is_popular: isPopular, description} = req.body;
+        const {title, price, country, city, is_popular: isPopular, description, input_photos: photos, is_primary_photo: primaryPhoto} = req.body;
         try {
-            await Item.create({title, price, country, city, isPopular, description});
-            req.flash('success', `Item ${title} successfully created`);
-            res.redirect('/admin/item');
+            const photoId = photos.map(async photo => {
+                const year = (new Date()).getFullYear().toString();
+                const month = ((new Date()).getMonth() + 1).toString();
+                const oldPath = `uploads/temp/${photo}`;
+                const newPath = `uploads/${year}/${month}/${photo}`;
+                fs.copyFileSync(oldPath, newPath);
+                const image = await Image.create({
+                    imageUrl: path.join('/', newPath),
+                    fileName: photo,
+                    isPrimary: photo === primaryPhoto
+                });
+                return image._id;
+            });
+            Promise.all(photoId)
+                .then(async photoId => {
+                    await Item.create({
+                        title, price, country, city, isPopular, description,
+                        imageId: photoId
+                    });
+                    req.flash('success', `Item ${title} successfully created`);
+                    res.redirect('/admin/item');
+                })
+                .catch(console.log);
+
         } catch (err) {
             req.flash('old', req.body);
             req.flash('danger', `Save item ${title} failed, try again later`);

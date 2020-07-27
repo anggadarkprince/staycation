@@ -14,7 +14,7 @@ const storageMultiple = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
     }
-})
+});
 
 const uploadMultiple = multer({
     storage: storageMultiple,
@@ -45,7 +45,23 @@ const upload = multer({
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     }
-}).single("image");
+});
+
+const uploadTemp = multer({
+    storage: multer.diskStorage({
+        destination: (req, file, callback) => {
+            const dir = 'uploads/temp';
+            fs.mkdir(dir, {recursive: true}, err => callback(err, dir));
+        },
+        filename: function (req, file, cb) {
+            cb(null, Date.now() + path.extname(file.originalname));
+        }
+    }),
+    limits: { fileSize: 1000000 },
+    fileFilter: function (req, file, cb) {
+        checkFileType(file, cb);
+    }
+});
 
 // // Check file Type
 function checkFileType(file, cb) {
@@ -64,4 +80,4 @@ function checkFileType(file, cb) {
     }
 }
 
-module.exports = { uploadMultiple, upload };
+module.exports = { uploadMultiple, upload, uploadTemp };

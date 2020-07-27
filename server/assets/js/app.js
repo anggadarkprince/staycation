@@ -27,6 +27,10 @@ try {
     require('./scripts/delete');
     require('./scripts/date-picker');
     require('./scripts/misc');
+
+    if ($('#document-uploader').length) {
+        import("./pages/upload-photo").then(uploadPhoto => uploadPhoto.default());
+    }
 } catch (e) {
     console.log(e);
 }

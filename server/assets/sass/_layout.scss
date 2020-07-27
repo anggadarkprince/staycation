@@ -1,0 +1,15 @@
+body {
+  color: #6a6c79;
+}
+
+.sidebar .nav-item .nav-link {
+  padding: 0.4rem 1rem;
+}
+
+.sidebar .nav-item + .sidebar-heading {
+  margin-top: 15px;
+}
+
+.sidebar .nav-item.active .nav-link {
+  font-weight: 600;
+}

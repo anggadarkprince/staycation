@@ -86,6 +86,55 @@
                         </div>
 
                         <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Item Photo</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="document-uploader">
+                                    <div class="row" id="uploaded-file">
+                                        <% (_old.input_photos || []).forEach(function (photo, index) { %>
+                                            <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3 uploaded-item">
+                                                <div class="card w-100 border border-primary">
+                                                    <a href="<%= photo %>" class="upload-file-preview-link" target="_blank">
+                                                        <div class="card-img-top upload-file-preview" style="height: 200px; background: url('/uploads/temp/<%= photo %>') center center / cover no-repeat"></div>
+                                                    </a>
+                                                    <div class="card-body">
+                                                        <div id="progress" class="progress progress-upload" style="width: 100%">
+                                                            <div class="progress-bar progress-bar-danger progress-bar-success progress-bar-striped" style="width: 100%"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                                        <input type="hidden" name="input_photos[]" value="<%= photo %>" class="input-uploaded-file">
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" id="is_primary_<%= index %>" name="is_primary_photo" value="<%= photo %>" <%= (_old.is_primary_photo || '') == photo ? 'checked' : '' %> class="custom-control-input btn-defer-upload input-primary">
+                                                            <label class="custom-control-label label-primary" for="is_primary_<%= index %>">Primary Photo</label>
+                                                        </div>
+                                                        <button class="btn btn-danger btn-sm ml-2 btn-delete-file">
+                                                            CANCEL
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% }) %>
+                                        <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3" id="file-chooser">
+                                            <div class="card w-100 rounded" style="min-height: 310px; border: 2px dashed #aaaaaa">
+                                                <input id="input-file" type="file" multiple name="input_files" accept="image/*" class="d-none">
+                                                <label class="card-body mb-0 d-flex align-items-center justify-content-center cursor-pointer" for="input-file">
+                                                    <div class="text-center d-flex flex-column">
+                                                        <i class="fas fa-image mr-2 display-4"></i>
+                                                        <h4>Choose file</h4>
+                                                        <small class="text-fade">You can select multiple files</small>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
                             <div class="card-body d-flex justify-content-between">
                                 <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
                                 <button type="submit" class="btn btn-success" data-toggle="one-touch">Save Item</button>
@@ -107,5 +156,30 @@
 
 </div>
 <!-- End of Page Wrapper -->
+
+<script id="upload-item-template" type="text/x-custom-template">
+    <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3 uploaded-item">
+        <div class="card w-100 border border-primary">
+            <a href="#" class="upload-file-preview-link" target="_blank">
+                <div class="card-img-top upload-file-preview" style="height: 200px"></div>
+            </a>
+            <div class="card-body">
+                <div id="progress" class="progress progress-upload" style="width: 100%">
+                    <div class="progress-bar progress-bar-danger progress-bar-success progress-bar-striped"></div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <input type="hidden" name="input_photos[]" value="" class="input-uploaded-file">
+                <div class="custom-control custom-radio">
+                    <input type="radio" id="is_primary" name="is_primary_photo" value="" class="custom-control-input btn-defer-upload input-primary">
+                    <label class="custom-control-label label-primary" for="is_primary">Primary Photo</label>
+                </div>
+                <button class="btn btn-warning btn-sm ml-2 btn-delete-file">
+                    CANCEL
+                </button>
+            </div>
+        </div>
+    </div>
+</script>
 
 <%- include('../../partials/js.ejs') %>
