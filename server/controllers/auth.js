@@ -123,8 +123,13 @@ module.exports = {
                 };
 
                 sendMail(mailOptions, function (err, info) {
-                    req.flash('success', 'You are registered, check your email!');
-                    res.redirect('/auth/login');
+                    if (err) {
+                        req.flash('success', 'You are registered, check your email!');
+                        res.redirect('/auth/login');
+                    } else {
+                        req.flash('success', 'You are registered, check your email!');
+                        res.redirect('back');
+                    }
                 });
             })
             .catch((err) => {
