@@ -13,6 +13,7 @@
             </div>
             <div class="modal-footer border-top-0">
                 <form action="/auth/logout" method="post">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
                     <fieldset>
                         <button class="btn btn-light" type="button" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-danger px-4">Logout</button>
@@ -28,27 +29,9 @@
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- Bootstrap core JavaScript-->
-<script src="/theme/vendor/jquery/jquery.min.js"></script>
-<script src="/theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.min.js"></script>
-<script src="/theme/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="/theme/js/sb-admin-2.min.js"></script>
-
-<!-- Page level plugins -->
-<script src="/theme/vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="/theme/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="/theme/js/demo/datatables-demo.js"></script>
-<script src="/js/app.js"></script>
+<script src="/<%= _assetsPath['runtime.js'] %>"></script>
+<script src="/<%= _assetsPath['vendors.js'] %>"></script>
+<script src="/<%= _assetsPath['app.js'] %>"></script>
 
 </body>
 

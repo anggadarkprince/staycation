@@ -11,7 +11,7 @@ try {
 
     // loading library core
     require('bootstrap');
-    require('jquery.easing')(jQuery);
+    require('jquery.easing');
     require('jquery-validation');
     window.moment = require('moment');
     require('daterangepicker');

@@ -103,10 +103,6 @@ if (process.env.NODE_ENV !== 'production') {
     }));
 }
 
-// Add router api before middleware csrf
-const csrfProtection = csrf({sessionKey: 'session'});
-app.use(csrfProtection);
-
 app.use(useragent.express());
 
 // populate user data to request and local data
@@ -138,7 +134,7 @@ app.use((req, res, next) => {
     res.locals._query = req._parsedUrl.query || '';
     res.locals._currentUrl = `${res.locals._baseUrl}${res.locals._path}`;
     res.locals._currentFullUrl = `${res.locals._baseUrl}${res.locals._path}?${res.locals._query}`;
-    res.locals._csrfToken = req.csrfToken();
+    res.locals._csrfToken = ''; // we add after this middleware, for now empty string
     res.locals._flashSuccess = req.flash('success');
     res.locals._flashWarning = req.flash('warning');
     res.locals._flashDanger = req.flash('danger');
@@ -175,6 +171,14 @@ app.use(methodOverride(function (req, res) {
         return method;
     }
 }));
+
+// Add router api before middleware csrf
+const csrfProtection = csrf({sessionKey: 'session'});
+app.use(csrfProtection);
+app.use((req, res, next) => {
+    res.locals._csrfToken = req.csrfToken();
+    next();
+});
 
 // add app high level router
 const mustAuthenticated = require('./middleware/mustAuthenticated');
