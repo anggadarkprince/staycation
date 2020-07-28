@@ -43,6 +43,6 @@ const itemSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Activity',
     }],
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model('Item', itemSchema);

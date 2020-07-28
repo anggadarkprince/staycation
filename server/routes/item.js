@@ -12,5 +12,6 @@ router.post('/save', authorization.isAuthorized(permissions.PERMISSION_ITEM_CREA
 router.get('/edit/:id', authorization.isAuthorized(permissions.PERMISSION_ITEM_EDIT), item.edit);
 router.post('/update/:id', authorization.isAuthorized(permissions.PERMISSION_ITEM_EDIT), upload.single("image"), item.update);
 router.delete('/delete/:id', authorization.isAuthorized(permissions.PERMISSION_ITEM_DELETE), item.delete);
+router.delete('/delete-image/:id', authorization.isAuthorized(permissions.PERMISSION_ITEM_EDIT), item.deleteImage);
 
 module.exports = router;

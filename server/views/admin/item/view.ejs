@@ -13,9 +13,12 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <h1 class="h4 mb-3 text-gray-800">View Item</h1>
+                <div class="mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Item', url: '/admin/item'},
+                        {title: 'View', url: '/admin/item/view/' + item.id},
+                    ]}) %>
+                </div>
 
                 <%- include('../../partials/alert.ejs') %>
 
@@ -88,27 +91,25 @@
 
                 <div class="card shadow border-0 mb-4">
                     <div class="card-body">
-                        <div class="form-group mb-2 mb-md-0 row">
-                            <p class="col-sm-3 col-md-2 col-form-label pb-0 font-weight-bold">Description</p>
-                            <div class="col-sm-9 col-md-10">
-                                <p class="form-control-plaintext">
-                                    <%= item.description || 'No description' %>
-                                </p>
-                            </div>
-                        </div>
+                        <p class="mb-2 font-weight-bold">Description</p>
+                        <%= item.description || 'No description' %>
                     </div>
                 </div>
 
-                <div class="card shadow border-0 mb-4">
-                    <div class="card-body">
-                        <div class="row">
-                            <% item.imageId.forEach(image => { %>
-                                <div class="col-md-4">
-                                    <img class="img-fluid rounded" src="<%= image.imageUrl %>" alt="<%= image.fileName %>">
+                <div class="row">
+                    <% item.imageId.forEach(image => { %>
+                        <div class="col-md-4">
+                            <div class="card shadow border-0 mb-4">
+                                <div class="card-body">
+                                    <div class="position-relative rounded" style="height: 200px; background: url('<%= image.imageUrl.replace(/\\/g, "/") %>') center center / cover no-repeat">
+                                        <% if(image.isPrimary) { %>
+                                            <span class="position-absolute bg-danger text-white rounded-bottom py-1 px-3" style="right: 0; top: 0">PRIMARY</span>
+                                        <% } %>
+                                    </div>
                                 </div>
-                            <% }) %>
+                            </div>
                         </div>
-                    </div>
+                    <% }) %>
                 </div>
 
                 <div class="card shadow border-0 mb-4">

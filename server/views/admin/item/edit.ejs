@@ -13,9 +13,12 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <h1 class="h3 mb-3 text-gray-800">Edit Item</h1>
+                <div class="mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Item', url: '/admin/item'},
+                        {title: 'Edit', url: '/admin/item/edit/' + item.id},
+                    ]}) %>
+                </div>
 
                 <%- include('../../partials/alert.ejs') %>
 
@@ -87,6 +90,57 @@
                         </div>
 
                         <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Item Photo</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="document-uploader">
+                                    <div class="row" id="uploaded-file">
+                                        <% (_old.input_photos || item.imageId).forEach(function (photo, index) { %>
+                                            <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3 uploaded-item">
+                                                <div class="card w-100 border border-primary">
+                                                    <a href="<%= photo.imageUrl ? photo.imageUrl.replace(/\\/g, "/") : ('/uploads/temp/' + photo) %>" class="upload-file-preview-link" target="_blank">
+                                                        <div class="card-img-top upload-file-preview" style="height: 200px; background: url('<%= photo.imageUrl ? photo.imageUrl.replace(/\\/g, "/") : ('/uploads/temp/' + photo) %>') center center / cover no-repeat"></div>
+                                                    </a>
+                                                    <div class="card-body">
+                                                        <div id="progress" class="progress progress-upload" style="width: 100%">
+                                                            <div class="progress-bar progress-bar-danger progress-bar-success progress-bar-striped" style="width: 100%">UPLOADED</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                                        <input type="hidden" name="input_photos[<%= index %>][_id]" value="<%= (photo._id || '') %>" class="input-uploaded-file">
+                                                        <input type="hidden" name="input_photos[<%= index %>][fileName]" value="<%= photo.fileName || photo %>" class="input-uploaded-file">
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" id="is_primary_<%= index %>" name="is_primary_photo" value="<%= photo.fileName || photo %>" <%= (photo.isPrimary ? photo.isPrimary : (_old.is_primary_photo || '') == photo) ? 'checked' : '' %> class="custom-control-input btn-defer-upload input-primary">
+                                                            <label class="custom-control-label label-primary" for="is_primary_<%= index %>">Primary Photo</label>
+                                                        </div>
+                                                        <button type="button" class="btn btn-danger btn-sm ml-2 <%= photo._id ? 'btn-delete-uploaded-file' : 'btn-delete-file' %>"
+                                                                data-url="<%= photo._id ? `/admin/item/delete-image/${photo._id}` : '/upload/delete-temp' %>">
+                                                            DELETE
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% }) %>
+                                        <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3" id="file-chooser">
+                                            <div class="card w-100 rounded" style="min-height: 310px; border: 2px dashed #aaaaaa">
+                                                <input id="input-file" type="file" multiple name="input_files" accept="image/*" class="d-none">
+                                                <label class="card-body mb-0 d-flex align-items-center justify-content-center cursor-pointer" for="input-file">
+                                                    <div class="text-center d-flex flex-column">
+                                                        <i class="fas fa-image mr-2 display-4"></i>
+                                                        <h4>Choose file</h4>
+                                                        <small class="text-fade">You can select multiple files</small>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
                             <div class="card-body d-flex justify-content-between">
                                 <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
                                 <button type="submit" class="btn btn-primary" data-toggle="one-touch">Save Update</button>
@@ -109,4 +163,6 @@
 </div>
 <!-- End of Page Wrapper -->
 
+<%- include('_template_item.ejs') %>
+<%- include('../../partials/confirm.ejs') %>
 <%- include('../../partials/js.ejs') %>

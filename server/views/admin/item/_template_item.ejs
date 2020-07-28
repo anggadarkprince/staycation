@@ -1,0 +1,24 @@
+<script id="upload-item-template" type="text/x-custom-template">
+    <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3 uploaded-item">
+        <div class="card w-100 border border-primary">
+            <a href="#" class="upload-file-preview-link" target="_blank">
+                <div class="card-img-top upload-file-preview" style="height: 200px"></div>
+            </a>
+            <div class="card-body">
+                <div id="progress" class="progress progress-upload" style="width: 100%">
+                    <div class="progress-bar progress-bar-danger progress-bar-success progress-bar-striped"></div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <input type="hidden" name="input_photos[]" value="" class="input-uploaded-file">
+                <div class="custom-control custom-radio">
+                    <input type="radio" id="is_primary" name="is_primary_photo" value="" class="custom-control-input btn-defer-upload input-primary">
+                    <label class="custom-control-label label-primary" for="is_primary">Primary Photo</label>
+                </div>
+                <button type="button" class="btn btn-warning btn-sm ml-2 btn-delete-file">
+                    CANCEL
+                </button>
+            </div>
+        </div>
+    </div>
+</script>

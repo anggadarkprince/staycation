@@ -20,17 +20,17 @@ export default function () {
     /**
      * Delete uploaded file (persisted to database)
      */
-    const uploadedOldFile = $('#uploaded-old-file');
     const modalConfirm = $('#modal-confirm');
     modalConfirm.find('.modal-title').text('Delete File');
     let activeUploadedItem = null;
 
-    uploadedOldFile.on('click', '.btn-delete-uploaded-file', function (e) {
+    documentUploader.on('click', '.btn-delete-uploaded-file', function (e) {
         e.preventDefault();
 
         activeUploadedItem = $(this).closest('.uploaded-item');
-        modalConfirm.find('.modal-message').html(`Are you sure want to delete uploaded file <strong>${$(this).data('file').replace(/_/g, ' ')}</strong>?`);
-        modalConfirm.find('#btn-yes').data('url', $(this).prop('href'));
+        const fileName = activeUploadedItem.find('.input-uploaded-file').val().replace(/_/g, ' ');
+        modalConfirm.find('.modal-message').html(`Are you sure want to delete uploaded file <strong>${fileName}</strong>?`);
+        modalConfirm.find('#btn-yes').data('url', $(this).data('url'));
 
         modalConfirm.modal({
             backdrop: 'static',
@@ -44,11 +44,15 @@ export default function () {
         $.ajax({
             url: $(this).data('url'),
             type: 'POST',
+            data: {_method: 'delete'},
             accepts: {text: "application/json"},
             success: function (data) {
                 buttonYes.prop('disabled', false).text('YES');
                 if (data || data.status) {
                     modalConfirm.modal('hide');
+                    if (activeUploadedItem.find('.input-primary').is(':checked')) {
+                        uploadedFile.find('.uploaded-item').not(activeUploadedItem).first().find('.input-primary').prop('checked', true);
+                    }
                     activeUploadedItem.remove();
                 } else {
                     alert('Failed delete uploaded file');
@@ -133,6 +137,14 @@ export default function () {
                 context.find('.card-img-top').prop('alt', photo.originalName);
                 context.find('.input-primary').val(photo.fileName);
                 context.find('.input-uploaded-file').val(photo.fileName);
+
+                $('.uploaded-item').each(function (index) {
+                    $(this).find('.input-uploaded-file').each(function () {
+                        const pattern = new RegExp("input_photos[([0-9]*\\)?]", "i");
+                        const attributeName = $(this).attr('name').replace(pattern, 'input_photos[' + index + ']');
+                        $(this).attr('name', attributeName);
+                    });
+                });
             } else {
                 $(context).find('.upload-file-name').html($(result.error).addClass('text-danger'));
             }
@@ -169,7 +181,6 @@ export default function () {
                 accepts: {text: "application/json"},
                 success: function (data) {
                     if (data || data.status) {
-                        console.log(uploadedItem.find('.input-primary').is(':checked'));
                         if (uploadedItem.find('.input-primary').is(':checked')) {
                             uploadedFile.find('.uploaded-item').not(uploadedItem).first().find('.input-primary').prop('checked', true);
                         }
@@ -178,6 +189,7 @@ export default function () {
                         buttonDelete.prop('disabled', false).text('DELETE');
                         alert('Failed delete uploaded file');
                     }
+                    $('.btn-defer-upload').prop('disabled', false);
                 },
                 error: function (xhr, status, error) {
                     buttonDelete.prop('disabled', false).text('DELETE');

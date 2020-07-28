@@ -13,9 +13,12 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-                <!-- Page Heading -->
-                <h1 class="h3 mb-3 text-gray-800">Create Item</h1>
+                <div class="mb-3">
+                    <%- include('../../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Item', url: '/admin/item'},
+                        {title: 'Create', url: '/admin/item/create'},
+                    ]}) %>
+                </div>
 
                 <%- include('../../partials/alert.ejs') %>
 
@@ -95,12 +98,12 @@
                                         <% (_old.input_photos || []).forEach(function (photo, index) { %>
                                             <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3 uploaded-item">
                                                 <div class="card w-100 border border-primary">
-                                                    <a href="<%= photo %>" class="upload-file-preview-link" target="_blank">
+                                                    <a href="/uploads/temp/<%= photo %>" class="upload-file-preview-link" target="_blank">
                                                         <div class="card-img-top upload-file-preview" style="height: 200px; background: url('/uploads/temp/<%= photo %>') center center / cover no-repeat"></div>
                                                     </a>
                                                     <div class="card-body">
                                                         <div id="progress" class="progress progress-upload" style="width: 100%">
-                                                            <div class="progress-bar progress-bar-danger progress-bar-success progress-bar-striped" style="width: 100%"></div>
+                                                            <div class="progress-bar progress-bar-danger progress-bar-success progress-bar-striped" style="width: 100%">UPLOADED</div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer d-flex align-items-center justify-content-between">
@@ -109,8 +112,8 @@
                                                             <input type="radio" id="is_primary_<%= index %>" name="is_primary_photo" value="<%= photo %>" <%= (_old.is_primary_photo || '') == photo ? 'checked' : '' %> class="custom-control-input btn-defer-upload input-primary">
                                                             <label class="custom-control-label label-primary" for="is_primary_<%= index %>">Primary Photo</label>
                                                         </div>
-                                                        <button class="btn btn-danger btn-sm ml-2 btn-delete-file">
-                                                            CANCEL
+                                                        <button type="button" class="btn btn-danger btn-sm ml-2 btn-delete-file">
+                                                            DELETE
                                                         </button>
                                                     </div>
                                                 </div>
@@ -157,29 +160,5 @@
 </div>
 <!-- End of Page Wrapper -->
 
-<script id="upload-item-template" type="text/x-custom-template">
-    <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3 uploaded-item">
-        <div class="card w-100 border border-primary">
-            <a href="#" class="upload-file-preview-link" target="_blank">
-                <div class="card-img-top upload-file-preview" style="height: 200px"></div>
-            </a>
-            <div class="card-body">
-                <div id="progress" class="progress progress-upload" style="width: 100%">
-                    <div class="progress-bar progress-bar-danger progress-bar-success progress-bar-striped"></div>
-                </div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between">
-                <input type="hidden" name="input_photos[]" value="" class="input-uploaded-file">
-                <div class="custom-control custom-radio">
-                    <input type="radio" id="is_primary" name="is_primary_photo" value="" class="custom-control-input btn-defer-upload input-primary">
-                    <label class="custom-control-label label-primary" for="is_primary">Primary Photo</label>
-                </div>
-                <button class="btn btn-warning btn-sm ml-2 btn-delete-file">
-                    CANCEL
-                </button>
-            </div>
-        </div>
-    </div>
-</script>
-
+<%- include('_template_item.ejs') %>
 <%- include('../../partials/js.ejs') %>

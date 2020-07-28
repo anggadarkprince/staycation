@@ -45,8 +45,6 @@ module.exports = {
         const id = req.params.id;
         try {
             const item = await Item.findOne({_id: id}).populate('imageId');
-            console.log('aaa');
-            console.log(item);
             res.render('admin/item/view', {title: `View item ${item.title}`, item});
         } catch (err) {
             next(createError(404))
@@ -58,7 +56,7 @@ module.exports = {
     save: async (req, res) => {
         const {title, price, country, city, is_popular: isPopular, description, input_photos: photos, is_primary_photo: primaryPhoto} = req.body;
         try {
-            const photoId = photos.map(async photo => {
+            const photoId = (photos || []).map(async photo => {
                 const year = (new Date()).getFullYear().toString();
                 const month = ((new Date()).getMonth() + 1).toString();
                 const oldPath = `uploads/temp/${photo}`;
@@ -75,7 +73,7 @@ module.exports = {
                 .then(async photoId => {
                     await Item.create({
                         title, price, country, city, isPopular, description,
-                        imageId: photoId
+                        imageId: photoId || []
                     });
                     req.flash('success', `Item ${title} successfully created`);
                     res.redirect('/admin/item');
@@ -83,6 +81,7 @@ module.exports = {
                 .catch(console.log);
 
         } catch (err) {
+            console.log(err);
             req.flash('old', req.body);
             req.flash('danger', `Save item ${title} failed, try again later`);
             res.redirect('back');
@@ -90,26 +89,51 @@ module.exports = {
     },
     edit: async (req, res) => {
         const id = req.params.id;
-        const item = await Item.findOne({_id: id});
+        const item = await Item.findOne({_id: id}).populate('imageId');
 
         res.render('admin/item/edit', {title: `Edit item ${item.title}`, item});
     },
     update: async (req, res) => {
         const id = req.params.id;
-        const {title, price, country, city, is_popular: isPopular, description} = req.body;
+        const {title, price, country, city, is_popular: isPopular, description, input_photos: photos, is_primary_photo: primaryPhoto} = req.body;
 
         try {
-            const result = await Item.findOne({_id: id});
-            result.title = title;
-            result.price = price;
-            result.country = country;
-            result.city = city;
-            result.isPopular = isPopular;
-            result.description = description;
-            result.save();
+            const photoId = (photos || []).map(async photo => {
+                if (!photo._id) {
+                    const year = (new Date()).getFullYear().toString();
+                    const month = ((new Date()).getMonth() + 1).toString();
+                    const oldPath = `uploads/temp/${photo}`;
+                    const newPath = `uploads/${year}/${month}/${photo}`;
+                    fs.copyFileSync(oldPath, newPath);
+                    const image = await Image.create({
+                        imageUrl: path.join('/', newPath),
+                        fileName: photo,
+                        isPrimary: photo === primaryPhoto
+                    });
+                    return image._id;
+                } else {
+                    const existingImage = await Image.findOne({_id: photo._id});
+                    existingImage.isPrimary = existingImage.fileName === primaryPhoto;
+                    existingImage.save();
+                    return photo._id;
+                }
+            });
+            Promise.all(photoId)
+                .then(async photoId => {
+                    const result = await Item.findOne({_id: id});
+                    result.title = title;
+                    result.price = price;
+                    result.country = country;
+                    result.city = city;
+                    result.isPopular = isPopular;
+                    result.description = description;
+                    result.imageId = photoId;
+                    result.save();
 
-            req.flash('success', `Item ${title} successfully updated`);
-            return res.redirect('/admin/item');
+                    req.flash('success', `Item ${title} successfully updated`);
+                    return res.redirect('/admin/item');
+                })
+                .catch(console.log);
         }
         catch (err) {
             req.flash('old', req.body);
@@ -130,6 +154,31 @@ module.exports = {
         catch (err) {
             req.flash('danger', `Delete item failed, try again later`);
             res.redirect('back');
+        }
+    },
+    deleteImage: async (req, res) => {
+        const id = req.params.id;
+
+        try {
+            const result = await Image.findOne({_id: id});
+            result.remove();
+
+            await fs.unlink(result.imageUrl.replace(/^(\\)/, ''), function (err) {
+                if (!err) {
+                    return res.json({status: 'success'});
+                } else {
+                    return res.json({
+                        status: 'error',
+                        error: 'File cannot deleted',
+                    });
+                }
+            });
+        }
+        catch (err) {
+            return res.json({
+                status: 'error',
+                error: err.message
+            });
         }
     },
 };
