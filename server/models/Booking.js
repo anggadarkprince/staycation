@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const {ObjectId} = mongoose.Schema;
 
 const bookingSchema = new mongoose.Schema({
+    transactionNumber: {
+        type: String,
+        required: true,
+    },
     bookingStartDate: {
         type: Date,
         required: true,
@@ -10,7 +14,7 @@ const bookingSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    itemId: [{
+    itemId: {
         _id: {
             type: ObjectId,
             ref: 'Item',
@@ -24,18 +28,22 @@ const bookingSchema = new mongoose.Schema({
             type: Number,
             required: true,
         }
-    }],
-    memberId: {
-        type: ObjectId,
-        ref: 'Member',
     },
-    bankId: [{
+    userId: {
+        type: ObjectId,
+        ref: 'User',
+    },
+    bankId: {
         type: ObjectId,
         ref: 'Bank',
-    }],
+    },
     proofPayment: {
         type: String,
         required: true,
+    },
+    paymentMethod: {
+        type: String,
+        default: 'BANK TRANSFER',
     },
     bank: {
         type: String,
@@ -53,6 +61,6 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true,
     }
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model('Booking', bookingSchema);

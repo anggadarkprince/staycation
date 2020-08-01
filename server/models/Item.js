@@ -31,6 +31,10 @@ const itemSchema = new mongoose.Schema({
         required: [true, 'Description required'],
         maxlength: [5000, 'Description maximum 5000 characters'],
     },
+    categoryId: {
+        type: ObjectId,
+        ref: 'Category',
+    },
     imageId: [{
         type: ObjectId,
         ref: 'Image',
