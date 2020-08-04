@@ -5,3 +5,60 @@
 .text-muted {
   color: #a2a4b0 !important;
 }
+
+.text-editor-wrapper {
+  .toolbar {
+    border: none;
+  }
+
+  .text-editor {
+    border: none;
+  }
+
+  .ql-toolbar {
+    .ql-picker.ql-header {
+      width: 110px;
+    }
+  }
+
+  .ql-editor {
+    font-size: 1.2em;
+    font-family: Nunito, sans-serif;
+
+    &.ql-blank::before {
+      font-style: normal;
+      color: rgba(0, 0, 0, 0.4);
+    }
+
+    .ql-tooltip {
+      position: static;
+      border: none;
+      box-shadow: 0 0 15px #dfdfdf;
+    }
+
+    ol, ul {
+      padding-left: 0;
+      margin-bottom: 1rem;
+    }
+
+    h1, h2, h3, h4 {
+      margin-bottom: .5rem;
+    }
+
+    h2 {
+      font-size: 1.5em;
+    }
+
+    h4 {
+      font-size: 1.2em;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.ql-align-justify {
+  text-align: justify;
+}

@@ -46,6 +46,7 @@
                             <tr>
                                 <th style="width: 35px">No</th>
                                 <th>Title</th>
+                                <th>Category</th>
                                 <th>Location</th>
                                 <th>Price</th>
                                 <th class="text-md-right" style="max-width: 80px">Action</th>
@@ -56,6 +57,7 @@
                                 <tr>
                                     <td><%= i + 1 %></td>
                                     <td><%= item.title %></td>
+                                    <td><%= item.categoryId.category %></td>
                                     <td><%= item.city %>, <%= item.country %></td>
                                     <td><%= numberFormat(item.price, 'IDR ') %></td>
                                     <td class="text-md-right">

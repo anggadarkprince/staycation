@@ -15,6 +15,15 @@ export default function () {
     documentUploader.sortable({
         items: ".uploaded-item",
         handle: ".upload-file-preview-link",
+        stop: function () {
+            documentUploader.find('.uploaded-item').each(function (index) {
+                $(this).find('.input-uploaded-file').each(function () {
+                    const pattern = new RegExp("input_photos[([0-9]*\\)?]", "i");
+                    const attributeName = $(this).attr('name').replace(pattern, 'input_photos[' + index + ']');
+                    $(this).attr('name', attributeName);
+                });
+            });
+        }
     });
 
     /**

@@ -24,50 +24,42 @@
 
                 <div class="card shadow border-0 mb-4">
                     <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <h3 class="mb-0 font-weight-bold text-primary"><%= item.title %></h3>
+                                <p class="mb-0"><%= item.categoryId.category %> - <%= item.city %>, <%= item.country %></p>
+                            </div>
+                            <div class="text-md-right">
+                                <h5 class="font-weight-bold mb-1"><%= numberFormat(item.price, 'IDR ') %> / night</h5>
+                                <p class="mb-0"><%= item.isPopular ? 'Popular' : 'Regular' %></p>
+                            </div>
+                        </div>
+
+                        <div class="form-row mb-3">
+                            <% item.imageId.forEach(image => { %>
+                                <div class="col-md-4 mb-2">
+                                    <a href="<%= image.imageUrl %>" class="stretched-link">
+                                        <div class="position-relative rounded" style="height: 200px; background: url('<%= image.imageUrl.replace(/\\/g, "/") %>') center center / cover no-repeat">
+                                            <% if(image.isPrimary) { %>
+                                                <span class="small position-absolute bg-danger text-white rounded-bottom py-1 px-3" style="right: 0; top: 0; opacity: .92">PRIMARY</span>
+                                            <% } %>
+                                        </div>
+                                    </a>
+                                </div>
+                            <% }) %>
+                        </div>
+
+                        <div>
+                            <p class="mb-2 font-weight-bold">Description</p>
+                            <%- item.description || 'No description' %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group mb-2 mb-md-0 row">
-                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Title</p>
-                                    <div class="col-sm-9">
-                                        <p class="form-control-plaintext">
-                                            <%= item.title %>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-2 mb-md-0 row">
-                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">City</p>
-                                    <div class="col-sm-9">
-                                        <p class="form-control-plaintext">
-                                            <%= item.city %>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-2 mb-md-0 row">
-                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Country</p>
-                                    <div class="col-sm-9">
-                                        <p class="form-control-plaintext">
-                                            <%= item.country %>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-2 mb-md-0 row">
-                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Price</p>
-                                    <div class="col-sm-9">
-                                        <p class="form-control-plaintext">
-                                            <%= numberFormat(item.price, 'IDR ') %>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-2 mb-md-0 row">
-                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Is Popular</p>
-                                    <div class="col-sm-9">
-                                        <p class="form-control-plaintext">
-                                            <%= item.isPopular ? 'Popular' : 'Regular' %>
-                                        </p>
-                                    </div>
-                                </div>
                                 <div class="form-group mb-2 mb-md-0 row">
                                     <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Created At</p>
                                     <div class="col-sm-9">
@@ -76,6 +68,8 @@
                                         </p>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="form-group mb-2 mb-md-0 row">
                                     <label class="col-sm-3 col-form-label pb-0 font-weight-bold" for="description">Updated At</label>
                                     <div class="col-sm-9">
@@ -90,31 +84,13 @@
                 </div>
 
                 <div class="card shadow border-0 mb-4">
-                    <div class="card-body">
-                        <p class="mb-2 font-weight-bold">Description</p>
-                        <%= item.description || 'No description' %>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <% item.imageId.forEach(image => { %>
-                        <div class="col-md-4">
-                            <div class="card shadow border-0 mb-4">
-                                <div class="card-body">
-                                    <div class="position-relative rounded" style="height: 200px; background: url('<%= image.imageUrl.replace(/\\/g, "/") %>') center center / cover no-repeat">
-                                        <% if(image.isPrimary) { %>
-                                            <span class="position-absolute bg-danger text-white rounded-bottom py-1 px-3" style="right: 0; top: 0">PRIMARY</span>
-                                        <% } %>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-
-                <div class="card shadow border-0 mb-4">
                     <div class="card-body d-flex justify-content-between">
                         <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                        <% if(authorize(PERMISSION_ITEM_EDIT)) { %>
+                            <a class="btn btn-primary" href="/admin/item/edit/<%= item._id %>">
+                                Edit
+                            </a>
+                        <% } %>
                     </div>
                 </div>
             </div>

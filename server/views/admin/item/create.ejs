@@ -22,7 +22,7 @@
 
                 <%- include('../../partials/alert.ejs') %>
 
-                <form action="/admin/item/save?_csrf=<%= _csrfToken %>" method="post" enctype="multipart/form-data">
+                <form action="/admin/item/save?_csrf=<%= _csrfToken %>" method="post">
                     <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
                     <fieldset>
                         <div class="card shadow border-0 mb-4">
@@ -36,11 +36,23 @@
                                            value="<%= _old.title || '' %>" placeholder="Enter item title">
                                     <%- validationError('title') %>
                                 </div>
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <select class="custom-select" name="category" id="category" required>
+                                        <option value="">Select Category</option>
+                                        <% categories.forEach(category => { %>
+                                            <option value="<%= category._id %>"<%= (_old.category || '') == category._id ? ' selected' : '' %>>
+                                                <%= category.category %>
+                                            </option>
+                                        <% }) %>
+                                    </select>
+                                    <%- validationError('category') %>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="city">City</label>
-                                            <input type="text" class="form-control" id="city" name="city" required maxlength="50"
+                                            <input type="text" class="form-control" id="city" name="city" required maxlength="20"
                                                    value="<%= _old.city || '' %>" placeholder="City location">
                                             <%- validationError('city') %>
                                         </div>
@@ -48,7 +60,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="country">Country</label>
-                                            <input type="text" class="form-control" id="country" name="country" maxlength="50"
+                                            <input type="text" class="form-control" id="country" name="country" maxlength="20"
                                                    value="<%= _old.country || '' %>" placeholder="Country of the city">
                                             <%- validationError('country') %>
                                         </div>
@@ -58,7 +70,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="is_popular">Is Popular</label>
-                                            <select class="custom-select" name="is_popular" id="is_popular" required="">
+                                            <select class="custom-select" name="is_popular" id="is_popular" required>
                                                 <option value="">Select Popular</option>
                                                 <option value="1"<%= (_old.is_popular || '') == '1' ? ' selected' : '' %>>
                                                     YES
@@ -73,15 +85,23 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="price">Price</label>
-                                            <input type="number" class="form-control" id="price" name="price" min="0" max="990000000" maxlength="12"
+                                            <input type="text" class="form-control numerical" id="price" name="price" required maxlength="18"
                                                    value="<%= _old.price || '' %>" placeholder="Price per night">
                                             <%- validationError('price') %>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea class="form-control" id="description" name="description" maxlength="500" rows="5"
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body">
+                                <div class="text-editor-wrapper">
+                                    <%- include('../../partials/text_editor_toolbar') %>
+                                    <div class="text-editor" data-change-target="#description" style="min-height: 200px">
+                                        <%- _old.description || '' %>
+                                    </div>
+                                    <textarea class="form-control d-none" id="description" name="description" rows="5"
                                               placeholder="Enter item description"><%= _old.description || '' %></textarea>
                                     <%- validationError('description') %>
                                 </div>
@@ -90,7 +110,7 @@
 
                         <div class="card shadow border-0 mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Item Photo</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Photos</h6>
                             </div>
                             <div class="card-body">
                                 <div id="document-uploader">

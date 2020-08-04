@@ -11,6 +11,9 @@ $.validator.setDefaults({
     unhighlight: function (element) {
         $(element).removeClass('is-invalid');
     },
+    onfocusout: function(element) {
+        return false; // prevent error on quill text editor
+    },
     ignore: ":hidden, .ignore-validation",
     errorElement: "span",
     errorClass: "invalid-feedback",

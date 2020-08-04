@@ -26,6 +26,8 @@ try {
     require('./scripts/one-touch-submit');
     require('./scripts/delete');
     require('./scripts/date-picker');
+    require('./scripts/text-editor');
+    require('./scripts/numeric-value');
     require('./scripts/misc');
 
     if ($('#document-uploader').length) {

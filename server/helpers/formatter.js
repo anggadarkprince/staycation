@@ -21,6 +21,12 @@ function validationError(name, errorBag = null, prefix = '<p class="text-danger 
     return ' ';
 }
 
+function extractNumber(value, defaultValue = '') {
+    value = value.replace(/[^0-9-,\/]/g, "");
+    value = value.replace(/,/g, ".");
+    return value ? Number(value) : defaultValue;
+}
+
 module.exports = {
-    numberFormat, validationError
+    numberFormat, validationError, extractNumber
 };
