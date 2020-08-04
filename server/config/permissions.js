@@ -14,6 +14,11 @@ module.exports = {
     PERMISSION_CATEGORY_EDIT: 'category-edit',
     PERMISSION_CATEGORY_DELETE: 'category-delete',
 
+    PERMISSION_FACILITY_VIEW: 'facility-view',
+    PERMISSION_FACILITY_CREATE: 'facility-create',
+    PERMISSION_FACILITY_EDIT: 'facility-edit',
+    PERMISSION_FACILITY_DELETE: 'facility-delete',
+
     PERMISSION_BANK_VIEW: 'bank-view',
     PERMISSION_BANK_CREATE: 'bank-create',
     PERMISSION_BANK_EDIT: 'bank-edit',

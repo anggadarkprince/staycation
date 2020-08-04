@@ -31,6 +31,15 @@ const itemSchema = new mongoose.Schema({
         required: [true, 'Description is required'],
         maxlength: [5000, 'Description maximum 5000 characters'],
     },
+    features: [{
+        facilityId: {
+            type: ObjectId,
+            ref: 'Facility',
+        },
+        qty: {
+            type: Number,
+        },
+    }],
     categoryId: {
         type: ObjectId,
         ref: 'Category',
@@ -40,13 +49,22 @@ const itemSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Image',
     }],
-    featureId: [{
-        type: ObjectId,
-        ref: 'Feature',
-    }],
-    activityId: [{
-        type: ObjectId,
-        ref: 'Activity',
+    activities: [{
+        activity: {
+            type: String,
+            required: true,
+        },
+        type: {
+            type: String,
+            required: true,
+        },
+        imageUrl: {
+            type: String,
+            required: true,
+        },
+        isPopular: {
+            type: Boolean,
+        },
     }],
 }, {timestamps: true});
 

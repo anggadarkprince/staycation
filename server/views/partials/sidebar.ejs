@@ -42,7 +42,13 @@
         </a>
     </li>
 
-    <!-- Nav Item - Tables -->
+    <li class="nav-item<%= _path.startsWith('/admin/facility') ? ' active' : '' %>">
+        <a class="nav-link" href="/admin/facility">
+            <i class="fas fa-fw fa-bed"></i>
+            <span>Facility</span>
+        </a>
+    </li>
+
     <li class="nav-item<%= _path.startsWith('/admin/bank') ? ' active' : '' %>">
         <a class="nav-link" href="/admin/bank">
             <i class="fas fa-fw fa-money-check"></i>
@@ -50,7 +56,10 @@
         </a>
     </li>
 
-    <!-- Nav Item - Tables -->
+    <div class="sidebar-heading">
+        Order
+    </div>
+
     <li class="nav-item<%= _path.startsWith('/admin/item') ? ' active' : '' %>">
         <a class="nav-link" href="/admin/item">
             <i class="fas fa-fw fa-hotel"></i>
@@ -58,12 +67,6 @@
         </a>
     </li>
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Order
-    </div>
-
-    <!-- Nav Item - Tables -->
     <li class="nav-item<%= _path.startsWith('/admin/booking') ? ' active' : '' %>">
         <a class="nav-link" href="/admin/booking">
             <i class="fas fa-fw fa-shopping-cart"></i>
@@ -74,7 +77,7 @@
     <div class="sidebar-heading">
         Preferences
     </div>
-    <!-- Nav Item - Utilities Collapse Menu -->
+
     <li class="nav-item<%= _path.startsWith('/admin/account') ? ' active' : '' %>">
         <a class="nav-link" href="/admin/account">
             <i class="fas fa-fw fa-user-circle"></i>

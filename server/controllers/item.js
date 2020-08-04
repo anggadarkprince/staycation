@@ -161,8 +161,14 @@ module.exports = {
         const id = req.params.id;
 
         try {
-            const result = await Item.findOne({_id: id});
+            const result = await Item.findOne({_id: id}).populate('imageId');
             result.remove();
+
+            if (result.imageId) {
+                result.imageId.forEach(image => {
+                    fs.unlink(image.imageUrl.replace(/^(\\)/, ''), console.log);
+                });
+            }
 
             req.flash('warning', `Item ${result.title} successfully deleted`);
             return res.redirect('/admin/item');

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const item = require('../controllers/item');
-const {upload} = require('../middleware/multer');
 const permissions = require('../config/permissions');
 const authorization = require('../middleware/authorization');
 

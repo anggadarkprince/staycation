@@ -89,6 +89,35 @@ module.exports = [
     },
 
     {
+        id: getObjectId('facility-view'),
+        permission: 'facility-view',
+        module: 'master',
+        submodule: 'facility',
+        description: 'View facility data',
+    },
+    {
+        id: getObjectId('facility-create'),
+        permission: 'facility-create',
+        module: 'master',
+        submodule: 'facility',
+        description: 'Create facility data',
+    },
+    {
+        id: getObjectId('facility-edit'),
+        permission: 'facility-edit',
+        module: 'master',
+        submodule: 'facility',
+        description: 'Edit facility data',
+    },
+    {
+        id: getObjectId('facility-delete'),
+        permission: 'facility-delete',
+        module: 'master',
+        submodule: 'facility',
+        description: 'Delete facility data',
+    },
+
+    {
         id: getObjectId('category-view'),
         permission: 'category-view',
         module: 'master',
