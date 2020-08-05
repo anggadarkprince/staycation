@@ -33,6 +33,9 @@ try {
     if ($('#document-uploader').length) {
         import("./pages/upload-photo").then(uploadPhoto => uploadPhoto.default());
     }
+    if ($('#form-item').length) {
+        import("./pages/item").then(item => item.default());
+    }
 } catch (e) {
     console.log(e);
 }

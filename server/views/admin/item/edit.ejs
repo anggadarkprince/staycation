@@ -22,7 +22,7 @@
 
                 <%- include('../../partials/alert.ejs') %>
 
-                <form action="/admin/item/update/<%= item._id %>?_csrf=<%= _csrfToken %>" method="post">
+                <form action="/admin/item/update/<%= item._id %>?_csrf=<%= _csrfToken %>" method="post" id="form-item">
                     <input type="hidden" name="_method" value="put">
                     <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
                     <fieldset>
@@ -106,6 +106,32 @@
                                               placeholder="Enter item description"><%= _old.description || item.description %></textarea>
                                     <%- validationError('description') %>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Facilities</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <% facilities.forEach((facility, i) => { %>
+                                        <% facilitySelected = _old.facility_checks && _old.facility_checks.includes(facility._id.toString()) || item.facilities.map(f => f._id).includes(facility._id.toString()) %>
+                                        <div class="col-md-6 check-facility-wrapper d-flex justify-content-between align-items-center mb-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input check-facility" id="facility_<%= facility._id %>" name="facility_checks[<%= i %>]"
+                                                       value="<%= facility._id %>" <%= facilitySelected ? 'checked' : '' %>>
+                                                <label class="custom-control-label mr-2 mb-2" for="facility_<%= facility._id %>"><%= facility.facility %></label>
+                                            </div>
+                                            <div class="mx-md-5">
+                                                <input type="number" required min="0" max="100" class="form-control form-control-sm facility-quantity" id="quantity" name="facilities[<%= facility._id %>]"
+                                                       value="<%= (_old.facilities && _old.facilities[facility._id]) || (facilitySelected ? item.facilities.find(f => f._id.toString() == facility._id.toString()).qty : '') %>" placeholder="Total" style="max-width: 150px"
+                                                        <%= facilitySelected ? '' : 'disabled' %>>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                                <%- validationError('facilities') %>
                             </div>
                         </div>
 

@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const Item = require('../models/Item');
+const Facility = require('../models/Facility');
 const Category = require('../models/Category');
 const Image = require('../models/Image');
 const exporter = require('../modules/Exporter');
@@ -46,7 +47,23 @@ module.exports = {
     view: async (req, res, next) => {
         const id = req.params.id;
         try {
-            const item = await Item.findOne({_id: id}).populate('categoryId').populate('imageId');
+            const item = await Item.findOne({_id: id}).populate([
+                {
+                    model: 'Image',
+                    path: 'imageId',
+                    select: 'isPrimary imageUrl fileName'
+                },
+                {
+                    model: 'Facility',
+                    path: 'facilities._id',
+                    select: 'facility image description'
+                },
+                {
+                    model: 'Category',
+                    path: 'categoryId',
+                    select: 'category description'
+                }
+            ]);
             res.render('admin/item/view', {title: `View item ${item.title}`, item});
         } catch (err) {
             next(createError(404))
@@ -54,11 +71,15 @@ module.exports = {
     },
     create: async (req, res) => {
         const categories = await Category.find();
+        const facilities = await Facility.find();
 
-        res.render('admin/item/create', {title: 'Create Item', categories});
+        res.render('admin/item/create', {title: 'Create Item', categories, facilities});
     },
     save: async (req, res) => {
-        const {title, category, price, country, city, is_popular: isPopular, description, input_photos: photos, is_primary_photo: primaryPhoto} = req.body;
+        const {
+            title, category, price, country, city, description, facilities,
+            is_popular: isPopular, input_photos: photos, is_primary_photo: primaryPhoto
+        } = req.body;
         try {
             const photoId = (photos || []).map(async photo => {
                 const year = (new Date()).getFullYear().toString();
@@ -83,15 +104,22 @@ module.exports = {
                         title, country, city, isPopular, description,
                         price: extractNumber(price),
                         categoryId: category,
-                        imageId: photoId || []
+                        imageId: photoId || [],
+                        facilities: Object.keys(facilities || []).map(key => ({_id: key, qty: facilities[key]}))
                     });
                     req.flash('success', `Item ${title} successfully created`);
                     res.redirect('/admin/item');
                 })
-                .catch(console.log);
+                .catch(err => {
+                    req.flash('error', err);
+                    req.flash('old', req.body);
+                    req.flash('danger', `Save item ${title} failed, try again later`);
+                    res.redirect('back');
+                });
 
         } catch (err) {
             console.log(err);
+            req.flash('error', err);
             req.flash('old', req.body);
             req.flash('danger', `Save item ${title} failed, try again later`);
             res.redirect('back');
@@ -101,12 +129,16 @@ module.exports = {
         const id = req.params.id;
         const item = await Item.findOne({_id: id}).populate('imageId');
         const categories = await Category.find();
+        const facilities = await Facility.find();
 
-        res.render('admin/item/edit', {title: `Edit item ${item.title}`, item, categories});
+        res.render('admin/item/edit', {title: `Edit item ${item.title}`, item, categories, facilities});
     },
     update: async (req, res) => {
         const id = req.params.id;
-        const {title, category, price, country, city, is_popular: isPopular, description, input_photos: photos, is_primary_photo: primaryPhoto} = req.body;
+        const {
+            title, category, price, country, city, facilities, description,
+            is_popular: isPopular, input_photos: photos, is_primary_photo: primaryPhoto
+        } = req.body;
 
         try {
             const photoId = (photos || []).map(async photo => {
@@ -144,6 +176,7 @@ module.exports = {
                     result.description = description;
                     result.categoryId = category;
                     result.imageId = photoId;
+                    result.facilities = Object.keys(facilities || []).map(key => ({_id: key, qty: facilities[key]}));
                     result.save();
 
                     req.flash('success', `Item ${title} successfully updated`);

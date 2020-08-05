@@ -31,10 +31,11 @@ const itemSchema = new mongoose.Schema({
         required: [true, 'Description is required'],
         maxlength: [5000, 'Description maximum 5000 characters'],
     },
-    features: [{
-        facilityId: {
+    facilities: [{
+        _id: {
             type: ObjectId,
             ref: 'Facility',
+            required: true,
         },
         qty: {
             type: Number,

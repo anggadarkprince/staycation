@@ -27,11 +27,14 @@
                         <div class="d-flex justify-content-between mb-3">
                             <div>
                                 <h3 class="mb-0 font-weight-bold text-primary"><%= item.title %></h3>
-                                <p class="mb-0"><%= item.categoryId.category %> - <%= item.city %>, <%= item.country %></p>
+                                <p class="mb-0 text-muted"><%= item.categoryId.category %> - <%= item.city %>, <%= item.country %></p>
                             </div>
                             <div class="text-md-right">
-                                <h5 class="font-weight-bold mb-1"><%= numberFormat(item.price, 'IDR ') %> / night</h5>
-                                <p class="mb-0"><%= item.isPopular ? 'Popular' : 'Regular' %></p>
+                                <h4 class="font-weight-bold mb-1">
+                                    <span class="text-danger"><%= numberFormat(item.price, 'IDR ') %></span>
+                                    <small>/ night</small>
+                                </h4>
+                                <p class="mb-0 <%= item.isPopular ? 'text-success' : 'text-muted' %>"><%= item.isPopular ? 'Popular' : 'Regular' %></p>
                             </div>
                         </div>
 
@@ -52,6 +55,23 @@
                         <div>
                             <p class="mb-2 font-weight-bold">Description</p>
                             <%- item.description || 'No description' %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Facilities</h5>
+                        <div class="row">
+                            <% item.facilities.forEach(facility => { %>
+                                <div class="col-md-4 col-lg-3 mb-2 d-flex flex-row align-items-center">
+                                    <img src="<%= facility._id.image %>" alt="<%= facility._id.facility %>" style="width: 50px; height: 50px">
+                                    <div class="ml-3">
+                                        <span class="text-muted"><%= facility._id.facility %></span>
+                                        <h4 class="mb-0 font-weight-bold"><%= facility.qty %></h4>
+                                    </div>
+                                </div>
+                            <% }) %>
                         </div>
                     </div>
                 </div>
