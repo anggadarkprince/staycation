@@ -32,7 +32,7 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="title">Title</label>
-                                    <input type="text" class="form-control" id="title" name="title" required maxlength="50"
+                                    <input type="text" class="form-control" id="title" name="title" maxlength="50"
                                            value="<%= _old.title || '' %>" placeholder="Enter item title">
                                     <%- validationError('title') %>
                                 </div>
@@ -184,6 +184,53 @@
                         </div>
 
                         <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 font-weight-bold text-primary">Activities</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table mb-0" id="table-activity">
+                                    <tbody>
+                                        <tr class="row-placeholder"<%- ((_old.activities || []).length > 0 ? 'style="display: none"' : '') %>>
+                                            <td colspan="4" class="text-center">No activity available, click add to make one.</td>
+                                        </tr>
+                                        <% (_old.activities || []).forEach(function (activity, index) { %>
+                                            <tr data-id="<%= index %>">
+                                                <td class="font-weight-bold">
+                                                    <div class="d-inline-block position-relative mr-2 activity-photo-wrapper">
+                                                        <img src="/uploads/temp/<%= activity.image %>" alt="<%= activity.activity %>" class="img-fluid" style="max-width: 75px">
+                                                    </div>
+                                                    <%= activity.activity %>
+                                                </td>
+                                                <td style="max-width: 600px; min-width: 300px">
+                                                    <%= activity.description.substr(0, 200) %><%= activity.description.length > 200 ? '...' : '' %>
+                                                </td>
+                                                <td><%= activity.isPopular ? 'Popular' : 'Regular' %></td>
+                                                <td style="width: 60px">
+                                                    <input type="hidden" name="activities[<%= index %>][activity]" value="<%= activity.activity %>">
+                                                    <input type="hidden" name="activities[<%= index %>][description]" value="<%= activity.description %>">
+                                                    <input type="hidden" name="activities[<%= index %>][isPopular]" value="<%= activity.isPopular %>">
+                                                    <input type="hidden" class="input-uploaded-file" name="activities[<%= index %>][image]" value="<%= activity.image %>">
+                                                    <button type="button" class="btn btn-danger btn-sm btn-delete-activity">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4">
+                                                <button id="btn-add-activity" type="button" class="btn btn-outline-light btn-link btn-block link-plain" style="border: 2px dashed #aaaaaa">
+                                                    <i class="fas fa-running mr-2"></i>ADD ACTIVITY
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
                             <div class="card-body d-flex justify-content-between">
                                 <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
                                 <button type="submit" class="btn btn-success" data-toggle="one-touch">Save Item</button>
@@ -207,4 +254,5 @@
 <!-- End of Page Wrapper -->
 
 <%- include('_template_item.ejs') %>
+<%- include('_modal_activity.ejs') %>
 <%- include('../../partials/js.ejs') %>

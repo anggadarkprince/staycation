@@ -4,7 +4,7 @@ $(function () {
             submitHandler: function(form) {
                 setTimeout(function() {
                     $(form).find('fieldset').attr('disabled', true);
-                    $(form).find('button[type=submit]').text('Submitting...');
+                    $(form).find('button[type=submit]').not('[data-one-touch=false]').text('Submitting...');
                 }, 50);
                 return true;
             }

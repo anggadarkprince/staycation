@@ -1,0 +1,57 @@
+<div class="modal fade" id="modal-activity" aria-labelledby="modalFilter">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content border-0">
+            <form action="#" id="form-activity">
+                <div class="modal-header">
+                    <h5 class="modal-title">Activity</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="activity">Activity Title</label>
+                        <input type="text" class="form-control" name="activity" id="activity" placeholder="Activity title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" name="description" maxlength="500" rows="5"
+                                  placeholder="Enter activity description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Image</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="image" name="image" accept="image/*" required>
+                            <label class="custom-file-label text-truncate" for="image">Pick Image</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="is_popular_yes">Popular</label>
+                        <div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="is_popular_no" name="is_popular" value="0" class="custom-control-input" required>
+                                <label class="custom-control-label" for="is_popular_no">
+                                    Regular
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="is_popular_yes" name="is_popular" value="1" class="custom-control-input">
+                                <label class="custom-control-label" for="is_popular_yes">
+                                    Popular
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">
+                        CANCEL
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-primary" data-one-touch="false">
+                        ADD ACTIVITY
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

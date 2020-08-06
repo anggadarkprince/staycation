@@ -77,7 +77,7 @@ module.exports = {
     },
     save: async (req, res) => {
         const {
-            title, category, price, country, city, description, facilities,
+            title, category, price, country, city, description, facilities, activities,
             is_popular: isPopular, input_photos: photos, is_primary_photo: primaryPhoto
         } = req.body;
         try {
@@ -100,17 +100,32 @@ module.exports = {
             });
             Promise.all(photoId)
                 .then(async photoId => {
+                    const activityData = activities.map(activity => {
+                        const year = (new Date()).getFullYear().toString();
+                        const month = ((new Date()).getMonth() + 1).toString();
+                        const oldPath = `uploads/temp/${activity.image}`;
+                        const dir = `uploads/${year}/${month}`;
+                        const newPath = `${dir}/${activity.image}`;
+                        if (!fs.existsSync(dir)) {
+                            fs.mkdirSync(dir);
+                        }
+                        fs.copyFileSync(oldPath, newPath);
+                        const image = path.join('/', newPath);
+                        return {...activity, image};
+                    });
                     await Item.create({
                         title, country, city, isPopular, description,
                         price: extractNumber(price),
                         categoryId: category,
                         imageId: photoId || [],
-                        facilities: Object.keys(facilities || []).map(key => ({_id: key, qty: facilities[key]}))
+                        facilities: Object.keys(facilities || []).map(key => ({_id: key, qty: facilities[key]})),
+                        activities: activityData
                     });
                     req.flash('success', `Item ${title} successfully created`);
                     res.redirect('/admin/item');
                 })
                 .catch(err => {
+                    console.log(err);
                     req.flash('error', err);
                     req.flash('old', req.body);
                     req.flash('danger', `Save item ${title} failed, try again later`);
@@ -136,11 +151,12 @@ module.exports = {
     update: async (req, res) => {
         const id = req.params.id;
         const {
-            title, category, price, country, city, facilities, description,
+            title, category, price, country, city, facilities, description, activities,
             is_popular: isPopular, input_photos: photos, is_primary_photo: primaryPhoto
         } = req.body;
 
         try {
+            const item = await Item.findById(id);
             const photoId = (photos || []).map(async photo => {
                 if (!photo._id) {
                     const year = (new Date()).getFullYear().toString();
@@ -167,6 +183,31 @@ module.exports = {
             });
             Promise.all(photoId)
                 .then(async photoId => {
+                    const activityData = activities.map(activity => {
+                        if (!activity._id) {
+                            const year = (new Date()).getFullYear().toString();
+                            const month = ((new Date()).getMonth() + 1).toString();
+                            const oldPath = `uploads/temp/${activity.image}`;
+                            const dir = `uploads/${year}/${month}`;
+                            const newPath = `${dir}/${activity.image}`;
+                            if (!fs.existsSync(dir)) {
+                                fs.mkdirSync(dir);
+                            }
+                            fs.copyFileSync(oldPath, newPath);
+                            const image = path.join('/', newPath);
+                            return {...activity, image};
+                        } else {
+                            return activity;
+                        }
+                    });
+
+                    const activityIds = activities.filter(activity => activity._id || false).map(activity => activity._id);
+                    item.activities.forEach(activity => {
+                        if (!activityIds.includes(activity._id.toString())) {
+                            fs.unlinkSync(activity.image.replace(/^(\\)/, ''));
+                        }
+                    });
+
                     const result = await Item.findOne({_id: id});
                     result.title = title;
                     result.price = extractNumber(price);
@@ -177,6 +218,7 @@ module.exports = {
                     result.categoryId = category;
                     result.imageId = photoId;
                     result.facilities = Object.keys(facilities || []).map(key => ({_id: key, qty: facilities[key]}));
+                    result.activities = activityData;
                     result.save();
 
                     req.flash('success', `Item ${title} successfully updated`);

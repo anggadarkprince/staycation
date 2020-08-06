@@ -55,11 +55,11 @@ const itemSchema = new mongoose.Schema({
             type: String,
             required: true,
         },
-        type: {
+        description: {
             type: String,
             required: true,
         },
-        imageUrl: {
+        image: {
             type: String,
             required: true,
         },

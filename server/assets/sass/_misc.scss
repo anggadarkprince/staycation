@@ -2,6 +2,10 @@
   cursor: pointer;
 }
 
+.link-plain:hover {
+  text-decoration: none;
+}
+
 .text-muted {
   color: #a2a4b0 !important;
 }
