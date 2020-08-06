@@ -39,7 +39,6 @@ const bookingSchema = new mongoose.Schema({
     },
     proofPayment: {
         type: String,
-        required: true,
     },
     paymentMethod: {
         type: String,
@@ -47,19 +46,20 @@ const bookingSchema = new mongoose.Schema({
     },
     bank: {
         type: String,
-        required: true,
     },
     accountHolder: {
         type: String,
-        required: true,
     },
     accountNumber: {
         type: String,
-        required: true,
+    },
+    description: {
+        type: String,
     },
     status: {
         type: String,
         required: true,
+        default: 'BOOKED',
     }
 }, {timestamps: true});
 

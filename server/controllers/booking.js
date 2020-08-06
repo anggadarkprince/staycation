@@ -1,4 +1,7 @@
 const Booking = require('../models/Booking');
+const Item = require('../models/Item');
+const User = require('../models/User');
+const Bank = require('../models/Bank');
 const exporter = require('../modules/Exporter');
 const moment = require('moment');
 
@@ -47,6 +50,81 @@ module.exports = {
             res.render('admin/booking/view', {title: `View booking ${booking.transactionNumber}`, booking});
         } catch (err) {
             next(createError(404))
+        }
+    },
+    create: async (req, res) => {
+        const items = await Item.find();
+        const users = await User.find();
+        const banks = await Bank.find();
+
+        res.render('admin/booking/create', {title: 'Create Booking', items, users, banks});
+    },
+    save: async (req, res) => {
+        const {item: itemId, user: userId, from_date: fromDate, until_date: untilDate, bank: bankId, description} = req.body;
+        try {
+            const itemData = await Item.findById(itemId);
+            const userData = await User.findById(userId);
+            await Booking.create({
+                transactionNumber: `TRN-${(new Date()).getTime()}`,
+                bookingStartDate: new Date(fromDate),
+                bookingEndDate: new Date(untilDate),
+                itemId: {
+                    _id: itemId,
+                    price: itemData.price,
+                    night: moment(untilDate).diff(moment(fromDate), 'days'),
+                },
+                userId,
+                bankId,
+                description
+            });
+            req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully created`);
+            res.redirect('/admin/booking');
+        } catch (err) {
+            req.flash('error', err);
+            req.flash('old', req.body);
+            req.flash('danger', `Save booking failed, try again later`);
+            res.redirect('back');
+        }
+    },
+    edit: async (req, res) => {
+        const id = req.params.id;
+        const booking = await Booking.findOne({_id: id});
+
+        const items = await Item.find();
+        const users = await User.find();
+        const banks = await Bank.find();
+
+        res.render('admin/booking/edit', {title: 'Edit Booking', booking, items, users, banks});
+    },
+    update: async (req, res) => {
+        const id = req.params.id;
+        const {item: itemId, user: userId, from_date: fromDate, until_date: untilDate, bank: bankId, description} = req.body;
+
+        try {
+            const booking = await Booking.findOne({_id: id});
+            const itemData = await Item.findById(itemId);
+            const userData = await User.findById(userId);
+
+            booking.bookingStartDate = new Date(fromDate);
+            booking.bookingEndDate = new Date(untilDate);
+            booking.itemId = {
+                _id: itemId,
+                price: itemData.price,
+                night: moment(untilDate).diff(moment(fromDate), 'days'),
+            };
+            booking.userId = userId;
+            booking.bankId = bankId;
+            booking.description = description;
+            await booking.save();
+
+            req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully updated`);
+            return res.redirect('/admin/booking');
+        } catch (err) {
+            console.log(err);
+            req.flash('error', err);
+            req.flash('old', req.body);
+            req.flash('danger', `Update booking failed, try again later`);
+            res.redirect('back');
         }
     },
     delete: async (req, res) => {

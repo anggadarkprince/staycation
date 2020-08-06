@@ -60,11 +60,11 @@
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
                                             <% bookingStatuses = {
-                                                'PENDING': 'warning',
-                                                'ACTIVE': 'success',
-                                                'SUSPENDED': 'danger',
+                                                'BOOKED': 'light',
+                                                'PAID': 'warning',
+                                                'COMPLETED': 'success',
                                             } %>
-                                            <span class="badge badge-<%= bookingStatuses[booking.status || 'PENDING'] %>">
+                                            <span class="badge badge-<%= bookingStatuses[booking.status || 'BOOKED'] %>">
                                                 <%= booking.status %>
                                             </span>
                                         </p>
@@ -222,9 +222,13 @@
                                     <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Proof Payment</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <a href="<%= booking.proofPayment %>">
-                                                Download
-                                            </a>
+                                            <% if (booking.proofPayment) { %>
+                                                <a href="<%= booking.proofPayment %>">
+                                                    Download
+                                                </a>
+                                            <% } else { %>
+                                                -
+                                            <% } %>
                                         </p>
                                     </div>
                                 </div>
