@@ -163,7 +163,12 @@ module.exports = {
 
         try {
             const booking = await Booking.findOne({_id: id});
-            booking.proofPayment = path.join('/', req.file.path);
+            if (req.file) {
+                if (booking.proofPayment) {
+                    await fs.unlink(booking.proofPayment.replace(/^(\\)/, ''), console.log);
+                }
+                booking.proofPayment = path.join('/', req.file.path);
+            }
             booking.bank = bank;
             booking.accountNumber = accountNumber;
             booking.accountHolder = accountHolder;
@@ -171,6 +176,30 @@ module.exports = {
             await booking.save();
 
             req.flash('success', `Booking item ${booking.transactionNumber} successfully paid`);
+            return res.redirect('/admin/booking');
+        } catch (err) {
+            req.flash('error', err);
+            req.flash('old', req.body);
+            req.flash('danger', `Update booking failed, try again later`);
+            res.redirect('back');
+        }
+    },
+    approve: async (req, res) => {
+        try {
+            const booking = await Booking.findByIdAndUpdate(req.params.id, {status: 'COMPLETED'});
+            req.flash('success', `Booking item ${booking.transactionNumber} successfully paid`);
+            return res.redirect('/admin/booking');
+        } catch (err) {
+            req.flash('error', err);
+            req.flash('old', req.body);
+            req.flash('danger', `Update booking failed, try again later`);
+            res.redirect('back');
+        }
+    },
+    reject: async (req, res) => {
+        try {
+            const booking = await Booking.findByIdAndUpdate(req.params.id, {status: 'REJECTED'});
+            req.flash('warning', `Booking item ${booking.transactionNumber} is REJECTED`);
             return res.redirect('/admin/booking');
         } catch (err) {
             req.flash('error', err);

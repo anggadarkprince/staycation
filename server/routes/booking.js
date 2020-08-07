@@ -14,5 +14,7 @@ router.put('/update/:id', authorization.isAuthorized(permissions.PERMISSION_BOOK
 router.get('/payment/:id', authorization.isAuthorized(permissions.PERMISSION_BOOKING_EDIT), booking.payment);
 router.post('/payment/:id', authorization.isAuthorized(permissions.PERMISSION_BOOKING_EDIT), upload.single("proof_payment"), booking.updatePayment);
 router.delete('/delete/:id', authorization.isAuthorized(permissions.PERMISSION_BOOKING_DELETE), booking.delete);
+router.put('/approve/:id', authorization.isAuthorized(permissions.PERMISSION_BOOKING_EDIT), booking.approve);
+router.put('/reject/:id', authorization.isAuthorized(permissions.PERMISSION_BOOKING_EDIT), booking.reject);
 
 module.exports = router;

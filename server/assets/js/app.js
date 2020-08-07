@@ -36,6 +36,9 @@ try {
     if ($('#form-item').length) {
         import("./pages/item").then(item => item.default());
     }
+    if ($('#table-booking').length) {
+        import("./pages/booking").then(booking => booking.default());
+    }
 } catch (e) {
     console.log(e);
 }

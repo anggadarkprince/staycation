@@ -41,7 +41,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">Order Data</h6>
                     </div>
                     <div class="card-body">
-                        <table class="table table-sm table-hover responsive" id="dataTable">
+                        <table class="table table-sm table-hover responsive data-table" id="table-booking">
                             <thead>
                             <tr>
                                 <th style="width: 35px">No</th>
@@ -89,7 +89,7 @@
                                                     </a>
                                                 <% } %>
                                                 <% if(authorize(PERMISSION_BANK_EDIT)) { %>
-                                                        <% if(booking.status === 'BOOKED') { %>
+                                                        <% if(['BOOKED', 'REJECTED'].includes(booking.status)) { %>
                                                             <div class="dropdown-divider"></div>
                                                             <a class="dropdown-item" href="/admin/booking/edit/<%= booking._id %>">
                                                                 Edit
@@ -100,10 +100,12 @@
                                                         <% } %>
                                                         <% if(booking.status === 'PAID') { %>
                                                             <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item" href="/admin/booking/approve/<%= booking._id %>">
+                                                            <a class="dropdown-item btn-validate" data-action="approve" data-title="<%= booking.transactionNumber %>"
+                                                               href="/admin/booking/approve/<%= booking._id %>">
                                                                 Approve
                                                             </a>
-                                                            <a class="dropdown-item" href="/admin/booking/reject/<%= booking._id %>">
+                                                            <a class="dropdown-item btn-validate" data-action="reject" data-title="<%= booking.transactionNumber %>"
+                                                               href="/admin/booking/reject/<%= booking._id %>">
                                                                 Reject
                                                             </a>
                                                         <% } %>
@@ -139,6 +141,7 @@
 
                 <%- include('../../partials/delete.ejs') %>
                 <%- include('_modal_filter.ejs') %>
+                <%- include('_modal_validate_payment.ejs') %>
             </div>
             <!-- /.container-fluid -->
 

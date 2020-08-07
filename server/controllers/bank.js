@@ -78,7 +78,7 @@ module.exports = {
 
         res.render('admin/bank/edit', {bank, title: `Edit bank ${bank.bank}`});
     },
-    update: async (req, res, next) => {
+    update: async (req, res) => {
         const id = req.params.id;
         const {bank, account_number: accountNumber, account_holder: accountHolder, description} = req.body;
 
