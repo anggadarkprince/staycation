@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const bank = require('../controllers/bank');
-const {upload} = require('../middleware/multer');
 const permissions = require('../config/permissions');
 const authorization = require('../middleware/authorization');
+const {upload} = require('../middleware/multer');
 
 router.get('/', authorization.isAuthorized(permissions.PERMISSION_BANK_VIEW), bank.index);
 router.get('/view/:id', authorization.isAuthorized(permissions.PERMISSION_BANK_VIEW), bank.view);

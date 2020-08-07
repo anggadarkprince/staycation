@@ -63,6 +63,7 @@
                                                 'BOOKED': 'light',
                                                 'PAID': 'warning',
                                                 'COMPLETED': 'success',
+                                                'REJECTED': 'danger',
                                             } %>
                                             <span class="badge badge-<%= bookingStatuses[booking.status || 'BOOKED'] %>">
                                                 <%= booking.status %>

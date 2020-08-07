@@ -4,6 +4,8 @@ const User = require('../models/User');
 const Bank = require('../models/Bank');
 const exporter = require('../modules/Exporter');
 const moment = require('moment');
+const path = require("path");
+const fs = require("fs");
 
 module.exports = {
     index: async (req, res) => {
@@ -34,7 +36,25 @@ module.exports = {
             }),
         }).populate('userId').populate('bankId').populate('itemId._id').sort([[sortBy, sortMethod]]);
 
-        res.render('admin/booking/index', {title: 'Booking', bookings});
+        if (isExported) {
+            const exportedBookings = bookings.map(booking => {
+                return {
+                    transactionNumber: booking.transactionNumber,
+                    name: booking.userId.name,
+                    item: booking.itemId._id.title,
+                    startDate: moment(booking.bookingStartDate).format('DD MMMM Y'),
+                    endDate: moment(booking.bookingEndDate).format('DD MMMM Y'),
+                    price: booking.itemId.price,
+                    status: booking.status,
+                }
+            });
+            const headers = exportedBookings.length ? Object.keys(exportedBookings[0]) : [];
+            return res
+                .attachment('bookings.xlsx')
+                .send(exporter.toExcel('Bookings', exportedBookings, headers));
+        } else {
+            res.render('admin/booking/index', {title: 'Booking', bookings});
+        }
     },
     view: async (req, res, next) => {
         const id = req.params.id;
@@ -46,7 +66,6 @@ module.exports = {
                     model: 'Category'
                 }
             });
-            console.log(booking);
             res.render('admin/booking/view', {title: `View booking ${booking.transactionNumber}`, booking});
         } catch (err) {
             next(createError(404))
@@ -120,7 +139,40 @@ module.exports = {
             req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully updated`);
             return res.redirect('/admin/booking');
         } catch (err) {
-            console.log(err);
+            req.flash('error', err);
+            req.flash('old', req.body);
+            req.flash('danger', `Update booking failed, try again later`);
+            res.redirect('back');
+        }
+    },
+    payment: async (req, res) => {
+        const id = req.params.id;
+        const booking = await Booking.findOne({_id: id}).populate('userId').populate('bankId').populate({
+            path: 'itemId._id',
+            populate: {
+                path: 'categoryId',
+                model: 'Category'
+            }
+        });
+
+        res.render('admin/booking/payment', {title: 'Booking Payment', booking});
+    },
+    updatePayment: async (req, res) => {
+        const id = req.params.id;
+        const {bank, account_number: accountNumber, account_holder: accountHolder} = req.body;
+
+        try {
+            const booking = await Booking.findOne({_id: id});
+            booking.proofPayment = path.join('/', req.file.path);
+            booking.bank = bank;
+            booking.accountNumber = accountNumber;
+            booking.accountHolder = accountHolder;
+            booking.status = 'PAID';
+            await booking.save();
+
+            req.flash('success', `Booking item ${booking.transactionNumber} successfully paid`);
+            return res.redirect('/admin/booking');
+        } catch (err) {
             req.flash('error', err);
             req.flash('old', req.body);
             req.flash('danger', `Update booking failed, try again later`);
@@ -133,6 +185,10 @@ module.exports = {
         try {
             const result = await Booking.findOne({_id: id});
             result.remove();
+
+            if (result.proofPayment) {
+                await fs.unlink(result.proofPayment.replace(/^(\\)/, ''), console.log);
+            }
 
             req.flash('warning', `Item ${result.bank} successfully deleted`);
             return res.redirect('/admin/booking');
