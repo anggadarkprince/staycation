@@ -124,10 +124,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group mb-2 mb-md-0 row">
-                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Price</label>
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Location</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <%= numberFormat(booking.itemId.price, 'IDR ') %>
+                                            <%= booking.itemId._id.city %>, <%= booking.itemId._id.country %>
                                         </p>
                                     </div>
                                 </div>
@@ -142,26 +142,26 @@
                                     </div>
                                 </div>
                                 <div class="form-group mb-2 mb-md-0 row">
-                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Category</label>
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Base Price</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <%= booking.itemId._id.categoryId.category %>
+                                            <%= numberFormat(booking.itemId.price, 'IDR ') %>
                                         </p>
                                     </div>
                                 </div>
                                 <div class="form-group mb-2 mb-md-0 row">
-                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">City</label>
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Tax 10%</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <%= booking.itemId._id.city %>
+                                            <%= numberFormat(booking.itemId.price * .1, 'IDR ') %>
                                         </p>
                                     </div>
                                 </div>
                                 <div class="form-group mb-2 mb-md-0 row">
-                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Country</label>
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Total Price</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <%= booking.itemId._id.country %>
+                                            <%= numberFormat(booking.itemId.price * 1.1 - (booking.itemId.discount || 0), 'IDR ') %>
                                         </p>
                                     </div>
                                 </div>

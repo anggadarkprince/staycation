@@ -1,6 +1,6 @@
 function numberFormat(value, prefix = '', ths = ',', dec = '.', thsTarget = '.', decTarget = ',') {
     const pattern = new RegExp("[^" + dec + "\\\d]", 'g');
-    let number_string = value.toString().replace(pattern, '').toString(),
+    let number_string = Number(Number(value).toFixed(2)).toString().replace(pattern, '').toString(),
         splitDecimal = number_string.split(dec),
         groupThousand = splitDecimal[0].length % 3,
         currency = splitDecimal[0].substr(0, groupThousand),
