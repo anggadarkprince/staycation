@@ -7,6 +7,7 @@ const {upload} = require('../middleware/multer');
 
 router.get('/', authorization.isAuthorized(permissions.PERMISSION_BOOKING_VIEW), booking.index);
 router.get('/view/:id', authorization.isAuthorized(permissions.PERMISSION_BOOKING_VIEW), booking.view);
+router.get('/print/:id', authorization.isAuthorized(permissions.PERMISSION_BOOKING_VIEW), booking.print);
 router.get('/create', authorization.isAuthorized(permissions.PERMISSION_BOOKING_CREATE), booking.create);
 router.post('/save', authorization.isAuthorized(permissions.PERMISSION_BOOKING_CREATE), booking.save);
 router.get('/edit/:id', authorization.isAuthorized(permissions.PERMISSION_BOOKING_EDIT), booking.edit);

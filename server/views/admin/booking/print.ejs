@@ -1,0 +1,150 @@
+<html>
+<head>
+    <meta charset="utf8">
+    <title>Booking <%= booking.transactionNumber %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-weight: 500;
+            font-size: 12px;
+            background: rgb(241,241,241);
+            -webkit-print-color-adjust: exact;
+            box-sizing: border-box;
+        }
+
+        .page {
+            position: relative;
+            height: 90mm;
+            width: 50mm;
+            display: block;
+            page-break-after: auto;
+            margin: 50px;
+            overflow: hidden;
+        }
+
+        p, table {
+            font-size: 12px;
+        }
+
+        table {
+            display: block;
+            border-collapse: collapse;
+            width: calc(100% - 70px);
+        }
+
+        table td {
+            padding: 2px 0;
+        }
+
+        .table thead th,
+        .table tbody td {
+            border: 1px solid #7a7d7e;
+            text-align: left;
+            padding: 4px;
+        }
+
+        @media print {
+            .page {
+                margin: 35px;
+                height: 100%;
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="page">
+    <div style="margin-bottom: 15px;">
+        <img src="<%= path.normalize(`file://${require.resolve('../public/dist/img/favicon.png')}`) %>" alt="Logo" style="width: 40px; float: left; margin-right: 10px">
+        <h4>Staycation</h4>
+        <h2 style="color: maroon">Booking Invoice</h2>
+    </div>
+    <table style="width: 100%; margin-bottom: 20px">
+        <tr>
+            <td style="font-weight: bold; width: 150px">Transaction Number</td>
+            <td style="width: 300px"><%= booking.transactionNumber %></td>
+            <td style="font-weight: bold; width: 130px">Status</td>
+            <td style="width: 300px"><%= booking.status %></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold; width: 150px">Transaction Date</td>
+            <td><%= moment(booking.createdAt).format('DD MMMM Y HH:mm') %></td>
+            <td style="font-weight: bold; width: 130px">Description</td>
+            <td><%= booking.description %></td>
+        </tr>
+    </table>
+
+    <h3>Guest Detail</h3>
+    <table style="width: 100%; margin-bottom: 20px">
+        <tr>
+            <td style="font-weight: bold; width: 150px">Name</td>
+            <td style="width: 300px"><%= booking.userId.name %></td>
+            <td style="font-weight: bold; width: 130px">Payment</td>
+            <td style="width: 300px"><%= booking.paymentMethod %></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold; width: 150px">Email</td>
+            <td><%= booking.userId.email %></td>
+            <td style="font-weight: bold; width: 130px">Paid At</td>
+            <td><%= booking.paidAt ? moment(booking.paidAt).format('DD MMMM Y HH:mm') : 'WAITING' %></td>
+        </tr>
+    </table>
+
+    <h3 style="margin-bottom: 5px">Order Detail</h3>
+    <p style="margin-bottom: 5px">Bellow is detail transaction of the order:</p>
+    <table style="width: 100%; margin-bottom: 10px">
+        <tr>
+            <td style="font-weight: bold; width: 150px">Start Date</td>
+            <td style="width: 300px"><%= moment(booking.bookingStartDate).format('DD MMMM Y') %></td>
+            <td style="font-weight: bold; width: 130px">Until Date</td>
+            <td style="width: 300px"><%= moment(booking.bookingEndDate).format('DD MMMM Y') %></td>
+        </tr>
+    </table>
+    <table class="table" style="margin-bottom: 20px">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th style="text-align: center">Quantity</th>
+                <th style="text-align: right">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <%= booking.itemId._id.title %> -
+                    <%= booking.itemId._id.city %>, <%= booking.itemId._id.country %>
+                </td>
+                <td style="text-align: center"><%= booking.itemId.night || 0 %> Night(s)</td>
+                <td style="text-align: right"><%= numberFormat(booking.itemId.price, 'IDR ') %></td>
+            </tr>
+            <tr>
+                <td>Discount</td>
+                <td></td>
+                <td style="text-align: right"><%= numberFormat(booking.itemId.discount || 0, 'IDR ') %></td>
+            </tr>
+            <tr>
+                <td>Tax (10%)</td>
+                <td></td>
+                <td style="text-align: right"><%= numberFormat(booking.itemId.price * .1, 'IDR ') %></td>
+            </tr>
+            <tr style="font-weight: bold">
+                <td colspan="2">Total</td>
+                <td style="text-align: right"><%= numberFormat(booking.itemId.price * 1.1 - (booking.itemId.discount || 0), 'IDR ') %></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p style="color: #a2a4b0">Print date: <%= moment().format('DD MMMM Y HH:mm') %></p>
+</div>
+<div class="page">
+    <p>Disclaimer: all transactions above is validated via electronic and no need physical signature authorization</p>
+    <p style="color: darkgray">Copyright &copy; Staycation <%= (new Date()).getFullYear() %> all rights reserved.</p>
+</div>
+</body>
+</html>

@@ -53,6 +53,9 @@ const bookingSchema = new mongoose.Schema({
     accountNumber: {
         type: String,
     },
+    paidAt: {
+        type: Date,
+    },
     description: {
         type: String,
     },

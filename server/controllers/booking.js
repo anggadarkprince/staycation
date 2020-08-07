@@ -3,7 +3,10 @@ const Item = require('../models/Item');
 const User = require('../models/User');
 const Bank = require('../models/Bank');
 const exporter = require('../modules/Exporter');
+const {numberFormat} = require('../helpers/formatter');
 const moment = require('moment');
+const pdf = require('html-pdf');
+const ejs = require('ejs');
 const path = require("path");
 const fs = require("fs");
 
@@ -71,6 +74,28 @@ module.exports = {
             next(createError(404))
         }
     },
+    print: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const booking = await Booking.findOne({_id: id}).populate('userId').populate('bankId').populate({
+                path: 'itemId._id',
+                populate: {
+                    path: 'categoryId',
+                    model: 'Category'
+                }
+            });
+            ejs.renderFile('views/admin/booking/print.ejs', {booking, moment, numberFormat, require, path}, {}, (err, html) => {
+                if (err) return console.log(err);
+                pdf.create(html, { format: 'A4' }).toStream((err, stream) => {
+                    if (err) return console.log(err);
+                    res.setHeader('Content-type', 'application/pdf');
+                    stream.pipe(res);
+                });
+            });
+        } catch (err) {
+            next(createError(404))
+        }
+    },
     create: async (req, res) => {
         const items = await Item.find();
         const users = await User.find();
@@ -134,6 +159,7 @@ module.exports = {
             booking.userId = userId;
             booking.bankId = bankId;
             booking.description = description;
+            booking.paidAt = new Date();
             await booking.save();
 
             req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully updated`);
