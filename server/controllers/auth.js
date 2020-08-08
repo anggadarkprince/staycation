@@ -100,13 +100,9 @@ module.exports = {
                 return user.save();
             })
             .then(user => {
-                console.log({
-                    host: process.env.MAIL_HOST,
-                    port: process.env.MAIL_PORT,
-                    auth: {
-                        user: process.env.MAIL_USERNAME,
-                        pass: process.env.MAIL_PASSWORD
-                    }
+                req.io.emit('new-user', {
+                    message: `User ${name} recently registered to our system, please review it`,
+                    url: `/admin/user/view/${user._id}`
                 });
 
                 const mailOptions = {
@@ -124,11 +120,11 @@ module.exports = {
 
                 sendMail(mailOptions, function (err, info) {
                     if (err) {
-                        req.flash('success', 'You are registered, check your email!');
-                        res.redirect('/auth/login');
+                        req.flash('warning', 'You are registered, but email failed to be sent!');
+                        res.redirect('back');
                     } else {
                         req.flash('success', 'You are registered, check your email!');
-                        res.redirect('back');
+                        res.redirect('/auth/login');
                     }
                 });
             })

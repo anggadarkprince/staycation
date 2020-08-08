@@ -46,7 +46,7 @@ module.exports = {
             ]
         });
         const totalProceed = await Booking.countDocuments({status: 'PAID'});
-        const totalBookingOutstanding = totalProceed / totalOutstanding * 100;
+        const totalBookingOutstanding = totalOutstanding > 0 ? Number(totalProceed / totalOutstanding * 100).toFixed(2) : 100;
 
 
         const earningMonthly = await Booking.aggregate([

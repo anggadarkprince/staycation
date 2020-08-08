@@ -112,22 +112,27 @@ module.exports = {
         try {
             const itemData = await Item.findById(itemId);
             const userData = await User.findById(userId);
-            await Booking.create({
+            const booking = await Booking.create({
                 transactionNumber: `TRN-${(new Date()).getTime()}`,
                 bookingStartDate: new Date(fromDate),
                 bookingEndDate: new Date(untilDate),
                 itemId: {
                     _id: itemId,
                     price: itemData.price,
-                    night: moment(untilDate).diff(moment(fromDate), 'days'),
+                    night: moment(untilDate, 'DD MMMM Y').diff(moment(fromDate, 'DD MMMM Y'), 'days'),
                 },
                 userId,
                 bankId,
                 description
             });
+            req.io.emit('new-booking', {
+                message: `Booking for item ${itemData.title}, please review if necessary`,
+                url: `/admin/booking/view/${booking._id}`
+            });
             req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully created`);
             res.redirect('/admin/booking');
         } catch (err) {
+            console.log(err);
             req.flash('error', err);
             req.flash('old', req.body);
             req.flash('danger', `Save booking failed, try again later`);
@@ -205,6 +210,11 @@ module.exports = {
             booking.status = 'PAID';
             await booking.save();
 
+            req.io.emit('new-booking', {
+                message: `Payment for booking ${booking.transactionNumber} is submitted`,
+                url: `/admin/booking/print/${booking._id}`
+            });
+
             req.flash('success', `Booking item ${booking.transactionNumber} successfully paid`);
             return res.redirect('/admin/booking');
         } catch (err) {
@@ -217,7 +227,17 @@ module.exports = {
     approve: async (req, res) => {
         try {
             const booking = await Booking.findByIdAndUpdate(req.params.id, {status: 'COMPLETED'});
-            req.flash('success', `Booking item ${booking.transactionNumber} successfully paid`);
+
+            // send to specific user that owned the booking (if they are online)
+            if (req.socketConnections && req.socketConnections.hasOwnProperty(booking.userId)) {
+                const socketId = req.socketConnections[booking.userId];
+                req.io.to(socketId).emit('booking-validation', {
+                    message: `Booking ${booking.transactionNumber} is approved`,
+                    url: `/admin/booking/view/${booking._id}`
+                });
+            }
+
+            req.flash('success', `Booking item ${booking.transactionNumber} is completed`);
             return res.redirect('/admin/booking');
         } catch (err) {
             req.flash('error', err);
@@ -229,6 +249,16 @@ module.exports = {
     reject: async (req, res) => {
         try {
             const booking = await Booking.findByIdAndUpdate(req.params.id, {status: 'REJECTED'});
+
+            // send to specific user that owned the booking (if they are online)
+            if (req.socketConnections && req.socketConnections.hasOwnProperty(booking.userId)) {
+                const socketId = req.socketConnections[booking.userId];
+                req.io.to(socketId).emit('booking-validation', {
+                    message: `Booking ${booking.transactionNumber} is REJECTED`,
+                    url: `/admin/booking/view/${booking._id}`
+                });
+            }
+
             req.flash('warning', `Booking item ${booking.transactionNumber} is REJECTED`);
             return res.redirect('/admin/booking');
         } catch (err) {

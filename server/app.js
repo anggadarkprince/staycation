@@ -1,10 +1,12 @@
 require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
+const http = require('http');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
+const ioSession = require('socket.io-express-session');
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const MongoDBStore = require('connect-mongodb-session')(session);
@@ -36,7 +38,7 @@ seeder.import(collections)
     })
     .catch(console.log);
 
-mongoose.set('debug', true);
+//mongoose.set('debug', true);
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => {
         console.log('Database initialized');
@@ -68,7 +70,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/theme', express.static(path.join(__dirname, 'node_modules', 'startbootstrap-sb-admin-2')));
-app.use(session({
+const sess = session({
     secret: 'secret98sh968sdf7s8df6',
     resave: false,
     saveUninitialized: false,
@@ -76,13 +78,45 @@ app.use(session({
         uri: process.env.MONGO_URI,
         collection: 'sessions'
     })
-}));
+});
+app.use(sess);
 app.use(flash());
 app.use(compression());
 app.use(cors({
     origin: process.env.APP_URL,
     optionsSuccessStatus: 200
 }));
+
+// io socket
+const server = http.createServer(app);
+const io = require('socket.io')(server);
+io.use(ioSession(sess));
+app.use((req, res, next) => {
+    req.io = io;
+    return next();
+});
+const socketConnections = {};
+io.on('connection', function (socket) {
+    console.log('socket ID: ' + socket.id);
+    socketConnections[socket.handshake.session.userId] = socket.id;
+    console.log(socketConnections);
+    socket.on('disconnect', function () {
+        console.log('user disconnected');
+    });
+
+    socket.on('new-booking', function (msg) {
+        console.log('booking message: ' + msg);
+        io.emit('new-booking', msg);
+    });
+    socket.on('new-user', function (msg) {
+        console.log('user message: ' + msg);
+        io.emit('new-user', msg);
+    });
+});
+app.use((req, res, next) => {
+    req.socketConnections = socketConnections;
+    return next();
+});
 
 const isDev = process.env.NODE_ENV === 'development';
 if (isDev) {
@@ -219,4 +253,4 @@ app.use(function (err, req, res, next) {
     }
 });
 
-module.exports = app;
+module.exports = {app, server};
