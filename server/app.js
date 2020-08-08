@@ -51,6 +51,7 @@ const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 const uploadRouter = require('./routes/upload');
+const Notification = require('./models/Notification');
 const User = require('./models/User');
 const Auth = require('./modules/Auth');
 const permissions = require('./config/permissions');
@@ -97,9 +98,7 @@ app.use((req, res, next) => {
 });
 const socketConnections = {};
 io.on('connection', function (socket) {
-    console.log('socket ID: ' + socket.id);
     socketConnections[socket.handshake.session.userId] = socket.id;
-    console.log(socketConnections);
     socket.on('disconnect', function () {
         console.log('user disconnected');
     });
@@ -152,9 +151,14 @@ app.use((req, res, next) => {
         .then(user => {
             req.user = user;
             res.locals._loggedUser = user;
-            Auth.getPermissions(req.user._id)
-                .then(permissions => {
+            const permissionReq = Auth.getPermissions(req.user._id);
+            const notificationReq = Notification.find({userId: req.user._id, isRead: false}).limit(5);
+            Promise.all([permissionReq, notificationReq])
+                .then(result => {
+                    const permissions = result[0];
+                    const notifications = result[1];
                     req.session.permissions = permissions;
+                    res.locals._unreadNotifications = notifications;
                     next();
                 })
                 .catch(console.log);

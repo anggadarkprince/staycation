@@ -49,7 +49,7 @@ $(function () {
                 socket.on('new-booking', function (data) {
                     displayNotification('New Booking Submitted', data);
                 });
-                socket.on('new-payment', function (data) {
+                socket.on('booking-payment', function (data) {
                     displayNotification('Booking Payment', data);
                 });
                 socket.on('new-user', function (data) {

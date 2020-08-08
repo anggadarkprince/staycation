@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const Log = require('../models/Log');
 const {sendMail} = require('../helpers/mailer');
 const createError = require('http-errors');
@@ -100,9 +101,16 @@ module.exports = {
                 return user.save();
             })
             .then(user => {
-                req.io.emit('new-user', {
+                const notificationMessage = {
                     message: `User ${name} recently registered to our system, please review it`,
                     url: `/admin/user/view/${user._id}`
+                };
+                req.io.emit('new-user', notificationMessage);
+                Notification.create({
+                    userId: user._id,
+                    channel: 'new-user',
+                    ...notificationMessage,
+                    createdAt: new Date(),
                 });
 
                 const mailOptions = {
