@@ -1,6 +1,6 @@
 $(function () {
     // Datatable
-    $('.data-table').DataTable({
+    $('#dataTable, .data-table').DataTable({
         language: {
             processing: "Loading...",
             searchPlaceholder: "Search data"

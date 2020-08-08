@@ -17,6 +17,7 @@ module.exports = {
         const search = req.query.search;
         const dateFrom = req.query.date_from;
         const dateTo = req.query.date_to;
+        const status = req.query.status;
         const isExported = req.query.export;
 
         const bookings = await Booking.find({
@@ -25,6 +26,9 @@ module.exports = {
                     ...(dateFrom && {$gte: new Date(dateFrom)}),
                     ...(dateTo && {$lte: moment(dateTo).endOf('day').toDate()}),
                 }
+            }),
+            ...(status && {
+                status: status
             }),
             ...(search && {
                 $and: [{

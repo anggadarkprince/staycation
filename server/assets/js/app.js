@@ -19,7 +19,6 @@ try {
     require('datatables.net');
     require('datatables.net-bs4');
     require('startbootstrap-sb-admin-2/js/sb-admin-2');
-    require('startbootstrap-sb-admin-2/js/demo/datatables-demo');
 
     // loading misc scripts
     require('./scripts/validation');

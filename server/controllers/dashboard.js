@@ -1,4 +1,6 @@
 const Booking = require('../models/Booking');
+const moment = require('moment');
+
 module.exports = {
     index: async (req, res) => {
         const earningMonthResult = await Booking.aggregate([
@@ -46,6 +48,24 @@ module.exports = {
         const totalProceed = await Booking.countDocuments({status: 'PAID'});
         const totalBookingOutstanding = totalProceed / totalOutstanding * 100;
 
-        res.render('admin/dashboard/index', {title: 'Dashboard', earningMonthAvg, earningYearTotal, totalBooking, totalBookingOutstanding});
+
+        const earningMonthly = await Booking.aggregate([
+            {
+                $group: {
+                    _id : {
+                        year: {$year: "$createdAt"},
+                        month: {$dateToString: { format: "%m", date: "$createdAt" }},
+                    },
+                    total: { $sum: '$itemId.price' },
+                }
+            },
+            { $limit: 6 },
+            {$sort: {'_id.year': -1, '_id.month': 1}},
+        ]);
+        const monthlyReport = earningMonthly.map(monthly => {
+            return {year: monthly._id.year, month: moment(monthly._id.month, 'M').format('MMMM'), total: monthly.total}
+        });
+
+        res.render('admin/dashboard/index', {title: 'Dashboard', earningMonthAvg, earningYearTotal, totalBooking, totalBookingOutstanding, monthlyReport});
     }
 }
