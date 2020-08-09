@@ -127,7 +127,7 @@ module.exports = {
                         title: 'You Are Registered',
                         name: user.name,
                         email: user.email,
-                        content: "<p>You're successfully registered, we will verify your data and contact you later</p>"
+                        content: "<p>You're successfully registered, we will verify your data and contact you later. Please ignore this email if you think this is mistake.</p>"
                     })
                 };
 
