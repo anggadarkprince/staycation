@@ -14,6 +14,7 @@ module.exports = {
         const sortBy = req.query.sort_by || 'createdAt';
         const sortMethod = Number(req.query.order_method) || -1;
         const search = req.query.search;
+        const category = req.query.category;
         const dateFrom = req.query.date_from;
         const dateTo = req.query.date_to;
         const isExported = req.query.export;
@@ -34,6 +35,9 @@ module.exports = {
                     ]
                 }]
             }),
+            ...(category && {
+                categoryId: category
+            }),
         }).populate('categoryId').sort([[sortBy, sortMethod]]);
 
         if (isExported) {
@@ -41,7 +45,8 @@ module.exports = {
                 .attachment('items.xlsx')
                 .send(exporter.toExcel('Items', items, ['title', 'city', 'country', 'price', 'createdAt', 'updatedAt']));
         } else {
-            res.render('admin/item/index', {title: 'Item', items});
+            const categories = await Category.find();
+            res.render('admin/item/index', {title: 'Item', items, categories});
         }
     },
     view: async (req, res, next) => {

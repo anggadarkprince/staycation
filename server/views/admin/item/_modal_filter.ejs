@@ -14,6 +14,17 @@
                         <input type="text" class="form-control" name="search" id="search"
                                value="<%= getUrlParam('search') %>" placeholder="Search data">
                     </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select class="custom-select" name="category" id="category">
+                            <option value="">All Categories</option>
+                            <% categories.forEach(category => { %>
+                            <option value="<%= category._id %>"<%= getUrlParam('category') == category._id ? ' selected' : '' %>>
+                                <%= category.category %>
+                            </option>
+                            <% }) %>
+                        </select>
+                    </div>
                     <div class="form-row">
                         <div class="col-8 col-sm-6">
                             <div class="form-group">
