@@ -51,6 +51,7 @@ const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 const uploadRouter = require('./routes/upload');
+const consoleRouter = require('./routes/console');
 const Notification = require('./models/Notification');
 const Setting = require('./models/Setting');
 const User = require('./models/User');
@@ -243,6 +244,7 @@ const mustAuthenticated = require('./middleware/mustAuthenticated');
 app.use('/', indexRouter);
 app.use('/admin', [mustAuthenticated, adminRouter]);
 app.use('/upload', [mustAuthenticated, uploadRouter]);
+app.use('/console', consoleRouter);
 app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
