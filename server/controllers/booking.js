@@ -127,18 +127,20 @@ module.exports = {
                 description
             });
 
-            const notificationMessage = {
-                message: `Booking for item ${itemData.title}, please review if necessary`,
-                url: `/admin/booking/view/${booking._id}`
-            };
-            req.io.emit('new-booking', notificationMessage);
+            if (req.user.preferences.notificationNewBooking) {
+                const notificationMessage = {
+                    message: `Booking for item ${itemData.title}, please review if necessary`,
+                    url: `/admin/booking/view/${booking._id}`
+                };
+                req.io.emit('new-booking', notificationMessage);
 
-            Notification.create({
-                userId: userId,
-                channel: 'new-booking',
-                ...notificationMessage,
-                createdAt: new Date(),
-            });
+                Notification.create({
+                    userId: userId,
+                    channel: 'new-booking',
+                    ...notificationMessage,
+                    createdAt: new Date(),
+                });
+            }
 
             req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully created`);
             res.redirect('/admin/booking');
@@ -221,18 +223,20 @@ module.exports = {
             booking.status = 'PAID';
             await booking.save();
 
-            const notificationMessage = {
-                message: `Payment for booking ${booking.transactionNumber} is submitted`,
-                url: `/admin/booking/print/${booking._id}`
-            };
-            req.io.emit('booking-payment', notificationMessage);
+            if (req.user.preferences.notificationNewBooking) {
+                const notificationMessage = {
+                    message: `Payment for booking ${booking.transactionNumber} is submitted`,
+                    url: `/admin/booking/print/${booking._id}`
+                };
+                req.io.emit('booking-payment', notificationMessage);
 
-            Notification.create({
-                userId: booking.userId,
-                channel: 'booking-payment',
-                ...notificationMessage,
-                createdAt: new Date(),
-            });
+                Notification.create({
+                    userId: booking.userId,
+                    channel: 'booking-payment',
+                    ...notificationMessage,
+                    createdAt: new Date(),
+                });
+            }
 
             req.flash('success', `Booking item ${booking.transactionNumber} successfully paid`);
             return res.redirect('/admin/booking');
@@ -248,21 +252,23 @@ module.exports = {
             const booking = await Booking.findByIdAndUpdate(req.params.id, {status: 'COMPLETED'});
 
             // send to specific user that owned the booking (if they are online)
-            const notificationMessage = {
-                message: `Booking ${booking.transactionNumber} is approved`,
-                url: `/admin/booking/view/${booking._id}`
-            };
-            if (req.socketConnections && req.socketConnections.hasOwnProperty(booking.userId)) {
-                const socketId = req.socketConnections[booking.userId];
-                req.io.to(socketId).emit('booking-validation', notificationMessage);
-            }
+            if (req.user.preferences.notificationNewBooking) {
+                const notificationMessage = {
+                    message: `Booking ${booking.transactionNumber} is approved`,
+                    url: `/admin/booking/view/${booking._id}`
+                };
+                if (req.socketConnections && req.socketConnections.hasOwnProperty(booking.userId)) {
+                    const socketId = req.socketConnections[booking.userId];
+                    req.io.to(socketId).emit('booking-validation', notificationMessage);
+                }
 
-            Notification.create({
-                userId: booking.userId,
-                channel: 'booking-approve',
-                ...notificationMessage,
-                createdAt: new Date(),
-            });
+                Notification.create({
+                    userId: booking.userId,
+                    channel: 'booking-approve',
+                    ...notificationMessage,
+                    createdAt: new Date(),
+                });
+            }
 
             req.flash('success', `Booking item ${booking.transactionNumber} is completed`);
             return res.redirect('/admin/booking');
@@ -278,21 +284,23 @@ module.exports = {
             const booking = await Booking.findByIdAndUpdate(req.params.id, {status: 'REJECTED'});
 
             // send to specific user that owned the booking (if they are online)
-            const notificationMessage = {
-                message: `Booking ${booking.transactionNumber} is REJECTED`,
-                url: `/admin/booking/view/${booking._id}`
-            };
-            if (req.socketConnections && req.socketConnections.hasOwnProperty(booking.userId)) {
-                const socketId = req.socketConnections[booking.userId];
-                req.io.to(socketId).emit('booking-validation', notificationMessage);
-            }
+            if (req.user.preferences.notificationNewBooking) {
+                const notificationMessage = {
+                    message: `Booking ${booking.transactionNumber} is REJECTED`,
+                    url: `/admin/booking/view/${booking._id}`
+                };
+                if (req.socketConnections && req.socketConnections.hasOwnProperty(booking.userId)) {
+                    const socketId = req.socketConnections[booking.userId];
+                    req.io.to(socketId).emit('booking-validation', notificationMessage);
+                }
 
-            Notification.create({
-                userId: booking.userId,
-                channel: 'booking-reject',
-                ...notificationMessage,
-                createdAt: new Date(),
-            });
+                Notification.create({
+                    userId: booking.userId,
+                    channel: 'booking-reject',
+                    ...notificationMessage,
+                    createdAt: new Date(),
+                });
+            }
 
             req.flash('warning', `Booking item ${booking.transactionNumber} is REJECTED`);
             return res.redirect('/admin/booking');

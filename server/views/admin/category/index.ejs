@@ -47,7 +47,6 @@
                             <tr>
                                 <th style="width: 35px">No</th>
                                 <th>Category</th>
-                                <th>Total Item</th>
                                 <th>Description</th>
                                 <th>Created At</th>
                                 <th class="text-md-right" style="max-width: 80px">Action</th>
@@ -58,7 +57,6 @@
                                 <tr>
                                     <td><%= i + 1 %></td>
                                     <td><%= category.category %></td>
-                                    <td>0</td>
                                     <td class="text-truncate" style="max-width: 200px"><%= category.description || '-' %></td>
                                     <td><%= moment(category.createdAt).format('DD MMMM Y HH:mm') %></td>
                                     <td class="text-md-right">
@@ -95,7 +93,6 @@
                             <tr>
                                 <th>No</th>
                                 <th>Category</th>
-                                <th>Total Item</th>
                                 <th>Description</th>
                                 <th>Created At</th>
                                 <th class="text-md-right" style="max-width: 80px">Action</th>

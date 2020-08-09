@@ -93,7 +93,7 @@
                                         <div class="form-group">
                                             <label for="phone_number">Phone Number</label>
                                             <input type="text" class="form-control" id="phone_number" name="phone_number" required maxlength="20"
-                                                   placeholder="Account holder name" value="<%= _old.phone_number || member.phoneNumber %>">
+                                                   placeholder="Account holder name" value="<%= _old.phone_number || (member ? member.phoneNumber : '') %>">
                                             <%- validationError('phone_number') %>
                                         </div>
                                     </div>
@@ -101,7 +101,7 @@
                                         <div class="form-group">
                                             <label for="date_of_birth">Date of Birth</label>
                                             <input type="text" class="form-control datepicker" id="date_of_birth" name="date_of_birth" autocomplete="off" required maxlength="20"
-                                                   placeholder="Your birthday" value="<%= _old.date_of_birth || moment(member.dateOfBirth).format('DD MMMM Y') %>">
+                                                   placeholder="Your birthday" value="<%= _old.date_of_birth || (member ? moment(member.dateOfBirth).format('DD MMMM Y') : '') %>">
                                             <%- validationError('date_of_birth') %>
                                         </div>
                                     </div>
@@ -109,7 +109,7 @@
                                 <div class="form-group">
                                     <label for="address">Address</label>
                                     <textarea class="form-control" id="address" name="address" maxlength="200"
-                                              placeholder="Enter your address"><%= _old.address || member.address %></textarea>
+                                              placeholder="Enter your address"><%= _old.address || (member ? member.address : '') %></textarea>
                                     <%- validationError('address') %>
                                 </div>
                             </div>

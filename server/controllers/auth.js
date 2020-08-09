@@ -90,7 +90,12 @@ module.exports = {
             });
     },
     register: (req, res) => {
-        res.render('auth/register', {title: 'Register'});
+        if (req.settings.publicRegistration) {
+            res.render('auth/register', {title: 'Register'});
+        } else {
+            req.flash('danger', 'Public registration is not allowed, please contact out administrator to acquire credentials!');
+            res.redirect('/auth/login');
+        }
     },
     saveRegistration: (req, res, next) => {
         const {name, username, email, password} = req.body;

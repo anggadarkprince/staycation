@@ -1,4 +1,5 @@
 const Booking = require('../models/Booking');
+const Item = require('../models/Item');
 const moment = require('moment');
 
 module.exports = {
@@ -67,5 +68,45 @@ module.exports = {
         });
 
         res.render('admin/dashboard/index', {title: 'Dashboard', earningMonthAvg, earningYearTotal, totalBooking, totalBookingOutstanding, monthlyReport});
+    },
+    search: async (req, res) => {
+        const search = req.query.q;
+        const bookings = await Booking.find({
+            ...(search && {
+                $and: [{
+                    $or: [
+                        {transactionNumber: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {bank: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {accountNumber: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {accountHolder: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {status: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {description: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {paymentMethod: {$regex: `.*${search}.*`, $options: 'i'}},
+                    ]
+                }]
+            }),
+        })
+            .populate('userId')
+            .populate('itemId._id')
+            .sort([['createdAt', -1]])
+            .limit(5);
+
+        const items = await Item.find({
+            ...(search && {
+                $and: [{
+                    $or: [
+                        {title: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {city: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {country: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {description: {$regex: `.*${search}.*`, $options: 'i'}},
+                    ]
+                }]
+            }),
+        })
+            .populate('categoryId')
+            .sort([['createdAt', -1]])
+            .limit(5);
+
+        res.render('admin/dashboard/search', {title: 'Search', bookings, items});
     }
 }

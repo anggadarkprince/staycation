@@ -60,7 +60,7 @@ module.exports = {
         const {name, username, email, password, status, roles: roleId} = req.body;
         try {
             const hashedPassword = bcrypt.hashSync(password, 12);
-            await User.create({
+            const user = await User.create({
                 name,
                 username,
                 password: hashedPassword,
@@ -69,6 +69,15 @@ module.exports = {
                 avatar: path.join('/', req.file.path),
                 roleId
             });
+
+            if (req.user.preferences.notificationNewUser) {
+                const notificationMessage = {
+                    message: `User ${name} recently registered to our system`,
+                    url: `/admin/user/view/${user._id}`
+                };
+                req.io.emit('new-user', notificationMessage);
+            }
+
             req.flash('success', `User ${req.body.name} successfully created`);
             res.redirect('/admin/user');
         } catch (err) {

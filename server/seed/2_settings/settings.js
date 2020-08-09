@@ -28,7 +28,7 @@ module.exports = [
     {
         id: getObjectId('currency-symbol'),
         key: 'currency-symbol',
-        value: '',
+        value: 'IDR',
         description: 'Company office address',
     },
     {

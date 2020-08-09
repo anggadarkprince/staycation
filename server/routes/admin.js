@@ -16,6 +16,7 @@ const notificationRouter = require('./notification');
 
 router.get('/', (req, res) => res.redirect('/admin/dashboard'));
 router.get('/dashboard', dashboard.index);
+router.get('/search', dashboard.search);
 router.use('/role', roleRouter);
 router.use('/user', userRouter);
 router.use('/category', categoryRouter);

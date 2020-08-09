@@ -52,6 +52,7 @@ const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 const uploadRouter = require('./routes/upload');
 const Notification = require('./models/Notification');
+const Setting = require('./models/Setting');
 const User = require('./models/User');
 const Auth = require('./modules/Auth');
 const permissions = require('./config/permissions');
@@ -167,6 +168,21 @@ app.use((req, res, next) => {
                 .catch(console.log);
         })
         .catch(console.log);
+});
+
+app.use(async (req, res, next) => {
+    const systemSetting = {
+        appName: (await Setting.findOne({key: 'app-name'})).value || process.env.APP_NAME,
+        contact: (await Setting.findOne({key: 'contact'})).value || '',
+        email: (await Setting.findOne({key: 'email'})).value || process.env.MAIL_ADMIN,
+        address: (await Setting.findOne({key: 'address'})).value || '',
+        currencySymbol: (await Setting.findOne({key: 'currency-symbol'})).value || '',
+        taxPercent: (await Setting.findOne({key: 'tax-percent'})).value || 10,
+        publicRegistration: (await Setting.findOne({key: 'public-registration'})).value || 0,
+    };
+    res.req.settings = systemSetting;
+    res.locals._settings = systemSetting;
+    next();
 });
 
 app.use((req, res, next) => {
