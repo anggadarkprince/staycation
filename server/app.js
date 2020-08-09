@@ -152,13 +152,16 @@ app.use((req, res, next) => {
             req.user = user;
             res.locals._loggedUser = user;
             const permissionReq = Auth.getPermissions(req.user._id);
-            const notificationReq = Notification.find({userId: req.user._id, isRead: false}).limit(5);
-            Promise.all([permissionReq, notificationReq])
+            const notificationReq = Notification.find({userId: req.user._id, isRead: false}).sort([['createdAt', -1]]).limit(5);
+            const notificationUnreadTotal = Notification.countDocuments({userId: req.user._id, isRead: false});
+            Promise.all([permissionReq, notificationReq, notificationUnreadTotal])
                 .then(result => {
                     const permissions = result[0];
                     const notifications = result[1];
+                    const notificationUnreadTotal = result[2];
                     req.session.permissions = permissions;
                     res.locals._unreadNotifications = notifications;
+                    res.locals._unreadNotificationTotal = notificationUnreadTotal || 0;
                     next();
                 })
                 .catch(console.log);

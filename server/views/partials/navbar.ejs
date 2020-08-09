@@ -48,10 +48,11 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter">
-                    <%= _unreadNotifications.length %><%= _unreadNotifications.length === 5 ? '+' : '' %>
-                </span>
+                <% if (_unreadNotificationTotal) { %>
+                    <span class="badge badge-danger badge-counter">
+                        <%= _unreadNotificationTotal <= 5 ? _unreadNotificationTotal : '5+' %>
+                    </span>
+                <% } %>
             </a>
             <!-- Dropdown - Alerts -->
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
@@ -73,7 +74,7 @@
                     'booking-reject': 'bg-danger',
                 } %>
                 <% _unreadNotifications.forEach(notification => { %>
-                    <a class="dropdown-item d-flex align-items-center" href="<%= notification.url || '/' %>">
+                    <a class="dropdown-item d-flex align-items-center" href="/admin/notification/read/<%= notification._id %>" data-url="<%= notification.url || '/' %>">
                         <div class="mr-3">
                             <div class="icon-circle <%= notificationColors[notification.channel] || 'bg-primary' %>">
                                 <i class="fas <%= notificationIcons[notification.channel] || 'fa-file-alt' %> text-white"></i>

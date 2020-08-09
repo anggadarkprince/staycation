@@ -12,6 +12,7 @@ const bookingRouter = require('./booking');
 const accountRouter = require('./account');
 const settingRouter = require('./setting');
 const logRouter = require('./log');
+const notificationRouter = require('./notification');
 
 router.get('/', (req, res) => res.redirect('/admin/dashboard'));
 router.get('/dashboard', dashboard.index);
@@ -25,5 +26,6 @@ router.use('/booking', bookingRouter);
 router.use('/account', accountRouter);
 router.use('/settings', settingRouter);
 router.use('/activity-log', logRouter);
+router.use('/notification', notificationRouter);
 
 module.exports = router;
