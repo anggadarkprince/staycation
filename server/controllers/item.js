@@ -82,7 +82,7 @@ module.exports = {
     },
     save: async (req, res) => {
         const {
-            title, category, price, country, city, description, facilities, activities,
+            title, category: categoryId, price, country, city, description, facilities, activities,
             is_popular: isPopular, input_photos: photos, is_primary_photo: primaryPhoto
         } = req.body;
         try {
@@ -118,14 +118,19 @@ module.exports = {
                         const image = path.join('/', newPath);
                         return {...activity, image};
                     });
-                    await Item.create({
+                    const item = await Item.create({
                         title, country, city, isPopular, description,
                         price: extractNumber(price),
-                        categoryId: category,
+                        categoryId: categoryId,
                         imageId: photoId || [],
                         facilities: Object.keys(facilities || []).map(key => ({_id: key, qty: facilities[key]})),
                         activities: activityData
                     });
+
+                    const category = await Category.findById(categoryId);
+                    category.itemId.push(item._id);
+                    category.save();
+
                     req.flash('success', `Item ${title} successfully created`);
                     res.redirect('/admin/item');
                 })
@@ -156,7 +161,7 @@ module.exports = {
     update: async (req, res) => {
         const id = req.params.id;
         const {
-            title, category, price, country, city, facilities, description, activities,
+            title, category: categoryId, price, country, city, facilities, description, activities,
             is_popular: isPopular, input_photos: photos, is_primary_photo: primaryPhoto
         } = req.body;
 
@@ -214,17 +219,30 @@ module.exports = {
                     });
 
                     const result = await Item.findOne({_id: id});
+                    const oldCategoryId = result.categoryId;
+
                     result.title = title;
                     result.price = extractNumber(price);
                     result.country = country;
                     result.city = city;
                     result.isPopular = isPopular;
                     result.description = description;
-                    result.categoryId = category;
+                    result.categoryId = categoryId;
                     result.imageId = photoId;
                     result.facilities = Object.keys(facilities || []).map(key => ({_id: key, qty: facilities[key]}));
                     result.activities = activityData;
-                    result.save();
+                    await result.save();
+
+                    const category = await Category.findById(categoryId);
+                    if (!category.itemId.includes(id)) {
+                        category.itemId.push(item._id);
+                        await category.save();
+                    }
+                    if (oldCategoryId != categoryId) {
+                        const oldCategory = await Category.findById(oldCategoryId);
+                        oldCategory.itemId.pull(id);
+                        await oldCategory.save();
+                    }
 
                     req.flash('success', `Item ${title} successfully updated`);
                     return res.redirect('/admin/item');

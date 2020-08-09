@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {ObjectId} = mongoose.Schema;
 
 const categorySchema = new mongoose.Schema({
     category: {
@@ -10,6 +11,10 @@ const categorySchema = new mongoose.Schema({
         type: String,
         maxlength: [500, 'Description maximum 500 characters'],
     },
+    itemId: [{
+        type: ObjectId,
+        ref: 'Item',
+    }],
 }, {timestamps: true});
 
 module.exports = mongoose.model('Category', categorySchema);
