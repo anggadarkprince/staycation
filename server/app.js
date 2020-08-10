@@ -48,6 +48,7 @@ mongoose.Promise = Promise;
 
 const errorController = require('./controllers/error');
 const indexRouter = require('./routes/index');
+const apiRouter = require('./routes/api');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 const uploadRouter = require('./routes/upload');
@@ -230,6 +231,8 @@ app.use(methodOverride(function (req, res) {
         return method;
     }
 }));
+
+app.use('/api', apiRouter);
 
 // Add router api before middleware csrf
 const csrfProtection = csrf({sessionKey: 'session'});
