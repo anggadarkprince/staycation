@@ -86,13 +86,13 @@
             <td style="font-weight: bold; width: 150px">Name</td>
             <td style="width: 300px"><%= booking.userId.name %></td>
             <td style="font-weight: bold; width: 130px">Payment</td>
-            <td style="width: 300px"><%= booking.paymentMethod %></td>
+            <td style="width: 300px"><%= booking.payment.paymentMethod %></td>
         </tr>
         <tr>
             <td style="font-weight: bold; width: 150px">Email</td>
             <td><%= booking.userId.email %></td>
             <td style="font-weight: bold; width: 130px">Paid At</td>
-            <td><%= booking.paidAt ? moment(booking.paidAt).format('DD MMMM Y HH:mm') : 'WAITING' %></td>
+            <td><%= booking.paidAt ? moment(booking.payment.paidAt).format('DD MMMM Y HH:mm') : 'WAITING' %></td>
         </tr>
     </table>
 
@@ -120,7 +120,7 @@
                     <%= booking.itemId._id.title %> -
                     <%= booking.itemId._id.city %>, <%= booking.itemId._id.country %>
                 </td>
-                <td style="text-align: center"><%= booking.itemId.night || 0 %> Night(s)</td>
+                <td style="text-align: center"><%= booking.itemId.duration || 0 %> Night(s)</td>
                 <td style="text-align: right"><%= numberFormat(booking.itemId.price, 'IDR ') %></td>
             </tr>
             <tr>

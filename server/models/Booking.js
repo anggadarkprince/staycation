@@ -24,7 +24,7 @@ const bookingSchema = new mongoose.Schema({
             type: Number,
             required: true,
         },
-        night: {
+        duration: {
             type: Number,
             required: true,
         }
@@ -37,24 +37,26 @@ const bookingSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Bank',
     },
-    proofPayment: {
-        type: String,
-    },
-    paymentMethod: {
-        type: String,
-        default: 'BANK TRANSFER',
-    },
-    bank: {
-        type: String,
-    },
-    accountHolder: {
-        type: String,
-    },
-    accountNumber: {
-        type: String,
-    },
-    paidAt: {
-        type: Date,
+    payment: {
+        proofPayment: {
+            type: String,
+        },
+        paymentMethod: {
+            type: String,
+            default: 'BANK TRANSFER',
+        },
+        bank: {
+            type: String,
+        },
+        accountHolder: {
+            type: String,
+        },
+        accountNumber: {
+            type: String,
+        },
+        paidAt: {
+            type: Date,
+        },
     },
     description: {
         type: String,

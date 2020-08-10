@@ -41,8 +41,8 @@
                                         'transactionNumber': 'Transaction Number',
                                         'name': 'Name',
                                         'item': 'Item Name',
-                                        'night': 'Night',
-                                        'price': 'Price',
+                                        'itemId.duration': 'Duration',
+                                        'itemId.price': 'Price',
                                     } %>
 									<% for (const sortKey in sortFields) { %>
 										<option value="<%= sortKey %>"<%= getUrlParam('sort_by') == sortKey ? ' selected' : '' %>>

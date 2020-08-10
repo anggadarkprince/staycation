@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {ObjectId} = mongoose.Schema;
 
 const facilitySchema = new mongoose.Schema({
     facility: {
@@ -14,6 +15,10 @@ const facilitySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    itemId: [{
+        type: ObjectId,
+        ref: 'Item',
+    }],
 }, {timestamps: true});
 
 module.exports = mongoose.model('Facility', facilitySchema);

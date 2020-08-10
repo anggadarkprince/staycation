@@ -48,7 +48,7 @@
                                 <th>No Order</th>
                                 <th>Name</th>
                                 <th>Item</th>
-                                <th>Night</th>
+                                <th>Duration</th>
                                 <th>Price</th>
                                 <th>Status</th>
                                 <th class="text-md-right" style="max-width: 80px">Action</th>
@@ -67,7 +67,7 @@
                                     <td><%= booking.transactionNumber %></td>
                                     <td><%= booking.userId.name %></td>
                                     <td><%= booking.itemId._id.title %></td>
-                                    <td><%= booking.itemId.night %></td>
+                                    <td><%= booking.itemId.duration %> night</td>
                                     <td><%= numberFormat(booking.itemId.price * (1 + (_settings.taxPercent / 100)) - (booking.itemId.discount || 0), `${_settings.currencySymbol} `) %></td>
                                     <td>
                                         <span class="badge badge-<%= bookingStatuses[booking.status || 'BOOKED'] %>">
@@ -130,7 +130,7 @@
                                 <th>No Order</th>
                                 <th>Name</th>
                                 <th>Item</th>
-                                <th>Night</th>
+                                <th>Duration</th>
                                 <th>Price</th>
                                 <th class="text-md-right" style="max-width: 80px">Action</th>
                             </tr>

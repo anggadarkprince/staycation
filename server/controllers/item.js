@@ -131,6 +131,14 @@ module.exports = {
                     category.itemId.push(item._id);
                     category.save();
 
+                    Object.keys(facilities || []).forEach(key => {
+                        Facility.findById(key)
+                            .then(facility => {
+                                facility.itemId.push(item._id);
+                                facility.save();
+                            });
+                    });
+
                     req.flash('success', `Item ${title} successfully created`);
                     res.redirect('/admin/item');
                 })
@@ -220,6 +228,7 @@ module.exports = {
 
                     const result = await Item.findOne({_id: id});
                     const oldCategoryId = result.categoryId;
+                    const oldFacilities = result.facilities.map(oldFacility => oldFacility._id);
 
                     result.title = title;
                     result.price = extractNumber(price);
@@ -243,6 +252,26 @@ module.exports = {
                         oldCategory.itemId.pull(id);
                         await oldCategory.save();
                     }
+
+                    const facilityIds = Object.keys(facilities || []);
+                    facilityIds.forEach(key => {
+                        Facility.findById(key)
+                            .then(facility => {
+                                if (!facility.itemId.includes(id)) {
+                                    facility.itemId.push(item._id);
+                                    facility.save();
+                                }
+                            });
+                        oldFacilities.forEach(oldFacilityId => {
+                            if (!facilityIds.includes(oldFacilityId.toString())) {
+                                Facility.findById(oldFacilityId)
+                                    .then(oldF => {
+                                        oldF.itemId.pull(id);
+                                        oldF.save();
+                                    });
+                            }
+                        });
+                    });
 
                     req.flash('success', `Item ${title} successfully updated`);
                     return res.redirect('/admin/item');

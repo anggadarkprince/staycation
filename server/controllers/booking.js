@@ -35,9 +35,9 @@ module.exports = {
                 $and: [{
                     $or: [
                         {transactionNumber: {$regex: `.*${search}.*`, $options: 'i'}},
-                        {bank: {$regex: `.*${search}.*`, $options: 'i'}},
-                        {accountNumber: {$regex: `.*${search}.*`, $options: 'i'}},
-                        {accountHolder: {$regex: `.*${search}.*`, $options: 'i'}},
+                        {'payment.bank': {$regex: `.*${search}.*`, $options: 'i'}},
+                        {'payment.accountNumber': {$regex: `.*${search}.*`, $options: 'i'}},
+                        {'payment.accountHolder': {$regex: `.*${search}.*`, $options: 'i'}},
                         {status: {$regex: `.*${search}.*`, $options: 'i'}},
                     ]
                 }]
@@ -120,7 +120,7 @@ module.exports = {
                 itemId: {
                     _id: itemId,
                     price: itemData.price,
-                    night: moment(untilDate, 'DD MMMM Y').diff(moment(fromDate, 'DD MMMM Y'), 'days'),
+                    duration: moment(untilDate, 'DD MMMM Y').diff(moment(fromDate, 'DD MMMM Y'), 'days'),
                 },
                 userId,
                 bankId,
@@ -176,12 +176,11 @@ module.exports = {
             booking.itemId = {
                 _id: itemId,
                 price: itemData.price,
-                night: moment(untilDate).diff(moment(fromDate), 'days'),
+                duration: moment(untilDate).diff(moment(fromDate), 'days'),
             };
             booking.userId = userId;
             booking.bankId = bankId;
             booking.description = description;
-            booking.paidAt = new Date();
             await booking.save();
 
             req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully updated`);
@@ -211,15 +210,18 @@ module.exports = {
 
         try {
             const booking = await Booking.findOne({_id: id});
+            const payment = {};
             if (req.file) {
                 if (booking.proofPayment) {
                     await fs.unlink(booking.proofPayment.replace(/^(\\)/, ''), console.log);
                 }
-                booking.proofPayment = path.join('/', req.file.path);
+                payment.proofPayment = path.join('/', req.file.path);
             }
-            booking.bank = bank;
-            booking.accountNumber = accountNumber;
-            booking.accountHolder = accountHolder;
+            payment.bank = bank;
+            payment.accountNumber = accountNumber;
+            payment.accountHolder = accountHolder;
+            payment.paidAt = new Date();
+            booking.payment = payment;
             booking.status = 'PAID';
             await booking.save();
 

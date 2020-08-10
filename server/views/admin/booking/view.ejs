@@ -116,10 +116,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group mb-2 mb-md-0 row">
-                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Night</label>
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Duration</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <%= booking.itemId.night || 0 %>
+                                            <%= booking.itemId.duration || 0 %>
                                         </p>
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@
                                     <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Payment Method</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <%= booking.paymentMethod || 'No payment' %>
+                                            <%= booking.payment.paymentMethod || 'No payment' %>
                                         </p>
                                     </div>
                                 </div>
@@ -207,7 +207,7 @@
                                     <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Account Holder</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <%= booking.accountHolder || 'No name' %>
+                                            <%= booking.payment.accountHolder || 'No name' %>
                                         </p>
                                     </div>
                                 </div>
@@ -215,7 +215,7 @@
                                     <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Account Number</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <%= booking.accountNumber || 'No number' %>
+                                            <%= booking.payment.accountNumber || 'No number' %>
                                         </p>
                                     </div>
                                 </div>
@@ -223,13 +223,14 @@
                                     <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Proof Payment</label>
                                     <div class="col-sm-8">
                                         <p class="form-control-plaintext">
-                                            <% if (booking.proofPayment) { %>
-                                                <a href="<%= booking.proofPayment %>">
+                                            <% if (booking.payment.proofPayment) { %>
+                                                <a href="<%= booking.payment.proofPayment %>">
                                                     Download
                                                 </a>
                                             <% } else { %>
-                                                -
+                                                WAITING
                                             <% } %>
+                                            <%= booking.payment.paidAt ? ' - ' + moment(booking.payment.paidAt).format('DD MMM Y HH:mm') : '' %>
                                         </p>
                                     </div>
                                 </div>

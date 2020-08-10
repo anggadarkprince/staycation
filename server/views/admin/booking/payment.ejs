@@ -79,7 +79,7 @@
                                             <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Night</label>
                                             <div class="col-sm-8">
                                                 <p class="form-control-plaintext">
-                                                    <%= booking.itemId.night || 0 %>
+                                                    <%= booking.itemId.duration || 0 %>
                                                 </p>
                                             </div>
                                         </div>
@@ -95,7 +95,7 @@
                                             <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Payment Method</label>
                                             <div class="col-sm-8">
                                                 <p class="form-control-plaintext">
-                                                    <%= booking.paymentMethod || 'No payment' %>
+                                                    <%= booking.payment.paymentMethod || 'No payment' %>
                                                 </p>
                                             </div>
                                         </div>
@@ -127,7 +127,7 @@
                                 <div class="form-group">
                                     <label for="bank">Bank</label>
                                     <input type="text" class="form-control" id="bank" name="bank" required maxlength="20"
-                                           value="<%= _old.bank || booking.bank %>" placeholder="From bank">
+                                           value="<%= _old.bank || booking.payment.bank %>" placeholder="From bank">
                                     <%- validationError('payment') %>
                                 </div>
                                 <div class="row">
@@ -135,7 +135,7 @@
                                         <div class="form-group">
                                             <label for="account_holder">Account Holder</label>
                                             <input type="text" class="form-control" id="account_holder" name="account_holder" required maxlength="30"
-                                                   value="<%= _old.account_holder || booking.accountHolder %>" placeholder="Account holder name">
+                                                   value="<%= _old.account_holder || booking.payment.accountHolder %>" placeholder="Account holder name">
                                             <%- validationError('account_holder') %>
                                         </div>
                                     </div>
@@ -143,7 +143,7 @@
                                         <div class="form-group">
                                             <label for="account_number">Account Number</label>
                                             <input type="text" class="form-control" id="account_number" name="account_number" required maxlength="20"
-                                                   value="<%= _old.account_number || booking.accountNumber %>" placeholder="Account number">
+                                                   value="<%= _old.account_number || booking.payment.accountNumber %>" placeholder="Account number">
                                             <%- validationError('account_number') %>
                                         </div>
                                     </div>
@@ -152,7 +152,7 @@
                                     <label>Logo</label>
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="proof_payment" name="proof_payment" accept="image/*">
-                                        <label class="custom-file-label" for="proof_payment"><%= booking.proofPayment || 'Pick File' %></label>
+                                        <label class="custom-file-label" for="proof_payment"><%= booking.payment.proofPayment || 'Pick File' %></label>
                                     </div>
                                     <%- validationError('proof_payment') %>
                                 </div>
