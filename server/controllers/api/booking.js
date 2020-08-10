@@ -33,7 +33,8 @@ module.exports = {
                 },
                 userId,
                 bankId,
-                description
+                description,
+                payment,
             });
 
             if (userData.preferences && userData.preferences.notificationNewBooking) {
