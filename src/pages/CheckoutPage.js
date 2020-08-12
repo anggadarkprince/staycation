@@ -23,7 +23,7 @@ export default class LandingPage extends Component {
     }
 
     componentDidMount() {
-        window.title = "Staycation | Checkout";
+        document.title = "Staycation | Checkout";
         window.scrollTo(0, 0);
     }
 

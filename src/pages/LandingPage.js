@@ -18,13 +18,12 @@ export default class LandingPage extends Component{
     }
 
     componentDidMount() {
-        window.title = "Staycation | Hotels and reservation";
+        document.title = "Staycation | Hotels and reservation";
         window.scrollTo(0, 0);
 
         fetch('http://localhost:3000/api/landing')
             .then(result => result.json())
             .then(result => {
-                console.log(result);
                 this.setState({
                     landingPage: result,
                     isLoading: false
