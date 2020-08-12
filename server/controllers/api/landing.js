@@ -74,10 +74,47 @@ module.exports = {
         try {
             const {id} = req.params;
             const item = await Item.findOne({_id: id})
-                .populate({path: 'featureId._id', select: '_id feature image'})
-                .populate({path: 'imageId', select: '_id imageUrl'});
+                .populate({path: 'facilities._id', select: '_id facility image'})
+                .populate({path: 'imageId', select: '_id imageUrl isPrimary'});
+            item._doc.currencySymbol = req.settings.currencySymbol;
 
-            const bank = await Bank.find();
+            item._doc.facilities = item._doc.facilities.map(facility => {
+                return {
+                    facility: facility._id.facility,
+                    imageUrl: res.locals._baseUrl + facility._id.image.replace(/\\/g, "/"),
+                    qty: facility.qty
+                };
+            });
+
+            item._doc.imageId = item._doc.imageId.map(image => {
+                return {
+                    _id: image._id,
+                    imageUrl: res.locals._baseUrl + image.imageUrl.replace(/\\/g, "/"),
+                    isPrimary: image.isPrimary,
+                };
+            });
+
+            const categoryData = await Category.find({_id: item.categoryId})
+                .select('_id category')
+                .populate({
+                    path: 'itemId',
+                    select: '_id title country city isPopular imageId',
+                    perDocumentLimit: 4,
+                    option: {sort: {sumBooking: -1}},
+                    populate: {
+                        path: 'imageId',
+                        select: '_id imageUrl isPrimary',
+                    }
+                });
+            const categories = categoryData.map(item => {
+                const categoryItem = {...item._doc};
+                categoryItem.itemId = categoryItem.itemId.map(itemId => {
+                    const singleItem = {...itemId._doc};
+                    singleItem.imageUrl = res.locals._baseUrl + singleItem.imageId.find(image => image.isPrimary === true).imageUrl.replace(/\\/g, "/");
+                    return singleItem;
+                });
+                return categoryItem;
+            });
 
             const testimonial = {
                 _id: "asd1293uasdads1",
@@ -91,11 +128,12 @@ module.exports = {
 
             res.status(200).json({
                 ...item._doc,
-                bank,
+                categories,
                 testimonial
             })
 
         } catch (error) {
+            console.log(error);
             res.status(500).json({message: "Internal server error"});
         }
     },

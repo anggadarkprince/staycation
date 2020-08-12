@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Fade from 'react-reveal/Fade';
 import Header from 'parts/Header';
-import itemDetails from 'json/itemDetails';
 import PageDetailTitle from 'parts/PageDetailTitle';
 import FeaturedImage from 'parts/FeaturedImage';
 import PageDetailDescription from 'parts/PageDetailDescription';
@@ -10,39 +9,59 @@ import Categories from 'parts/Categories';
 import Testimony from 'parts/Testimony';
 import Footer from "../parts/Footer";
 
-export default class DetailPage extends Component{
+export default class DetailPage extends Component {
+    state = {
+        detailPage: {},
+        isLoading: true
+    }
 
     componentDidMount() {
         document.title = "Staycation | Detail";
         window.scrollTo(0, 0);
+
+        fetch('http://localhost:3000/api/detail/' + this.props.match.params.id)
+            .then(result => result.json())
+            .then(result => {
+                console.log(result);
+                this.setState({
+                    detailPage: result,
+                    isLoading: false
+                });
+            })
+            .catch(console.log);
     }
 
     render() {
+        const detailPage = this.state.detailPage;
+        const {categories, testimonial} = this.state.detailPage;
         const breadcrumb = [
             {pageTitle: "Home", pageHref: "/"},
             {pageTitle: "House Detail", pageHref: "/detail"},
         ];
         return (
+            !this.state.isLoading &&
             <>
-                <Header {...this.props}></Header>
-                <PageDetailTitle breadcrumb={breadcrumb} data={itemDetails}/>
-                <FeaturedImage data={itemDetails.imageUrls}/>
+                <Header {...this.props}/>
+                <PageDetailTitle breadcrumb={breadcrumb} data={detailPage}/>
+                <FeaturedImage data={this.state.detailPage.imageId}/>
                 <section className="container">
                     <div className="row">
                         <div className="col-7 pr-5">
                             <Fade bottom>
-                                <PageDetailDescription data={itemDetails}/>
+                                <PageDetailDescription data={detailPage}/>
                             </Fade>
                         </div>
                         <div className="col-5">
                             <Fade bottom>
-                                <BookingForm itemDetails={itemDetails} startBooking={() => {this.props.history.push('/checkout')}}/>
+                                <BookingForm itemDetails={detailPage} startBooking={() => {
+                                    this.props.history.push('/checkout')
+                                }}/>
                             </Fade>
                         </div>
                     </div>
                 </section>
-                <Categories data={itemDetails.categories}/>
-                <Testimony data={itemDetails.testimonial}/>
+                <Categories data={categories}/>
+                <Testimony data={testimonial}/>
                 <Footer/>
             </>
         );

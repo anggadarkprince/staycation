@@ -7,21 +7,21 @@ export default function PageDetailDescription({data}) {
             <h4>About the place</h4>
             {ReactHtmlParser(data.description)}
             <div className="row mt-5">
-                {data.features.map((feature, index) => {
+                {data.facilities.map((facility, index) => {
                     return (
                         <div
                             key={`feature-${index}`}
-                            className="col-3"
+                            className="col-6 col-md-4"
                             style={{marginBottom: 20}}>
                             <img width="38"
                                  className="d-block mb-2"
-                                src={feature.imageUrl}
-                                alt={feature.name}/>
+                                src={facility.imageUrl}
+                                alt={facility.facility}/>
                             {" "}
-                            <span>{feature.qty}</span>
+                            <span>{facility.qty}</span>
                             {" "}
                             <span className="text-gray-500 font-weight-light">
-                                {feature.name}
+                                {facility.facility}
                             </span>
                         </div>
                     );

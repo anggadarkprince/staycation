@@ -6,7 +6,7 @@ import Categories from 'parts/Categories';
 import Testimony from "parts/Testimony";
 import Footer from "parts/Footer";
 
-export default class LandingPage extends Component{
+export default class LandingPage extends Component {
     state = {
         landingPage: {},
         isLoading: true
@@ -29,7 +29,7 @@ export default class LandingPage extends Component{
                     isLoading: false
                 });
             })
-            .catch(console.log)
+            .catch(console.log);
     }
 
     render() {

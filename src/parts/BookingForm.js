@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import propTypes from 'prop-types';
 import Button from 'elements/Button';
 import {InputNumber, InputDate} from "elements/Forms";
+import {numeric} from "utilities/formatter";
 
 export default class BookingForm extends Component {
     constructor(props) {
@@ -68,10 +69,10 @@ export default class BookingForm extends Component {
             <div className="card h-auto p-5">
                 <h4 className="mb-3">Start Booking</h4>
                 <h5 className="h2 text-teal mb-4">
-                    ${itemDetails.price}
+                    {itemDetails.currencySymbol} {numeric(itemDetails.price)}
                     {" "}
-                    <span className="text-gray-500 font-weight-light">
-                        per {itemDetails.unit}
+                    <span className="text-gray-500 font-weight-light small">
+                        / night
                     </span>
                 </h5>
                 <label htmlFor="duration">
@@ -96,13 +97,13 @@ export default class BookingForm extends Component {
                     You will pay
                     {" "}
                     <span className="text-body font-weight-normal">
-                        ${itemDetails.price * data.duration} USD
+                        {itemDetails.currencySymbol} {numeric(itemDetails.price * data.duration)}
                     </span>
                     {" "}
                     per
                     {" "}
                     <span className="text-body font-weight-normal">
-                        {data.duration} {itemDetails.unit}
+                        {data.duration} night
                     </span>
                 </h6>
                 <Button

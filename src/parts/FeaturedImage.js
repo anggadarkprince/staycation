@@ -13,7 +13,7 @@ export default function FeaturedImage({data}) {
                             <Fade bottom delay={300 * index}>
                                 <div className="card card-featured h-100">
                                     <div className="img-wrapper">
-                                        <img src={item.url} alt={item._id} className="img-cover"/>
+                                        <img src={item.imageUrl} alt={item._id} className="img-cover"/>
                                     </div>
                                 </div>
                             </Fade>
