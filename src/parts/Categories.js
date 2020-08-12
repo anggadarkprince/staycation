@@ -9,11 +9,11 @@ export default function Categories({data}) {
             <Fade bottom key={`category-${category._id}`}>
                 <section className="container">
                     <p className="mb-3 font-weight-medium">
-                        {category.name}
+                        {category.category}
                     </p>
                     <div className="container-grid">
                         {
-                            category.items.length === 0 ?
+                            category.itemId.length === 0 ?
                                 (
                                     <div className="row">
                                         <div className="col-auto align-items-center">
@@ -22,7 +22,7 @@ export default function Categories({data}) {
                                     </div>
                                 )
                                 :
-                                category.items.map((item, itemIndex) => {
+                                category.itemId.map((item, itemIndex) => {
                                     return (
                                         <div className="item column-3 row-1" key={`category-item-${item._id}`}>
                                             <Fade bottom delay={180 * itemIndex}>
@@ -33,12 +33,12 @@ export default function Categories({data}) {
                                                         </div>
                                                     )}
                                                     <figure className="img-wrapper" style={{height: 180}}>
-                                                        <img src={item.imageUrl} alt={item.name} className="img-cover"/>
+                                                        <img src={item.imageUrl} alt={item.title} className="img-cover"/>
                                                     </figure>
                                                     <div className="meta-wrapper">
                                                         <Button type="link" className="stretched-link link-text text-body" href={`/properties/${item._id}`}>
                                                             <h5>
-                                                                {item.name}
+                                                                {item.title}
                                                             </h5>
                                                         </Button>
                                                         <span className="text-gray-500">

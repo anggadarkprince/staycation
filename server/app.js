@@ -87,7 +87,7 @@ app.use(sess);
 app.use(flash());
 app.use(compression());
 app.use(cors({
-    origin: process.env.APP_URL,
+    origin: [process.env.APP_URL, process.env.APP_FIRST_PARTY_URL],
     optionsSuccessStatus: 200
 }));
 

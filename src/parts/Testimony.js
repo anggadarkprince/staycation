@@ -18,7 +18,7 @@ export default function Testimony({data}) {
                     </div>
                     <div className="col">
                         <Fade bottom delay={200}>
-                            <h4 className="testimonial-name">{data.name}</h4>
+                            <h4 className="testimonial-name">{data.title}</h4>
                             <Star value={data.rate} size={35} spacing={10}/>
                         </Fade>
                         <Fade bottom delay={350}>
@@ -26,7 +26,7 @@ export default function Testimony({data}) {
                                 {data.content}
                             </h5>
                             <p className="text-gray-500">
-                                {data.familyName}, {data.familyOccupation}
+                                {data.name}, {data.occupation}
                             </p>
                         </Fade>
                         <Fade bottom delay={500}>
