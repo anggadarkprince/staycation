@@ -37,7 +37,6 @@ module.exports = {
             condition = {email: username};
         }
 
-        let foundUser;
         User.findOne(condition)
             .then(user => {
                 if (user) {
@@ -84,7 +83,7 @@ module.exports = {
                 }
             })
             .catch((err) => {
-                next(createError(err));
+                next(createError(500, err));
             });
     },
     register: (req, res, next) => {
@@ -130,7 +129,68 @@ module.exports = {
                 });
             })
             .catch((err) => {
-                next(createError(500));
+                next(createError(500, err));
             });
+    },
+    sendEmailRecovery: async (req, res) => {
+        const {email, url} = req.body;
+
+        try {
+            const user = await User.findOne({email: email});
+            if (user) {
+                const tokens = user.tokens || [];
+                const generatedToken = crypto.randomBytes(32).toString('hex');
+                tokens.push({
+                    type: 'PASSWORD',
+                    token: generatedToken,
+                    expiredAt: moment().add(1, 'days')
+                });
+
+                user.tokens = tokens;
+                user.save();
+
+                const mailOptions = {
+                    from: `${process.env.APP_NAME} <${process.env.MAIL_ADMIN}>`,
+                    to: user.email,
+                    subject: `${process.env.APP_NAME} - Reset Password`,
+                    html: ejs.compile(fs.readFileSync(path.join(__dirname, '..', '..', 'views', 'emails', 'reset-password.ejs'), 'utf8'))({
+                        url: url || `${req.protocol}://${req.get('host')}`,
+                        resetUrl: (url || `${req.protocol}://${req.get('host')}/auth/reset-password`) + `/${generatedToken}?email=${email}`,
+                        user: user,
+                    })
+                };
+
+                sendMail(mailOptions, function (err, info) {
+                    res.json({status: 'success', message: 'We already send you email to reset your password!'});
+                });
+            } else {
+                res.json({status: 'error', message: `Email ${email} is not registered in our system`});
+            }
+        } catch (err) {
+            next(createError(500, err));
+        }
+    },
+    resetPassword: async (req, res) => {
+        const token = req.params.token;
+        const email = req.body.email;
+        const password = req.body.password;
+
+        try {
+            const user = await User.findOne({email: email});
+            if (user) {
+                if (isValidResetToken(user.tokens, token) !== false) {
+                    user.password = await bcrypt.hash(password, 12);
+                    user.save();
+
+                    res.json({status: 'success', message: `Your password is recovered`});
+                } else {
+                    res.json({status: 'error', message: `Token is invalid`});
+                }
+            } else {
+                res.json({status: 'error', message: `User not found`});
+            }
+        } catch (err) {
+            next(createError(500, err));
+        }
     },
 };

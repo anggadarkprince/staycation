@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import './assets/scss/styles.scss';
+import 'jquery';
+import 'bootstrap';
 import axios from "axios";
+import AuthContext, {authDefaultValue} from "./AuthContext";
 import LandingPage from "./pages/LandingPage";
 import DetailPage from "./pages/DetailPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -11,9 +14,8 @@ import CareerPage from "./pages/CareerPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
-import AuthContext, {authDefaultValue} from "./AuthContext";
-import 'jquery';
-import 'bootstrap';
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 class App extends Component {
 
@@ -50,7 +52,7 @@ class App extends Component {
         axios.interceptors.response.use(function (response) {
             return response;
         }, error => {
-            if ([401, 403].includes(error.response.status)) {
+            if (error.response.status === 401) {
                 localStorage.removeItem('api_token');
                 window.location = '/login';
             }
@@ -62,7 +64,6 @@ class App extends Component {
     logout() {
         this.setState({auth: authDefaultValue}, function () {
             localStorage.removeItem('api_token');
-            console.log(localStorage.getItem('api_token'));
             window.location = '/login';
         });
     }
@@ -80,6 +81,8 @@ class App extends Component {
                         <Route path='/careers' component={CareerPage}/>
                         <Route path='/register' render={(props) => <RegisterPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
                         <Route path='/login' render={(props) => <LoginPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
+                        <Route path='/forgot-password' component={ForgotPassword}/>
+                        <Route path='/reset-password/:token' component={ResetPassword}/>
                         <Route path='/profile' component={ProfilePage}/>
                     </Router>
                 </div>
