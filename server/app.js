@@ -273,8 +273,17 @@ app.use(function (err, req, res, next) {
 
         // render the error page
         if (isDev || req.app.get('env') === 'development') {
-            res.status(err.status || 500);
-            res.render('error');
+            if (req.xhr || req.accepts('json')) {
+                res.status(err.status || 500).json({
+                    status: 'error',
+                    message: err.message,
+                    code: err.status,
+                    stack: err.stack
+                });
+            } else {
+                res.status(err.status || 500);
+                res.render('error');
+            }
         } else {
             errorController.get500(req, res);
         }

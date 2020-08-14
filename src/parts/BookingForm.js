@@ -107,7 +107,7 @@ export default class BookingForm extends Component {
                     </span>
                 </h6>
                 <Button
-                    className="btn"
+                    className="btn btn-action"
                     hasShadow
                     isPrimary
                     isBlock

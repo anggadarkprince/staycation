@@ -30,7 +30,7 @@ export default function Hero(props) {
                             return, your time is not. What are you waiting for?
                         </p>
                         <Fade bottom delay={400}>
-                            <Button className='btn px-5' hasShadow isPrimary onClick={showMostPicked}>
+                            <Button className='btn btn-action px-5' hasShadow isPrimary onClick={showMostPicked}>
                                 Show Me Now
                             </Button>
                         </Fade>

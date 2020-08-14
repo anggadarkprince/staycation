@@ -30,7 +30,7 @@ export default function Testimony({data}) {
                             </p>
                         </Fade>
                         <Fade bottom delay={500}>
-                            <Button className="btn-read-more btn px-5" hasShadow isPrimary type="link" href={`/testimonial/${data._id}`}>
+                            <Button className="btn-read-more btn btn-action px-5" hasShadow isPrimary type="link" href={`/testimonial/${data._id}`}>
                                 Read Their Stories
                             </Button>
                         </Fade>

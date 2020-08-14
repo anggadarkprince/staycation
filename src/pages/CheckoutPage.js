@@ -94,7 +94,7 @@ export default class LandingPage extends Component {
                                                 data.firstName !== "" && data.lastName !== "" && data.email !== "" && data.phone !== "" && (
                                                     <Fade>
                                                         <Button
-                                                            className="btn mb-3"
+                                                            className="btn btn-action mb-3"
                                                             type="button"
                                                             isBlock
                                                             isPrimary
@@ -125,7 +125,7 @@ export default class LandingPage extends Component {
                                                 data.proofPayment !== "" && data.bankName !== "" && data.bankHolder !== "" && (
                                                     <Fade>
                                                         <Button
-                                                            className="btn mb-3"
+                                                            className="btn btn-action mb-3"
                                                             type="button"
                                                             isBlock
                                                             isPrimary
@@ -153,7 +153,7 @@ export default class LandingPage extends Component {
                                     currentStep === "completed" && (
                                         <Controller>
                                             <Button
-                                                className="btn"
+                                                className="btn btn-action"
                                                 type="link"
                                                 isBlock
                                                 isPrimary

@@ -1,62 +1,111 @@
-import React from 'react';
+import React, {Component} from 'react';
 import Fade from 'react-reveal/Fade';
 import Button from 'elements/Button';
 import BrandIcon from 'parts/IconText';
+import AuthContext from '../AuthContext';
+import {Link} from 'react-router-dom'
 
-export default function Header(props) {
-    const getActiveLinkClass = path => {
-        return props.location.pathname === path ? ' active' : '';
+export default class Header extends Component {
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return false;
     }
 
-    if (props.isCentered) {
+    getActiveLinkClass = path => {
+        return this.props.location.pathname === path ? ' active' : '';
+    }
+
+    render() {
+        if (this.props.isCentered) {
+            return (
+                <Fade>
+                    <header className='spacing-sm'>
+                        <div className='container'>
+                            <nav className="navbar navbar-expand-lg navbar-light">
+                                <Button className="navbar-brand mx-auto" href="/" type="link">
+                                    Stay<span className="text-body">cation.</span>
+                                </Button>
+                            </nav>
+                        </div>
+                    </header>
+                </Fade>
+            );
+        }
+
         return (
-            <Fade>
-                <header className='spacing-sm'>
-                    <div className='container'>
-                        <nav className="navbar navbar-expand-lg navbar-light">
-                            <Button className="navbar-brand mx-auto" href="/" type="link">
-                                Stay<span className="text-body">cation.</span>
-                            </Button>
-                        </nav>
-                    </div>
-                </header>
-            </Fade>
+            <AuthContext.Consumer>
+                {auth => {
+                    return (
+                        <Fade top>
+                            <header className='spacing-sm'>
+                                <div className='container'>
+                                    <nav className="navbar navbar-expand-lg navbar-light">
+                                        <BrandIcon/>
+                                        <div className="collapse navbar-collapse">
+                                            <ul className="navbar-nav ml-auto">
+                                                <li className={`nav-item${this.getActiveLinkClass('/')}`}>
+                                                    <Button className='nav-link' type='link' href='/'>
+                                                        Home
+                                                    </Button>
+                                                </li>
+                                                <li className={`nav-item${this.getActiveLinkClass('/browse-by')}`}>
+                                                    <Button className='nav-link' type='link' href='/browse-by'>
+                                                        Browse By
+                                                    </Button>
+                                                </li>
+                                                <li className={`nav-item${this.getActiveLinkClass('/stories')}`}>
+                                                    <Button className='nav-link' type='link' href='/stories'>
+                                                        Stories
+                                                    </Button>
+                                                </li>
+                                                {
+                                                    auth.user ?
+                                                    (
+                                                        <li className="nav-item dropdown">
+                                                            <Link className='nav-link dropdown-toggle' to="/profile" data-toggle="dropdown">
+                                                                {auth.user.name}
+                                                            </Link>
+                                                            <div className="dropdown-menu dropdown-menu-right">
+                                                                <Button className='dropdown-item' type='link' href='/profile'>
+                                                                    Profile
+                                                                </Button>
+                                                                <Button className='dropdown-item' type='link' href='/my-booking'>
+                                                                    My Booking
+                                                                </Button>
+                                                                <div className="dropdown-divider"/>
+                                                                <Button className='dropdown-item' type='button' onClick={auth.logout}>
+                                                                    Logout
+                                                                </Button>
+                                                            </div>
+                                                        </li>
+                                                    ) :
+                                                    (
+
+                                                        <li className={`nav-item${this.getActiveLinkClass('/login')}`}>
+                                                            <Button className='nav-link' type='link' href='/login'>
+                                                                Login
+                                                            </Button>
+                                                        </li>
+                                                    )
+                                                }
+                                            </ul>
+                                            {
+                                                auth.user ? null :
+                                                    (
+                                                        <Button className='nav-link btn' type='link' isSmall isPrimary href='/register'>
+                                                            Register
+                                                        </Button>
+                                                    )
+                                            }
+                                        </div>
+                                    </nav>
+                                </div>
+                            </header>
+                        </Fade>
+                    );
+                }}
+
+            </AuthContext.Consumer>
         );
     }
-
-    return (
-        <Fade top>
-            <header className='spacing-sm'>
-                <div className='container'>
-                    <nav className="navbar navbar-expand-lg navbar-light">
-                        <BrandIcon/>
-                        <div className="collapse navbar-collapse">
-                            <ul className="navbar-nav ml-auto">
-                                <li className={`nav-item${getActiveLinkClass('/')}`}>
-                                    <Button className='nav-link' type='link' href='/'>
-                                        Home
-                                    </Button>
-                                </li>
-                                <li className={`nav-item${getActiveLinkClass('/browse-by')}`}>
-                                    <Button className='nav-link' type='link' href='/browse-by'>
-                                        Browse By
-                                    </Button>
-                                </li>
-                                <li className={`nav-item${getActiveLinkClass('/stories')}`}>
-                                    <Button className='nav-link' type='link' href='/stories'>
-                                        Stories
-                                    </Button>
-                                </li>
-                                <li className={`nav-item${getActiveLinkClass('/agents')}`}>
-                                    <Button className='nav-link' type='link' href='/agents'>
-                                        Agents
-                                    </Button>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
-            </header>
-        </Fade>
-    )
 }
