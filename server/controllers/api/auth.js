@@ -110,7 +110,7 @@ module.exports = {
                                         message: 'You are successfully logged in',
                                         payload: {
                                             token: token,
-                                            refreshToken: refreshToken,
+                                            //refreshToken: refreshToken, we store refresh token in httpOnly cookie
                                             user: user
                                         }
                                     });

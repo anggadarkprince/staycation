@@ -46,12 +46,17 @@ class App extends Component {
             } else {
                 this.state.pageReady = true;
             }
-            /* we already set tokens in http only cookie (secure), this line is optional
+            /**
+             * we already set tokens in http only cookie (secure),
+             * this line is optional (but server must set cookie for access token long-lived)
+             * because when cookie expired it would excluded from request and marked as unauthenticated request,
+             * the app will redirect to login page rather than use refresh token to get new access token.
+             */
             axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-            axios.interceptors.request.use((config) => {
+                axios.interceptors.request.use((config) => {
                 config.headers.Authorization = 'Bearer ' + apiTokenData.token;
                 return config;
-            });*/
+            });
         } else {
             this.state.pageReady = true;
         }
@@ -62,6 +67,7 @@ class App extends Component {
         }, error => {
             if (error.response.status === 401) {
                 // token expired try get new access token with refresh token
+                // remove this condition if we always try to use refresh token first before redirect to login page
                 if (error.response.data.status === 'expired') {
                     const originalRequest = error.config;
 
