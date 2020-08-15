@@ -77,15 +77,16 @@ class Login extends Component {
                 if (data.status === 'success') {
                     this.setState({isLoading: false});
                     let expiredDate = new Date();
-                    expiredDate.setMinutes(expiredDate.getMinutes() + 60);
+                    expiredDate.setMinutes(expiredDate.getMinutes() + 5);
                     localStorage.setItem('api_token', JSON.stringify({
                         tokenExpiredAt: expiredDate,
                         token: data.payload.token,
+                        refreshToken: data.payload.refreshToken,
                         user: data.payload.user,
                         remember: this.state.remember,
                     }));
                     this.props.initAuthState();
-                    this.props.history.push('/profile');
+                    //this.props.history.push('/profile');
                 } else {
                     this.setState({
                         isLoading: false,

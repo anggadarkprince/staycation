@@ -61,13 +61,27 @@ module.exports = {
                                     const token = jwt.sign({
                                         email: user.email,
                                         userId: user._id.toString()
-                                    }, process.env.JWT_TOKEN_SECRET, {expiresIn: '1h'});
+                                    }, process.env.JWT_TOKEN_SECRET, {expiresIn: 300});
+                                    const refreshToken = crypto.randomBytes(32).toString('hex');
+
+                                    user.tokens.push({
+                                        type: 'ACCESS_TOKEN',
+                                        token: token,
+                                        expiredAt: moment().add(5, 'minutes')
+                                    });
+                                    user.tokens.push({
+                                        type: 'REFRESH_TOKEN',
+                                        token: refreshToken,
+                                        expiredAt: moment().add(60, 'minutes')
+                                    });
+                                    user.save();
 
                                     res.json({
                                         status: 'success',
                                         message: 'You are successfully logged in',
                                         payload: {
                                             token: token,
+                                            refreshToken: refreshToken,
                                             user: user
                                         }
                                     });
@@ -85,6 +99,51 @@ module.exports = {
             .catch((err) => {
                 next(createError(500, err));
             });
+    },
+    token: async (req, res) => {
+        const email = req.body.email;
+        const refreshToken = req.body.refreshToken;
+
+        const user = await User.findOne({email: email});
+        const refreshTokenData = user.tokens.find(token => token.type === 'REFRESH_TOKEN' && token.token === refreshToken);
+        if (refreshTokenData) {
+            if (refreshTokenData.expiredAt > new Date()) {
+                // create new token
+                const token = jwt.sign({
+                    email: user.email,
+                    userId: user._id.toString()
+                }, process.env.JWT_TOKEN_SECRET, {expiresIn: 300});
+
+                // extend refresh token expired time
+                user.tokens = user.tokens.map(tokenItem => {
+                    if (tokenItem.type === 'REFRESH_TOKEN' && tokenItem.token === refreshToken) {
+                        return {...tokenItem._doc, expiredAt: moment().add(60, 'minutes')}
+                    }
+                    return tokenItem;
+                });
+
+                // push new token
+                user.tokens.push({
+                    type: 'ACCESS_TOKEN',
+                    token: token,
+                    expiredAt: moment().add(5, 'minutes')
+                });
+                user.save();
+
+                res.json({token: token});
+            } else {
+                // refresh token expired and remove expired token from list
+                user.tokens = user.tokens.filter(token => {
+                    return token.expiredAt < new Date();
+                });
+                user.save();
+
+                res.sendStatus(401);
+            }
+        }
+        else {
+            res.sendStatus(401);
+        }
     },
     register: (req, res, next) => {
         const {name, username, email, password} = req.body;

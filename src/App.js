@@ -24,7 +24,8 @@ class App extends Component {
 
         const apiTokenData = this.getAuthToken();
         this.state = {
-            auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue
+            auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue,
+            pageReady: false
         }
 
         this.initAuthState();
@@ -42,19 +43,44 @@ class App extends Component {
         if (apiTokenData) {
             if (guest.find(path => window.location.pathname.startsWith(path))) {
                 window.location = '/profile';
+            } else {
+                this.state.pageReady = true;
             }
             axios.interceptors.request.use((config) => {
                 config.headers.Authorization = 'Bearer ' + apiTokenData.token;
                 return config;
             });
+        } else {
+            this.state.pageReady = true;
         }
 
         axios.interceptors.response.use(function (response) {
             return response;
         }, error => {
             if (error.response.status === 401) {
-                localStorage.removeItem('api_token');
-                window.location = '/login';
+                // token expired try get new access token with refresh token
+                if (error.response.data.status === 'expired') {
+                    const originalRequest = error.config;
+
+                    return axios.post("http://localhost:3000/api/token", {
+                            refreshToken: apiTokenData.refreshToken,
+                            email: apiTokenData.user.email,
+                        })
+                        .then(response => response.data)
+                        .then(data => {
+                            apiTokenData.token = data.token;
+                            localStorage.setItem('api_token', JSON.stringify(apiTokenData));
+                            axios.interceptors.request.use((config) => {
+                                config.headers.Authorization = 'Bearer ' + apiTokenData.token;
+                                return config;
+                            });
+                            return axios(originalRequest);
+                        });
+                } else {
+                    console.log('Unauthorized or refresh token expired');
+                    localStorage.removeItem('api_token');
+                    window.location = '/login';
+                }
             }
 
             return Promise.reject(error);
@@ -70,7 +96,7 @@ class App extends Component {
 
     render() {
         return (
-            <AuthContext.Provider value={this.state.auth}>
+            this.state.pageReady && <AuthContext.Provider value={this.state.auth}>
                 <div className='App'>
                     <Router>
                         <Route path='/' exact component={LandingPage}/>
