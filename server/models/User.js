@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
         type: {
             type: String,
             required: true,
-            enum: ['PASSWORD', 'OTP', 'ACCESS_TOKEN', 'REFRESH_TOKEN'],
+            enum: ['PASSWORD', 'REMEMBER', 'ACCESS_TOKEN', 'REFRESH_TOKEN'],
         },
         token: {
             type: String,

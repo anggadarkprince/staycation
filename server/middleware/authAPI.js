@@ -4,7 +4,7 @@ const TokenExpiredError = require("jsonwebtoken/lib/TokenExpiredError");
 
 module.exports = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = req.cookies.token || (authHeader && authHeader.split(' ')[1]);
     if (token == null) {
         return res.sendStatus(401);
     }
@@ -16,6 +16,7 @@ module.exports = (req, res, next) => {
             }
             return res.sendStatus(403);
         } else {
+            console.log(token)
             User.findById(user.userId)
                 .then(userData => {
                     req.user = userData;

@@ -77,18 +77,20 @@ app.use('/theme', express.static(path.join(__dirname, 'node_modules', 'startboot
 const sess = session({
     secret: 'secret98sh968sdf7s8df6',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: new MongoDBStore({
         uri: process.env.MONGO_URI,
         collection: 'sessions'
-    })
+    }),
+    cookie: { secure: false } // set to true if your using https
 });
 app.use(sess);
 app.use(flash());
 app.use(compression());
 app.use(cors({
     origin: [process.env.APP_URL, process.env.APP_FIRST_PARTY_URL],
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
+    credentials: true
 }));
 
 // io socket

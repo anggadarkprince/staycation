@@ -30,7 +30,7 @@ function isValidResetToken(tokens, token) {
 
 module.exports = {
     login: async (req, res, next) => {
-        const {username, password} = req.body;
+        const {username, password, remember} = req.body;
 
         let condition = {username: username};
         if (isEmailAddress(username)) {
@@ -63,7 +63,9 @@ module.exports = {
                                         userId: user._id.toString()
                                     }, process.env.JWT_TOKEN_SECRET, {expiresIn: 300});
                                     const refreshToken = crypto.randomBytes(32).toString('hex');
+                                    const rememberToken = crypto.randomBytes(32).toString('hex');
 
+                                    // generate tokens
                                     user.tokens.push({
                                         type: 'ACCESS_TOKEN',
                                         token: token,
@@ -74,7 +76,34 @@ module.exports = {
                                         token: refreshToken,
                                         expiredAt: moment().add(60, 'minutes')
                                     });
+                                    if (remember) {
+                                        user.tokens.push({
+                                            type: 'REMEMBER',
+                                            token: rememberToken,
+                                            expiredAt: moment().add(30, 'days')
+                                        });
+                                    }
                                     user.save();
+
+                                    // send cookie header
+                                    res.cookie('token', token, {
+                                        expires: new Date(Date.now() + (5 * 60 * 1000)), // 5 minutes
+                                        secure: false, // set to true if your using https
+                                        httpOnly: true,
+                                    });
+                                    res.cookie('refreshToken', refreshToken, {
+                                        expires: new Date(Date.now() + (60 * 60 * 1000)), // 60 minutes
+                                        secure: false,
+                                        httpOnly: true,
+                                    });
+
+                                    if (remember) {
+                                        res.cookie('remember', rememberToken, {
+                                            expires: new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)), // 30 days
+                                            secure: false,
+                                            httpOnly: true,
+                                        });
+                                    }
 
                                     res.json({
                                         status: 'success',
@@ -85,6 +114,7 @@ module.exports = {
                                             user: user
                                         }
                                     });
+
                                 } else {
                                     res.json({status: 'error', message: 'Invalid credentials, try again!'});
                                 }
@@ -102,7 +132,7 @@ module.exports = {
     },
     token: async (req, res) => {
         const email = req.body.email;
-        const refreshToken = req.body.refreshToken;
+        const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
         const user = await User.findOne({email: email});
         const refreshTokenData = user.tokens.find(token => token.type === 'REFRESH_TOKEN' && token.token === refreshToken);
@@ -129,6 +159,13 @@ module.exports = {
                     expiredAt: moment().add(5, 'minutes')
                 });
                 user.save();
+
+                // send cookie token
+                res.cookie('token', token, {
+                    expires: new Date(Date.now() + (5 * 60 * 1000)),
+                    secure: false, // set to true if your using https
+                    httpOnly: true,
+                });
 
                 res.json({token: token});
             } else {

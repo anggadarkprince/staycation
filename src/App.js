@@ -46,14 +46,17 @@ class App extends Component {
             } else {
                 this.state.pageReady = true;
             }
+            /* we already set tokens in http only cookie (secure), this line is optional
+            axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
             axios.interceptors.request.use((config) => {
                 config.headers.Authorization = 'Bearer ' + apiTokenData.token;
                 return config;
-            });
+            });*/
         } else {
             this.state.pageReady = true;
         }
 
+        axios.defaults.withCredentials = true;
         axios.interceptors.response.use(function (response) {
             return response;
         }, error => {
@@ -62,8 +65,9 @@ class App extends Component {
                 if (error.response.data.status === 'expired') {
                     const originalRequest = error.config;
 
+                    // optional added in body request (already live in http only cookie)
                     return axios.post("http://localhost:3000/api/token", {
-                            refreshToken: apiTokenData.refreshToken,
+                            //refreshToken: apiTokenData.refreshToken,
                             email: apiTokenData.user.email,
                         })
                         .then(response => response.data)
