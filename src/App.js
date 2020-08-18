@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import 'assets/scss/styles.scss';
 import 'jquery';
 import 'bootstrap';
@@ -17,6 +17,7 @@ import LoginPage from "pages/LoginPage";
 import ProfilePage from "pages/ProfilePage";
 import ForgotPassword from "pages/ForgotPassword";
 import ResetPassword from "pages/ResetPassword";
+import Error404 from "pages/Error404";
 
 class App extends Component {
     guestRoutes = ['/login', '/register', '/forgot-password', '/password/reset', '/email/verify'];
@@ -143,17 +144,20 @@ class App extends Component {
             this.state.pageReady && <AuthContext.Provider value={this.state.auth}>
                 <div className='App'>
                     <Router>
-                        <Route path='/' exact component={LandingPage}/>
-                        <Route path='/properties/:id' component={DetailPage}/>
-                        <Route path='/checkout' component={CheckoutPage}/>
-                        <Route path='/terms' component={TermPage}/>
-                        <Route path='/privacy' component={PrivacyPage}/>
-                        <Route path='/careers' component={CareerPage}/>
-                        <Route path='/register' render={(props) => <RegisterPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
-                        <Route path='/login' render={(props) => <LoginPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
-                        <Route path='/forgot-password' component={ForgotPassword}/>
-                        <Route path='/reset-password/:token' component={ResetPassword}/>
-                        <Route path='/profile' component={ProfilePage}/>
+                        <Switch>
+                            <Route path='/' exact component={LandingPage}/>
+                            <Route path='/properties/:id' component={DetailPage}/>
+                            <Route path='/checkout' component={CheckoutPage}/>
+                            <Route path='/terms' component={TermPage}/>
+                            <Route path='/privacy' component={PrivacyPage}/>
+                            <Route path='/careers' component={CareerPage}/>
+                            <Route path='/register' render={(props) => <RegisterPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
+                            <Route path='/login' render={(props) => <LoginPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
+                            <Route path='/forgot-password' component={ForgotPassword}/>
+                            <Route path='/reset-password/:token' component={ResetPassword}/>
+                            <Route path='/profile' component={ProfilePage}/>
+                            <Route component={Error404} />
+                        </Switch>
                     </Router>
                 </div>
             </AuthContext.Provider>

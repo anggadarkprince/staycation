@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Fade from 'react-reveal/Fade';
 import Button from "elements/Button";
 import IconText from "parts/IconText";
+import AuthContext from "../AuthContext";
 
 export default class Footer extends Component {
 
@@ -27,13 +28,24 @@ export default class Footer extends Component {
                                 </h6>
                                 <ul className="list-group list-group-flush">
                                     <li className="list-group-item">
-                                        <Button type="link" href="/register">New Account</Button>
+                                        <Button type="link" href="/">Home</Button>
                                     </li>
                                     <li className="list-group-item">
-                                        <Button type="link" href="/properties">Start Booking</Button>
+                                        <AuthContext.Consumer>
+                                            {auth => (
+                                                auth.user ?
+                                                    <Button type="link" href="/profile">
+                                                        My Account
+                                                    </Button>
+                                                    :
+                                                    <Button type="link" href="/register">
+                                                        New Account
+                                                    </Button>
+                                            )}
+                                        </AuthContext.Consumer>
                                     </li>
                                     <li className="list-group-item">
-                                        <Button type="link" href="/payment">Payments</Button>
+                                        <Button type="link" href="/explore">Recommendation</Button>
                                     </li>
                                 </ul>
                             </div>

@@ -4,6 +4,7 @@ const router = express.Router();
 const landing = require('../controllers/api/landing');
 const booking = require('../controllers/api/booking');
 const auth = require('../controllers/api/auth');
+const profile = require('../controllers/api/profile');
 const { upload } = require('../middleware/multer');
 const authApi  = require('../middleware/authAPI');
 
@@ -16,8 +17,6 @@ router.post('/token', auth.token);
 router.post('/logout', auth.logout);
 router.post('/password/email', auth.sendEmailRecovery);
 router.post('/password/reset/:token', auth.resetPassword);
-router.get('/profile', authApi, (req, res, next) => {
-    res.json({user: {...req.user._doc, avatar: res.locals._baseUrl + req.user.avatar.replace(/\\/g, "/")}});
-});
+router.get('/profile', authApi, profile.index);
 
 module.exports = router;

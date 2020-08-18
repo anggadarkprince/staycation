@@ -26,6 +26,11 @@ class Register extends Component {
         this.props.initAuthState();
     }
 
+    componentDidMount() {
+        document.title = "Staycation | Register";
+        window.scrollTo(0, 0);
+    }
+
     handleFieldChange(event) {
         if (event.target.name === 'agree') {
             this.setState({

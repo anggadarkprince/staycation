@@ -24,6 +24,11 @@ class Login extends Component {
         this.props.initAuthState();
     }
 
+    componentDidMount() {
+        document.title = "Staycation | Sign In";
+        window.scrollTo(0, 0);
+    }
+
     handleFieldChange (event) {
         if (event.target.name === 'remember') {
             this.setState({

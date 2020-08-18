@@ -69,8 +69,11 @@ export default class Header extends Component {
                                                                 <Button className='dropdown-item' type='link' href='/profile'>
                                                                     Profile
                                                                 </Button>
-                                                                <Button className='dropdown-item' type='link' href='/my-booking'>
+                                                                <Button className='dropdown-item' type='link' href='/profile/all-bookings'>
                                                                     My Booking
+                                                                </Button>
+                                                                <Button className='dropdown-item' type='link' href='/profile/setting'>
+                                                                    Settings
                                                                 </Button>
                                                                 <div className="dropdown-divider"/>
                                                                 <Button className='dropdown-item' type='button' onClick={() => auth.logout(false, () => this.props.history.push('/login'))}>

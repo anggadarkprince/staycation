@@ -1,6 +1,5 @@
 const Item = require('../../models/Item');
 const Category = require('../../models/Category');
-const Bank = require('../../models/Bank');
 const User = require('../../models/User');
 
 module.exports = {

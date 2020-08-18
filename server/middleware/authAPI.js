@@ -16,7 +16,6 @@ module.exports = (req, res, next) => {
             }
             return res.sendStatus(403);
         } else {
-            console.log(token)
             User.findById(user.userId)
                 .then(userData => {
                     req.user = userData;
