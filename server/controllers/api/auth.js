@@ -37,7 +37,7 @@ module.exports = {
             condition = {email: username};
         }
 
-        User.findOne(condition)
+        User.findOne(condition).select('_id name username email password avatar status preferences tokens')
             .then(user => {
                 if (user) {
                     if (user.status === 'ACTIVATED') {
@@ -109,16 +109,25 @@ module.exports = {
                                         status: 'success',
                                         message: 'You are successfully logged in',
                                         payload: {
-                                            token: token,
                                             //refreshToken: refreshToken, we store refresh token in httpOnly cookie
-                                            user: user
+                                            token: token,
+                                            user: {
+                                                _id: user.id,
+                                                name: user.name,
+                                                username: user.username,
+                                                email: user.email,
+                                                status: user.status,
+                                                avatar: res.locals._baseUrl + user.avatar.replace(/\\/g, "/"),
+                                                preferences: user.preferences,
+                                            },
                                         }
                                     });
 
                                 } else {
                                     res.json({status: 'error', message: 'Invalid credentials, try again!'});
                                 }
-                            });
+                            })
+                            .catch(err => next(createError(500, err)));
                     } else {
                         res.json({status: 'error', message: `Your account is ${user.status || 'PENDING'}`});
                     }
@@ -129,6 +138,12 @@ module.exports = {
             .catch((err) => {
                 next(createError(500, err));
             });
+    },
+    logout: (req, res) => {
+        res.cookie('token', {expires: Date.now()});
+        res.cookie('refreshToken', {expires: Date.now()});
+        res.cookie('remember', {expires: Date.now()});
+        res.sendStatus(200);
     },
     token: async (req, res) => {
         const email = req.body.email;

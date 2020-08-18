@@ -1,23 +1,28 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import './assets/scss/styles.scss';
+import 'assets/scss/styles.scss';
 import 'jquery';
 import 'bootstrap';
+import config from 'config';
 import axios from "axios";
-import AuthContext, {authDefaultValue} from "./AuthContext";
-import LandingPage from "./pages/LandingPage";
-import DetailPage from "./pages/DetailPage";
-import CheckoutPage from "./pages/CheckoutPage";
-import TermPage from "./pages/TermPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import CareerPage from "./pages/CareerPage";
-import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
+import AuthContext, {authDefaultValue} from "AuthContext";
+import LandingPage from "pages/LandingPage";
+import DetailPage from "pages/DetailPage";
+import CheckoutPage from "pages/CheckoutPage";
+import TermPage from "pages/TermPage";
+import PrivacyPage from "pages/PrivacyPage";
+import CareerPage from "pages/CareerPage";
+import RegisterPage from "pages/RegisterPage";
+import LoginPage from "pages/LoginPage";
+import ProfilePage from "pages/ProfilePage";
+import ForgotPassword from "pages/ForgotPassword";
+import ResetPassword from "pages/ResetPassword";
 
 class App extends Component {
+    guestRoutes = ['/login', '/register', '/forgot-password', '/password/reset', '/email/verify'];
+    homeRoute = '/profile';
+    redirectRoute = '/login';
+    inGuestLocation = false;
 
     constructor(props) {
         super(props);
@@ -28,6 +33,7 @@ class App extends Component {
             pageReady: false
         }
 
+        this.inGuestLocation = this.guestRoutes.find(path => window.location.pathname.startsWith(path));
         this.initAuthState();
     }
 
@@ -37,14 +43,24 @@ class App extends Component {
         return apiToken ? JSON.parse(apiToken) : null;
     }
 
-    initAuthState() {
-        const guest = ['/login', '/register', '/forgot-password', '/password/reset', '/email/verify'];
+    componentDidMount() {
         const apiTokenData = this.getAuthToken();
         if (apiTokenData) {
-            if (guest.find(path => window.location.pathname.startsWith(path))) {
-                window.location = '/profile';
-            } else {
-                this.state.pageReady = true;
+            if (!this.inGuestLocation) {
+                this.setState({pageReady: true});
+            } // else redirect to home page (profile) we dont need to set page ready to prevent glitch view
+        } else {
+            if (this.inGuestLocation) {
+                this.setState({pageReady: true});
+            } // else redirect to login page (sign in)
+        }
+    }
+
+    initAuthState(redirect = true, callback = () => {}) {
+        const apiTokenData = this.getAuthToken();
+        if (apiTokenData) {
+            if (this.inGuestLocation && redirect) {
+                window.location = this.homeRoute;
             }
             /**
              * we already set tokens in http only cookie (secure),
@@ -53,12 +69,14 @@ class App extends Component {
              * the app will redirect to login page rather than use refresh token to get new access token.
              */
             axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-                axios.interceptors.request.use((config) => {
+            axios.interceptors.request.use((config) => {
                 config.headers.Authorization = 'Bearer ' + apiTokenData.token;
                 return config;
             });
         } else {
-            this.state.pageReady = true;
+            if (!this.inGuestLocation && redirect) {
+                window.location = this.redirectRoute;
+            }
         }
 
         axios.defaults.withCredentials = true;
@@ -72,7 +90,7 @@ class App extends Component {
                     const originalRequest = error.config;
 
                     // optional added in body request (already live in http only cookie)
-                    return axios.post("http://localhost:3000/api/token", {
+                    return axios.post(`${config.apiUrl}/api/token`, {
                             //refreshToken: apiTokenData.refreshToken,
                             email: apiTokenData.user.email,
                         })
@@ -89,19 +107,35 @@ class App extends Component {
                 } else {
                     console.log('Unauthorized or refresh token expired');
                     localStorage.removeItem('api_token');
-                    window.location = '/login';
+                    window.location = this.redirectRoute;
                 }
             }
 
             return Promise.reject(error);
         });
+
+        if (this.state.pageReady) {
+            this.setState({
+                auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue
+            }, function () {
+                callback();
+            });
+        }
     }
 
-    logout() {
-        this.setState({auth: authDefaultValue}, function () {
-            localStorage.removeItem('api_token');
-            window.location = '/login';
-        });
+    logout(redirect = true, callback = () => {}) {
+        axios.post(`${config.apiUrl}/api/logout`)
+            .then(result => {
+                this.setState({auth: authDefaultValue}, () => {
+                    localStorage.removeItem('api_token');
+                    if(redirect) {
+                        window.location = this.redirectRoute;
+                    } else {
+                        callback();
+                    }
+                });
+            })
+            .catch(console.log);
     }
 
     render() {

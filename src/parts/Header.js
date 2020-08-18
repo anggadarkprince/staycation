@@ -73,7 +73,7 @@ export default class Header extends Component {
                                                                     My Booking
                                                                 </Button>
                                                                 <div className="dropdown-divider"/>
-                                                                <Button className='dropdown-item' type='button' onClick={auth.logout}>
+                                                                <Button className='dropdown-item' type='button' onClick={() => auth.logout(false, () => this.props.history.push('/login'))}>
                                                                     Logout
                                                                 </Button>
                                                             </div>

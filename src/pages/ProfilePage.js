@@ -4,6 +4,7 @@ import Header from "../parts/Header";
 import Footer from "../parts/Footer";
 import Button from "../elements/Button";
 import Spinner from "../elements/Spinner";
+import config from 'config';
 
 class ProfilePage extends Component {
 
@@ -16,7 +17,7 @@ class ProfilePage extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:3000/api/profile')
+        axios.get(`${config.apiUrl}/api/profile`)
             .then(response => {
                 this.setState({isLoading: false, user: response.data.user});
             })
@@ -40,9 +41,11 @@ class ProfilePage extends Component {
                                  style={{maxWidth: 120}}/>
                             <div>
                                 <h4 className="mb-1">{user.name}</h4>
-                                <p className="mb-0">@{user.username} <span className="mx-2">•</span> <Button type="link"
-                                                                                                             href="/edit-profile">Edit
-                                    Profile</Button></p>
+                                <p className="mb-0">@{user.username} <span className="mx-2">•</span>
+                                    <Button type="link" href="/edit-profile">
+                                        Edit Profile
+                                    </Button>
+                                </p>
                                 <p className="text-muted small mb-2">{user.email}</p>
                             </div>
                         </div>

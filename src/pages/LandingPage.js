@@ -5,6 +5,7 @@ import MostPicked from 'parts/MostPicked';
 import Categories from 'parts/Categories';
 import Testimony from "parts/Testimony";
 import Footer from "parts/Footer";
+import config from 'config';
 
 export default class LandingPage extends Component {
     state = {
@@ -21,7 +22,7 @@ export default class LandingPage extends Component {
         document.title = "Staycation | Hotels and reservation";
         window.scrollTo(0, 0);
 
-        fetch('http://localhost:3000/api/landing')
+        fetch(`${config.apiUrl}/api/landing`)
             .then(result => result.json())
             .then(result => {
                 this.setState({

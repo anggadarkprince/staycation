@@ -286,6 +286,7 @@ app.use(function (err, req, res, next) {
                 res.status(err.status || 500);
                 res.render('error');
             }
+            console.log(err);
         } else {
             if (req.xhr || (/application\/json/.test(req.get('accept')))) {
                 res.status(err.status || 500).json({

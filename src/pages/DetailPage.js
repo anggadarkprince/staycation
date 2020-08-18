@@ -8,6 +8,7 @@ import BookingForm from 'parts/BookingForm';
 import Categories from 'parts/Categories';
 import Testimony from 'parts/Testimony';
 import Footer from "../parts/Footer";
+import config from 'config';
 
 export default class DetailPage extends Component {
     state = {
@@ -19,7 +20,7 @@ export default class DetailPage extends Component {
         document.title = "Staycation | Detail";
         window.scrollTo(0, 0);
 
-        fetch('http://localhost:3000/api/detail/' + this.props.match.params.id)
+        fetch(`${config.apiUrl}/api/detail/${this.props.match.params.id}`)
             .then(result => result.json())
             .then(result => {
                 console.log(result);

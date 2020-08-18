@@ -5,6 +5,7 @@ import Header from "../parts/Header";
 import Fade from "react-reveal/Fade";
 import Button from "../elements/Button";
 import Footer from "../parts/Footer";
+import config from 'config';
 
 class Login extends Component {
 
@@ -72,7 +73,7 @@ class Login extends Component {
             remember: this.state.remember,
         };
 
-        axios.post('http://localhost:3000/api/login', user)
+        axios.post(`${config.apiUrl}/api/login`, user)
             .then(response => response.data)
             .then(data => {
                 if (data.status === 'success') {
@@ -86,8 +87,10 @@ class Login extends Component {
                         user: data.payload.user,
                         remember: this.state.remember,
                     }));
-                    this.props.initAuthState();
-                    //this.props.history.push('/profile');
+                    this.props.initAuthState(false, () => {
+                        this.props.history.push('/profile');
+                    });
+
                 } else {
                     this.setState({
                         isLoading: false,
