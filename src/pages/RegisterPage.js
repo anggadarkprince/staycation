@@ -4,6 +4,7 @@ import Header from "../parts/Header";
 import Fade from "react-reveal/Fade";
 import Footer from "../parts/Footer";
 import Button from "../elements/Button";
+import config from 'config';
 
 class Register extends Component {
 
@@ -23,7 +24,6 @@ class Register extends Component {
         this.hasErrorFor = this.hasErrorFor.bind(this);
         this.renderErrorFor = this.renderErrorFor.bind(this);
         this.handleRegister = this.handleRegister.bind(this);
-        this.props.initAuthState();
     }
 
     componentDidMount() {
@@ -83,7 +83,7 @@ class Register extends Component {
             agree: this.state.agree,
         };
 
-        axios.post('http://localhost:3000/api/register', user)
+        axios.post(`${config.apiUrl}/api/register`, user)
             .then(response => response.data)
             .then(data => {
                 if (data.status === 'success') {

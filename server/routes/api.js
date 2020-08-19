@@ -18,5 +18,6 @@ router.post('/logout', auth.logout);
 router.post('/password/email', auth.sendEmailRecovery);
 router.post('/password/reset/:token', auth.resetPassword);
 router.get('/profile', authApi, profile.index);
+router.post('/setting/basic', authApi, profile.basic);
 
 module.exports = router;

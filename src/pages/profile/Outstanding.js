@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import BookingItem from "../../elements/BookingItem";
+import BookingItem from "elements/BookingItem";
+import {backToTop} from "utilities/scroller";
 
 class Outstanding extends Component {
 
@@ -9,7 +10,7 @@ class Outstanding extends Component {
 
     componentDidMount() {
         document.title = "Staycation | Booking Outstanding";
-        window.scrollTo(0, 0);
+        backToTop();
     }
 
     render() {

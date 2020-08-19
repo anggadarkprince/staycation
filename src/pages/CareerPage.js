@@ -1,12 +1,13 @@
 import React, {useEffect} from "react";
-import Header from "../parts/Header";
-import Footer from "../parts/Footer";
+import Header from "parts/Header";
+import Footer from "parts/Footer";
 import Fade from "react-reveal/Fade";
+import {backToTop} from "utilities/scroller";
 
 export default props => {
     useEffect(() => {
         document.title = "Staycation | Careers";
-        window.scrollTo(0, 0);
+        backToTop();
     });
 
     return (
