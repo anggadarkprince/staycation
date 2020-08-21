@@ -89,6 +89,7 @@ class Basic extends Component {
                             }
                         }
                     });
+                    this.props.fetchUser();
                     scrollToTarget('profile-nav');
                 } else {
                     return Promise.reject({message: 'Something went wrong'});

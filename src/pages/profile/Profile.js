@@ -16,7 +16,7 @@ class Profile extends Component {
     render() {
         return (
             <>
-                <BookingItem title="Booking History" bookings={this.props.bookings}/>
+                <BookingItem title="Latest Bookings" bookings={this.props.bookings}/>
             </>
         )
     }

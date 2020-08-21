@@ -84,7 +84,7 @@ class App extends Component {
         axios.interceptors.response.use(function (response) {
             return response;
         }, error => {
-            if (error.response.status === 401) {
+            if ((error.response.status || 500) === 401) {
                 // token expired try get new access token with refresh token
                 // remove this condition if we always try to use refresh token first before redirect to login page
                 if (error.response.data.status === 'expired') {

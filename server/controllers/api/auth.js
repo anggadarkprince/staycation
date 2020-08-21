@@ -181,6 +181,11 @@ module.exports = {
                     secure: false, // set to true if your using https
                     httpOnly: true,
                 });
+                res.cookie('refreshToken', refreshToken, {
+                    expires: new Date(Date.now() + (60 * 60 * 1000)), // 60 minutes
+                    secure: false,
+                    httpOnly: true,
+                });
 
                 res.json({token: token});
             } else {

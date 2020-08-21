@@ -20,9 +20,18 @@ class ProfilePage extends Component {
             isLoading: true,
             user: {},
         };
+        this.fetchUser = this.fetchUser.bind(this);
     }
 
     componentDidMount() {
+        this.fetchUser();
+    }
+
+    getActiveLinkClass = path => {
+        return this.props.location.pathname === path ? 'active font-weight-medium' : 'text-muted';
+    }
+
+    fetchUser() {
         axios.get(`${config.apiUrl}/api/profile`)
             .then(response => response.data)
             .then(data => {
@@ -30,14 +39,11 @@ class ProfilePage extends Component {
                 document.title = "Staycation | " + data.user.name;
             })
             .catch(error => {
+                console.log(error);
                 if (error.response.status === 401) {
                     this.props.history.replace({pathname: '/login'});
                 }
             });
-    }
-
-    getActiveLinkClass = path => {
-        return this.props.location.pathname === path ? 'active font-weight-medium' : 'text-muted';
     }
 
     render() {
@@ -57,7 +63,7 @@ class ProfilePage extends Component {
                                         <div>
                                             <h4 className="mb-1">{user.name}</h4>
                                             <p className="mb-0">@{user.username} <span className="mx-2">•</span>
-                                                <Button type="link" href="/edit-profile">
+                                                <Button type="link" href="/profile/setting">
                                                     Edit Profile
                                                 </Button>
                                             </p>
@@ -91,7 +97,7 @@ class ProfilePage extends Component {
                                     <Route path={`${this.props.match.path}`} exact render={(props) => <Profile {...props} bookings={user.bookings.completedBookings} />} />
                                     <Route path={`${this.props.match.path}/outstanding`} render={(props) => <Outstanding {...props} bookings={user.bookings.outstandingBookings} />} />
                                     <Route path={`${this.props.match.path}/all-bookings`} render={(props) => <Booking {...props} bookings={user.bookings.allBookings} />} />
-                                    <Route path={`${this.props.match.path}/setting`} render={(props) => <Setting {...props} user={user} />} />
+                                    <Route path={`${this.props.match.path}/setting`} render={(props) => <Setting {...props} fetchUser={this.fetchUser} user={user} />} />
                                 </Switch>
                             </>
                     }

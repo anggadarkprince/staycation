@@ -9,7 +9,6 @@ class Password extends Component {
 
     componentDidMount() {
         document.title = "Staycation | About";
-        window.scrollTo(0, 0);
     }
 
     render() {

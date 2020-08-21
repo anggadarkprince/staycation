@@ -18,26 +18,31 @@ export default function BookingItem(props) {
                 <div className="list-group-item">{props.title}</div>
                 {
                     props.bookings.map(booking => (
-                        <Button key={booking._id} type="link" href={`/profile/booking/${booking._id}`} className="list-group-item list-group-item-action">
-                            <div className="d-flex justify-content-between">
-                                <div>
-                                    <h1 className="h6 mb-0 text-info">
-                                        {booking.transactionNumber}
-                                    </h1>
-                                    <p className="mb-1">
-                                        {booking.item.title}
-                                        <span className="mx-2">•</span>
-                                        {booking.item.city}, {booking.item.country}
-                                    </p>
-                                    <small className="text-muted mb-0">
-                                        {moment(booking.createdAt).format('DD MMMM Y HH:mm')}
-                                    </small>
+                        <Button key={booking.transactionNumber} type="link" href={`/profile/booking/${booking.transactionNumber}`} className="list-group-item list-group-item-action">
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div className="d-flex flex-row align-items-center">
+                                    <figure className="img-wrapper mr-3 mb-0" style={{width: 130}}>
+                                        <img src={booking.item.imageUrl} alt={booking.title} className="img-cover"/>
+                                    </figure>
+                                    <div>
+                                        <h1 className="h6 mb-0 text-info">
+                                            {booking.transactionNumber}
+                                        </h1>
+                                        <p className="mb-1">
+                                            {booking.item.title}
+                                            <span className="mx-2">•</span>
+                                            {booking.item.city}, {booking.item.country}
+                                        </p>
+                                        <small className="text-muted mb-0">
+                                            {moment(booking.createdAt).format('DD MMMM Y HH:mm')}
+                                        </small>
+                                    </div>
                                 </div>
                                 <div className="text-right">
                                     <h3 className="h5">{numeric(booking.price)}</h3>
                                     <span className={`badge badge-${bookingStatuses[booking.status || 'BOOKED']}`}>
-                                            {booking.status}
-                                        </span>
+                                        {booking.status}
+                                    </span>
                                 </div>
                             </div>
                         </Button>
@@ -50,5 +55,5 @@ export default function BookingItem(props) {
 
 BookingItem.propTypes = {
     title: propTypes.string,
-    bookings: propTypes.string,
+    bookings: propTypes.array,
 }

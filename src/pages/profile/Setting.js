@@ -37,9 +37,9 @@ class Setting extends Component {
                     </Fade>
                     <div className="flex-grow-1">
                         <Switch>
-                            <Route path={`${this.props.match.path}`} exact render={(props) => <Basic {...props} user={this.props.user} />} />
-                            <Route path={`${this.props.match.path}/notification`} render={(props) => <Notification {...props} user={this.props.user} />} />
-                            <Route path={`${this.props.match.path}/password`} render={(props) => <Password {...props} user={this.props.user} />} />
+                            <Route path={`${this.props.match.path}`} exact render={(props) => <Basic {...props} fetchUser={this.props.fetchUser} user={this.props.user} />} />
+                            <Route path={`${this.props.match.path}/notification`} render={(props) => <Notification {...props} fetchUser={this.props.fetchUser} notification={this.props.user.preferences} />} />
+                            <Route path={`${this.props.match.path}/password`} render={(props) => <Password {...props} fetchUser={this.props.fetchUser} user={this.props.user} />} />
                             <Route path={`${this.props.match.path}/about`} component={About} />
                         </Switch>
                     </div>
