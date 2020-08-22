@@ -12,18 +12,27 @@ import config from 'config';
 
 import {connect} from 'react-redux';
 import {checkoutBooking} from 'store/actions/checkout';
+import {fetchPage} from "store/actions/page";
 
 class DetailPage extends Component {
     state = {
-        detailPage: {},
-        isLoading: true
+        //detailPage: {},
+        //isLoading: true
+    }
+
+    constructor(props) {
+        super(props);
+        props.page.isLoading = true;
     }
 
     componentDidMount() {
-        document.title = "Staycation | Detail";
         window.scrollTo(0, 0);
 
-        fetch(`${config.apiUrl}/api/detail/${this.props.match.params.id}`)
+        this.props.fetchPage(`${config.apiUrl}/api/detail/${this.props.match.params.id}`, 'detailPage', function (result) {
+            document.title = "Staycation | " + result.title;
+        });
+
+        /*fetch(`${config.apiUrl}/api/detail/${this.props.match.params.id}`)
             .then(result => result.json())
             .then(result => {
                 console.log(result);
@@ -32,22 +41,21 @@ class DetailPage extends Component {
                     isLoading: false
                 });
             })
-            .catch(console.log);
+            .catch(console.log);*/
     }
 
     render() {
-        const detailPage = this.state.detailPage;
-        const {categories, testimonial} = this.state.detailPage;
+        const detailPage = this.props.page.detailPage || {};
         const breadcrumb = [
             {pageTitle: "Home", pageHref: "/"},
             {pageTitle: "House Detail", pageHref: "/detail"},
         ];
         return (
-            !this.state.isLoading &&
+            !this.props.page.isLoading &&
             <>
                 <Header {...this.props}/>
                 <PageDetailTitle breadcrumb={breadcrumb} data={detailPage}/>
-                <FeaturedImage data={this.state.detailPage.imageId}/>
+                <FeaturedImage data={detailPage.imageId}/>
                 <section className="container">
                     <div className="row">
                         <div className="col-7 pr-5">
@@ -62,12 +70,17 @@ class DetailPage extends Component {
                         </div>
                     </div>
                 </section>
-                <Categories data={categories}/>
-                <Testimony data={testimonial}/>
+                <Categories data={detailPage.categories}/>
+                <Testimony data={detailPage.testimonial}/>
                 <Footer/>
             </>
         );
     }
 }
 
-export default connect(null, {checkoutBooking})(DetailPage);
+const mapStateToProps = (state) => {
+    return {
+        page: state.page
+    }
+};
+export default connect(mapStateToProps, {fetchPage, checkoutBooking})(DetailPage);

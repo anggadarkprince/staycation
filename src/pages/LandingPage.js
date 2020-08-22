@@ -19,15 +19,14 @@ class LandingPage extends Component {
     constructor(props) {
         super(props);
         this.refMostPicked = React.createRef();
+        props.page.isLoading = true;
     }
 
     componentDidMount() {
         document.title = "Staycation | Hotels and reservation";
         window.scrollTo(0, 0);
 
-        if (!this.props.page.landingPage) {
-            this.props.fetchPage(`${config.apiUrl}/api/landing`, 'landingPage');
-        }
+        this.props.fetchPage(`${config.apiUrl}/api/landing`, 'landingPage');
         /* fetch(`${config.apiUrl}/api/landing`)
             .then(result => result.json())
             .then(result => {
