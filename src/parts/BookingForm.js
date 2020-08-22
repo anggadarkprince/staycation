@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
 import propTypes from 'prop-types';
 import Button from 'elements/Button';
 import {InputNumber, InputDate} from "elements/Forms";
 import {numeric} from "utilities/formatter";
 
-export default class BookingForm extends Component {
+class BookingForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -62,9 +63,22 @@ export default class BookingForm extends Component {
         }
     }
 
+    startBooking = () => {
+        const {data} = this.state;
+        this.props.startBooking({
+            _id: this.props.itemDetails._id,
+            duration: data.duration,
+            date: {
+                startDate: data.date.startDate,
+                endDate: data.date.endDate
+            }
+        });
+        this.props.history.push('/checkout')
+    }
+
     render() {
         const {data} = this.state;
-        const {itemDetails, startBooking} = this.props;
+        const {itemDetails} = this.props;
         return (
             <div className="card h-auto p-5">
                 <h4 className="mb-3">Start Booking</h4>
@@ -111,7 +125,7 @@ export default class BookingForm extends Component {
                     hasShadow
                     isPrimary
                     isBlock
-                    onClick={startBooking}>
+                    onClick={this.startBooking}>
                     Start Booking
                 </Button>
             </div>
@@ -124,3 +138,4 @@ BookingForm.propTypes = {
     startBooking: propTypes.func
 }
 
+export default withRouter(BookingForm);

@@ -51,9 +51,9 @@ class App extends Component {
                 this.setState({pageReady: true});
             } // else redirect to home page (profile) we dont need to set page ready to prevent glitch view
         } else {
-            if (this.inGuestLocation) {
+            //if (this.inGuestLocation) {
                 this.setState({pageReady: true});
-            } // else redirect to login page (sign in)
+            //} // else redirect to login page (sign in)
         }
     }
 
@@ -76,7 +76,7 @@ class App extends Component {
             });
         } else {
             if (!this.inGuestLocation && redirect) {
-                window.location = this.redirectRoute;
+                //window.location = this.redirectRoute;
             }
         }
 

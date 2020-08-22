@@ -7,10 +7,13 @@ import PageDetailDescription from 'parts/PageDetailDescription';
 import BookingForm from 'parts/BookingForm';
 import Categories from 'parts/Categories';
 import Testimony from 'parts/Testimony';
-import Footer from "../parts/Footer";
+import Footer from "parts/Footer";
 import config from 'config';
 
-export default class DetailPage extends Component {
+import {connect} from 'react-redux';
+import {checkoutBooking} from 'store/actions/checkout';
+
+class DetailPage extends Component {
     state = {
         detailPage: {},
         isLoading: true
@@ -54,9 +57,7 @@ export default class DetailPage extends Component {
                         </div>
                         <div className="col-5">
                             <Fade bottom>
-                                <BookingForm itemDetails={detailPage} startBooking={() => {
-                                    this.props.history.push('/checkout')
-                                }}/>
+                                <BookingForm itemDetails={detailPage} startBooking={this.props.checkoutBooking}/>
                             </Fade>
                         </div>
                     </div>
@@ -68,3 +69,5 @@ export default class DetailPage extends Component {
         );
     }
 }
+
+export default connect(null, {checkoutBooking})(DetailPage);

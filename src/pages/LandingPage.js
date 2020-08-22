@@ -7,10 +7,13 @@ import Testimony from "parts/Testimony";
 import Footer from "parts/Footer";
 import config from 'config';
 
-export default class LandingPage extends Component {
+import {connect} from "react-redux";
+import {fetchPage} from "store/actions/page";
+
+class LandingPage extends Component {
     state = {
-        landingPage: {},
-        isLoading: true
+        //landingPage: {},
+        //isLoading: true
     }
 
     constructor(props) {
@@ -22,7 +25,10 @@ export default class LandingPage extends Component {
         document.title = "Staycation | Hotels and reservation";
         window.scrollTo(0, 0);
 
-        fetch(`${config.apiUrl}/api/landing`)
+        if (!this.props.page.landingPage) {
+            this.props.fetchPage(`${config.apiUrl}/api/landing`, 'landingPage');
+        }
+        /* fetch(`${config.apiUrl}/api/landing`)
             .then(result => result.json())
             .then(result => {
                 this.setState({
@@ -30,13 +36,13 @@ export default class LandingPage extends Component {
                     isLoading: false
                 });
             })
-            .catch(console.log);
+            .catch(console.log); */
     }
 
     render() {
-        const {hero, mostPicked, categories, testimonial} = this.state.landingPage;
+        const {hero, mostPicked, categories, testimonial} = this.props.page.landingPage || {};
         return (
-            !this.state.isLoading &&
+            !this.props.page.isLoading &&
             <>
                 <Header {...this.props}/>
                 <Hero refMostPicked={this.refMostPicked} data={hero}/>
@@ -48,3 +54,10 @@ export default class LandingPage extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        page: state.page
+    }
+};
+export default connect(mapStateToProps, {fetchPage})(LandingPage);
