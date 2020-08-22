@@ -39,7 +39,6 @@ class ProfilePage extends Component {
                 document.title = "Staycation | " + data.user.name;
             })
             .catch(error => {
-                console.log(error);
                 if (error.response.status === 401) {
                     this.props.history.replace({pathname: '/login'});
                 }

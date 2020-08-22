@@ -16,7 +16,7 @@ class Outstanding extends Component {
     render() {
         return (
             <>
-                <BookingItem title="Outstanding" bookings={this.props.bookings}/>
+                <BookingItem title="Outstanding" bookings={this.props.bookings} withDetail/>
             </>
         )
     }
