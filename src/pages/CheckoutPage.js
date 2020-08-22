@@ -39,8 +39,8 @@ class CheckoutPage extends Component {
 
     render() {
         const {data} = this.state;
-        const {checkout} = this.props;
-
+        const {checkout, page} = this.props;
+console.log(page);
         if (!checkout) {
             return (
                 <div className="container">
@@ -65,7 +65,7 @@ class CheckoutPage extends Component {
                     <BookingInformation
                         data={data}
                         checkout={checkout}
-                        itemDetails={itemDetails}
+                        itemDetails={page}
                         onChange={this.onChange}
                     />
                 )
@@ -189,6 +189,7 @@ class CheckoutPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    checkout: state.checkout
+    checkout: state.checkout,
+    page: state.page.detailPage
 });
 export default connect(mapStateToProps)(CheckoutPage);

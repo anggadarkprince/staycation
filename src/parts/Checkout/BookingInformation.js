@@ -1,6 +1,7 @@
 import React from 'react';
 import Fade from 'react-reveal/Fade';
 import {InputText} from "elements/Forms";
+import {numeric} from "utilities/formatter";
 
 export default function BookingInformation(props) {
     const {data, itemDetails, checkout} = props;
@@ -14,13 +15,13 @@ export default function BookingInformation(props) {
                             <div className="card border-0">
                                 <figure className="img-wrapper" style={{height: 270}}>
                                     <img className="img-cover"
-                                        src={itemDetails.imageUrls[0].url}
-                                         alt={itemDetails.name}/>
+                                        src={itemDetails.imageId[0].imageUrl}
+                                         alt={itemDetails.title}/>
                                 </figure>
                                 <div className="row align-items-center mt-3">
                                     <div className="col">
                                         <div className="meta-wrapper mt-0">
-                                            <h5>{itemDetails.name}</h5>
+                                            <h5>{itemDetails.title}</h5>
                                             <span className="text-gray-500">
                                                 {itemDetails.city}, {itemDetails.country}
                                             </span>
@@ -28,10 +29,9 @@ export default function BookingInformation(props) {
                                     </div>
                                     <div className="col-auto">
                                         <span>
-                                            ${+checkout.duration * itemDetails.price} USD
+                                            {numeric(+checkout.duration * itemDetails.price)}
                                             <span className="text-gray-500"> per </span>
-                                            {checkout.duration} {itemDetails.unit}
-                                            {+checkout.duration > 1 ? "s" : ""}
+                                            {checkout.duration} night{+checkout.duration > 1 ? "s" : ""}
                                         </span>
                                     </div>
                                 </div>
