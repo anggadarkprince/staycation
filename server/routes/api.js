@@ -20,5 +20,6 @@ router.post('/password/reset/:token', auth.resetPassword);
 router.get('/profile', authApi, profile.index);
 router.post('/setting/basic', authApi, profile.basic);
 router.post('/setting/notification', authApi, profile.notification);
+router.post('/setting/password', authApi, profile.password);
 
 module.exports = router;

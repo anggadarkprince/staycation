@@ -1,6 +1,7 @@
 const Booking = require('../../models/Booking');
 const User = require('../../models/User');
 const Member = require('../../models/Member');
+const bcrypt = require('bcryptjs');
 const createError = require('http-errors');
 
 module.exports = {
@@ -99,6 +100,25 @@ module.exports = {
             }
 
             res.json({status: 'success', message: 'Your account successfully updated'});
+        } catch (err) {
+            next(createError(500, err));
+        }
+    },
+    password: async (req, res, next) => {
+        try {
+            const {password, newPassword} = req.body;
+            const user = await User.findById(req.user._id);
+            bcrypt.compare(password, user.password)
+                .then(matchedPassword => {
+                    if(matchedPassword) {
+                        user.password = bcrypt.hashSync(newPassword, 12);
+                        user.save();
+                        res.json({status: 'success', message: 'Your account successfully updated'});
+                    } else {
+                        res.json({status: 'error', message: 'Current password is mismatch'});
+                    }
+                })
+                .catch(err => next(createError(500, err)));
         } catch (err) {
             next(createError(500, err));
         }
