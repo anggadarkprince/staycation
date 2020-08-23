@@ -2,15 +2,44 @@ const Item = require('../../models/Item');
 const Booking = require('../../models/Booking');
 const User = require('../../models/User');
 const Notification = require('../../models/Notification');
+const {numberFormat} = require('../../helpers/formatter');
 const moment = require('moment');
+const pdf = require('html-pdf');
+const ejs = require('ejs');
 const path = require("path");
 
 module.exports = {
+    print: async (req, res) => {
+        const id = req.params.id;
+        try {
+            const booking = await Booking.findOne({_id: id}).populate('userId').populate('bankId').populate({
+                path: 'itemId._id',
+                populate: {
+                    path: 'categoryId',
+                    model: 'Category'
+                }
+            });
+            const logoUrl = '../../public/dist/img/favicon.png';
+            ejs.renderFile('views/admin/booking/print.ejs', {booking, logoUrl, moment, numberFormat, require, path}, {}, (err, html) => {
+                if (err) return console.log(err);
+                pdf.create(html, { format: 'A4' }).toStream((err, stream) => {
+                    if (err) return console.log(err);
+                    res.setHeader('Content-type', 'application/pdf');
+                    //res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
+                    stream.pipe(res);
+                });
+            });
+        } catch (err) {
+            next(createError(404))
+        }
+    },
     save: async (req, res) => {
         const {
-            item: itemId, user: userId, from_date: fromDate, until_date: untilDate, bank: bankId, description,
+            itemId, bookingStartDate, bookingEndDate, bankId, description,
             bankFrom, accountNumber, accountHolder
         } = req.body;
+        const userId = req.user._id;
+
         try {
             const itemData = await Item.findById(itemId);
             const userData = await User.findById(userId);
@@ -24,13 +53,14 @@ module.exports = {
             }
             const booking = await Booking.create({
                 transactionNumber: `TRN-${(new Date()).getTime()}`,
-                bookingStartDate: new Date(fromDate),
-                bookingEndDate: new Date(untilDate),
+                bookingStartDate: new Date(bookingStartDate),
+                bookingEndDate: new Date(bookingEndDate),
                 itemId: {
                     _id: itemId,
                     price: itemData.price,
-                    duration: moment(untilDate, 'DD MMMM Y').diff(moment(fromDate, 'DD MMMM Y'), 'days'),
+                    duration: moment(bookingEndDate).diff(moment(bookingStartDate), 'days'),
                 },
+                status: payment.proofPayment ? 'PAID' : 'BOOKED',
                 userId,
                 bankId,
                 description,
@@ -52,9 +82,8 @@ module.exports = {
                 });
             }
 
-            res.status(201).json({message: "Success Booking", booking});
+            res.status(201).json({message: "Accommodation are successfully booked", booking});
         } catch (err) {
-            console.log(err);
             res.status(500).json({message: "Something went wrong, try again later"});
         }
     }

@@ -8,8 +8,11 @@ import BookingInformation from "parts/Checkout/BookingInformation";
 import Payment from "parts/Checkout/Payment";
 import Completed from "parts/Checkout/Completed";
 import {connect} from "react-redux";
+import {submitBooking} from 'store/actions/checkout';
+import AuthContext from 'AuthContext';
 
 class CheckoutPage extends Component {
+    static contextType = AuthContext;
     state = {
         data: {
             firstName: "",
@@ -37,10 +40,32 @@ class CheckoutPage extends Component {
         })
     }
 
+    onSubmit = (nextStep) => {
+        const payload = new FormData();
+        //payload.append('firstName', this.state.data.firstName);
+        //payload.append('lastName', this.state.data.lastName);
+        //payload.append('email', this.state.data.email);
+        //payload.append('phoneNumber', this.state.data.phone);
+        payload.append('userId', this.context.user._id);
+        payload.append('itemId', this.props.checkout._id);
+        payload.append('bankId', '5f071ebc0e2d63512a0a644d');
+        payload.append('bookingStartDate', this.props.checkout.date.startDate);
+        payload.append('bookingEndDate', this.props.checkout.date.endDate);
+        payload.append('bankFrom', this.state.data.bankName);
+        payload.append('accountNumber', this.state.data.bankNumber);
+        payload.append('accountHolder', this.state.data.bankHolder);
+        payload.append('image', this.state.data.proofPayment[0]);
+        this.props.submitBooking(payload).then(() => {
+            nextStep();
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+
     render() {
         const {data} = this.state;
         const {checkout, page} = this.props;
-console.log(page);
+
         if (!checkout) {
             return (
                 <div className="container">
@@ -146,7 +171,7 @@ console.log(page);
                                                             isBlock
                                                             isPrimary
                                                             hasShadow
-                                                            onClick={nextStep}>
+                                                            onClick={() => this.onSubmit(nextStep)}>
                                                             Completing Booking
                                                         </Button>
                                                     </Fade>
@@ -192,4 +217,4 @@ const mapStateToProps = (state) => ({
     checkout: state.checkout,
     page: state.page.detailPage
 });
-export default connect(mapStateToProps)(CheckoutPage);
+export default connect(mapStateToProps, {submitBooking})(CheckoutPage);

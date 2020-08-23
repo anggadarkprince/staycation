@@ -4,6 +4,8 @@ import Button from "elements/Button";
 import moment from "moment";
 import {numeric} from "../../utilities/formatter";
 import Fade from "react-reveal";
+import config from 'config';
+import axios from 'axios';
 
 export default function BookingItem(props) {
     const bookingStatuses = {
@@ -12,13 +14,39 @@ export default function BookingItem(props) {
         'COMPLETED': 'success',
         'REJECTED': 'danger',
     };
+
+    const printInvoice = (booking, download = false) => {
+        axios(`${config.apiUrl}/api/booking/invoice/${booking._id}`, {
+            method: 'GET',
+            responseType: 'blob' // Force to receive data in a Blob Format
+        })
+            .then(response => {
+                const file = new Blob(
+                    [response.data],
+                    {type: 'application/pdf'});
+                const fileURL = URL.createObjectURL(file);
+
+                if (download) {
+                    const link = document.createElement('a');
+                    link.href = fileURL;
+                    link.setAttribute('download', 'invoice.pdf');
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                } else {
+                    window.open(fileURL, "_self");
+                }
+            })
+            .catch(console.log);
+    }
+
     return (
         <Fade duration={250}>
             <div className="list-group list-group-flush">
                 <div className="list-group-item">{props.title}</div>
                 {
                     props.bookings.map(booking => (
-                        <div className="list-group-item">
+                        <div className="list-group-item" key={booking._id}>
                             {
                                 props.withDetail ?
                                     <div className="card my-3">
@@ -127,8 +155,10 @@ export default function BookingItem(props) {
                                         </div>
                                     </div>
                                     <div className="card-footer bg-white text-right">
-                                        <Button type="link" className="btn mr-2" isLight>Print Invoice</Button>
-                                        <Button type="link" className="btn" isPrimary>Payment</Button>
+                                        {/*<a className="btn btn-light mr-2" href={`${config.apiUrl}/api/booking/invoice/${booking._id}`}>Download</a>*/}
+                                        <Button type="button" className="btn mr-2" isLight onClick={() => printInvoice(booking)}>Print Invoice</Button>
+                                        <Button type="button" className="btn mr-2" isLight onClick={() => printInvoice(booking, true)}>Download</Button>
+                                        {booking.status === 'BOOKED' && <Button type="link" className="btn" isPrimary>Payment</Button>}
                                     </div>
                                 </div>
                                     :
@@ -155,8 +185,8 @@ export default function BookingItem(props) {
                                         <div className="text-right">
                                             <h3 className="h5">{numeric(booking.price)}</h3>
                                             <span className={`badge badge-${bookingStatuses[booking.status || 'BOOKED']}`}>
-                                        {booking.status || 'BOOKED'}
-                                    </span>
+                                                {booking.status || 'BOOKED'}
+                                            </span>
                                         </div>
                                     </div>
                                 </Button>

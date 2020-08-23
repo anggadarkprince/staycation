@@ -4,10 +4,6 @@ import {backToTop} from "utilities/scroller";
 
 class Profile extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         document.title = "Staycation | Profile";
         backToTop();
@@ -16,7 +12,11 @@ class Profile extends Component {
     render() {
         return (
             <>
-                <BookingItem title="Latest Bookings" bookings={this.props.bookings}/>
+                {
+                    this.props.bookings.length > 0
+                        ? <BookingItem title="Latest Bookings" bookings={this.props.bookings}/>
+                        : <p className="text-gray-500">No outstanding booking available</p>
+                }
             </>
         )
     }

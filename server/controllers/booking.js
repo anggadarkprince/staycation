@@ -89,7 +89,8 @@ module.exports = {
                     model: 'Category'
                 }
             });
-            ejs.renderFile('views/admin/booking/print.ejs', {booking, moment, numberFormat, require, path}, {}, (err, html) => {
+            const logoUrl = '../public/dist/img/favicon.png';
+            ejs.renderFile('views/admin/booking/print.ejs', {booking, logoUrl, moment, numberFormat, require, path}, {}, (err, html) => {
                 if (err) return console.log(err);
                 pdf.create(html, { format: 'A4' }).toStream((err, stream) => {
                     if (err) return console.log(err);

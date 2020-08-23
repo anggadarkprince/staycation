@@ -4,10 +4,6 @@ import IconText from "parts/IconText";
 
 class Password extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         document.title = "Staycation | About";
     }

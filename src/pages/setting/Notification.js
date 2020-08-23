@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Fade from "react-reveal";
-import {backToTop, scrollToTarget} from "utilities/scroller";
+import {scrollToTarget} from "utilities/scroller";
 import axios from "axios";
 import config from "../../config";
 import Button from "../../elements/Button";

@@ -19,8 +19,8 @@ export default function Payment(props) {
                             <div className="my-4">
                                 <h5>Transfer Detail</h5>
                                 <p>Tax: {tax}%</p>
-                                <p>Sub total: {subTotal} USD</p>
-                                <p>Total: {grandTotal} USD</p>
+                                <p>Sub total: {subTotal}</p>
+                                <p>Total: {grandTotal}</p>
                             </div>
                             <div className="row">
                                 <div className="col-3 text-right">

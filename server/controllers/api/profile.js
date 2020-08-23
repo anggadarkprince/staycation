@@ -20,6 +20,7 @@ module.exports = {
                 .sort([['createdAt', -1]]);
             const allBookings = bookings.map(booking => {
                 return {
+                    _id: booking._id,
                     transactionNumber: booking.transactionNumber,
                     status: booking.status,
                     createdAt: booking.createdAt,
