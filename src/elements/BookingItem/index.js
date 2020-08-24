@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import propTypes from 'prop-types';
 import Button from "elements/Button";
 import moment from "moment";
@@ -6,8 +6,14 @@ import {numeric} from "../../utilities/formatter";
 import Fade from "react-reveal";
 import config from 'config';
 import axios from 'axios';
+import {connect} from "react-redux";
+import {checkoutState, checkoutBooking} from "../../store/actions/checkout";
+import {withRouter} from 'react-router-dom';
 
-export default function BookingItem(props) {
+const BookingItem = (props) => {
+    const [isLoading, setLoading] = useState(false);
+    const [isLoadingDownload, setLoadingDownload] = useState(false);
+
     const bookingStatuses = {
         'BOOKED': 'light',
         'PAID': 'warning',
@@ -16,17 +22,19 @@ export default function BookingItem(props) {
     };
 
     const printInvoice = (booking, download = false) => {
+        if (download) setLoadingDownload(true);
+        else setLoading(true);
+
         axios(`${config.apiUrl}/api/booking/invoice/${booking._id}`, {
             method: 'GET',
             responseType: 'blob' // Force to receive data in a Blob Format
         })
             .then(response => {
-                const file = new Blob(
-                    [response.data],
-                    {type: 'application/pdf'});
+                const file = new Blob([response.data], {type: 'application/pdf'});
                 const fileURL = URL.createObjectURL(file);
 
                 if (download) {
+                    setLoadingDownload(false);
                     const link = document.createElement('a');
                     link.href = fileURL;
                     link.setAttribute('download', 'invoice.pdf');
@@ -34,10 +42,27 @@ export default function BookingItem(props) {
                     link.click();
                     link.remove();
                 } else {
+                    setLoading(false);
                     window.open(fileURL, "_self");
                 }
             })
             .catch(console.log);
+    }
+
+    const checkoutPayment = (booking) => {
+        props.checkoutBooking({
+            _id: booking.item._id,
+            duration: booking.duration,
+            price: booking.price,
+            date: {
+                startDate: booking.bookingStartDate,
+                endDate: booking.bookingEndDate,
+                duration: booking.duration
+            },
+            booking: booking
+        });
+        props.checkoutState('payment');
+        props.history.push('/checkout');
     }
 
     return (
@@ -155,14 +180,13 @@ export default function BookingItem(props) {
                                         </div>
                                     </div>
                                     <div className="card-footer bg-white text-right">
-                                        {/*<a className="btn btn-light mr-2" href={`${config.apiUrl}/api/booking/invoice/${booking._id}`}>Download</a>*/}
-                                        <Button type="button" className="btn mr-2" isLight onClick={() => printInvoice(booking)}>Print Invoice</Button>
-                                        <Button type="button" className="btn mr-2" isLight onClick={() => printInvoice(booking, true)}>Download</Button>
-                                        {booking.status === 'BOOKED' && <Button type="link" className="btn" isPrimary>Payment</Button>}
+                                        <Button type="button" className="btn mr-2" isLight isLoading={isLoading} onClick={() => printInvoice(booking)}>Print Invoice</Button>
+                                        <Button type="button" className="btn mr-2" isLight isLoading={isLoadingDownload} onClick={() => printInvoice(booking, true)}>Download</Button>
+                                        {booking.status === 'BOOKED' && <Button type="button" className="btn" isPrimary onClick={() => checkoutPayment(booking)}>Payment</Button>}
                                     </div>
                                 </div>
                                     :
-                                <Button key={booking.transactionNumber} type="link" href={`/profile/booking/${booking.transactionNumber}`} className="list-group-item-action">
+                                <Button key={booking.transactionNumber} type="link" isExternal href={`${config.apiUrl}/api/booking/invoice/${booking._id}`} className="list-group-item-action">
                                     <div className="d-flex justify-content-between align-items-center">
                                         <div className="d-flex flex-row align-items-center">
                                             <figure className="img-wrapper mr-3 mb-0" style={{width: 130}}>
@@ -198,6 +222,8 @@ export default function BookingItem(props) {
         </Fade>
     )
 }
+
+export default withRouter(connect(null, {checkoutState, checkoutBooking})(BookingItem));
 
 BookingItem.propTypes = {
     title: propTypes.string,

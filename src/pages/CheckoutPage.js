@@ -3,22 +3,25 @@ import Fade from 'react-reveal/Fade';
 import Header from 'parts/Header';
 import Button from 'elements/Button';
 import Stepper, {Numbering, Meta, MainContent, Controller} from 'elements/Stepper';
-import itemDetails from 'json/itemDetails';
 import BookingInformation from "parts/Checkout/BookingInformation";
 import Payment from "parts/Checkout/Payment";
 import Completed from "parts/Checkout/Completed";
 import {connect} from "react-redux";
-import {submitBooking} from 'store/actions/checkout';
+import {submitBooking, submitPayment} from 'store/actions/checkout';
 import AuthContext from 'AuthContext';
 
 class CheckoutPage extends Component {
     static contextType = AuthContext;
     state = {
+        isSubmitting: false,
+        booking: this.props.checkout?.booking || null,
         data: {
-            firstName: "",
-            lastName: "",
-            email: "",
-            phone: "",
+            name: this.context.user.name,
+            email: this.context.user.email,
+            phone: this.context.user.member?.phoneNumber || '',
+            address: this.context.user.member?.address || '',
+            bank: "",
+            description: "",
             proofPayment: "",
             bankName: "",
             bankHolder: "",
@@ -40,31 +43,47 @@ class CheckoutPage extends Component {
         })
     }
 
-    onSubmit = (nextStep) => {
-        const payload = new FormData();
-        //payload.append('firstName', this.state.data.firstName);
-        //payload.append('lastName', this.state.data.lastName);
-        //payload.append('email', this.state.data.email);
-        //payload.append('phoneNumber', this.state.data.phone);
-        payload.append('userId', this.context.user._id);
-        payload.append('itemId', this.props.checkout._id);
-        payload.append('bankId', '5f071ebc0e2d63512a0a644d');
-        payload.append('bookingStartDate', this.props.checkout.date.startDate);
-        payload.append('bookingEndDate', this.props.checkout.date.endDate);
-        payload.append('bankFrom', this.state.data.bankName);
-        payload.append('accountNumber', this.state.data.bankNumber);
-        payload.append('accountHolder', this.state.data.bankHolder);
-        payload.append('image', this.state.data.proofPayment[0]);
-        this.props.submitBooking(payload).then(() => {
-            nextStep();
-        }).catch(error => {
-            console.log(error);
+    onSubmitBooking = (nextStep) => {
+        this.setState({isSubmitting: true}, () => {
+            const payload = {
+                itemId: this.props.checkout._id,
+                bookingStartDate: this.props.checkout.date.startDate,
+                bookingEndDate: this.props.checkout.date.endDate,
+                description: this.state.data.description,
+            }
+            this.props.submitBooking(payload).then(response => {
+                this.setState({
+                    booking: response.data.booking,
+                    isSubmitting: false
+                }, nextStep);
+            }).catch(error => {
+                console.log(error);
+            });
+        });
+    }
+
+    onSubmitPayment = (nextStep) => {
+        this.setState({isSubmitting: true}, () => {
+            const payload = new FormData();
+            payload.append('bookingId', this.state.booking._id);
+            payload.append('bankId', this.state.data.bank);
+            payload.append('bankFrom', this.state.data.bankName);
+            payload.append('accountNumber', this.state.data.bankNumber);
+            payload.append('accountHolder', this.state.data.bankHolder);
+            payload.append('image', this.state.data.proofPayment[0]);
+            this.props.submitPayment(payload).then(() => {
+                this.setState({
+                    isSubmitting: false
+                }, nextStep);
+            }).catch(error => {
+                console.log(error);
+            });
         });
     }
 
     render() {
-        const {data} = this.state;
-        const {checkout, page} = this.props;
+        const {data, booking} = this.state;
+        const {checkout, page, checkoutState} = this.props;
 
         if (!checkout) {
             return (
@@ -86,73 +105,46 @@ class CheckoutPage extends Component {
             bookingInformation: {
                 title: "Booking Information",
                 description: "Please fill up the blank fields bellow",
-                content: (
-                    <BookingInformation
-                        data={data}
-                        checkout={checkout}
-                        itemDetails={page}
-                        onChange={this.onChange}
-                    />
-                )
+                content: <BookingInformation data={data} checkout={checkout} itemDetails={page} onChange={this.onChange} />
             },
             payment: {
                 title: "Payment",
                 description: "Kindly follow the instruction bellow",
-                content: (
-                    <Payment
-                        data={data}
-                        checkout={checkout}
-                        itemDetails={itemDetails}
-                        onChange={this.onChange}
-                    />
-                )
+                content: <Payment booking={booking} data={data} checkout={checkout} onChange={this.onChange} />
             },
             completed: {
                 title: "Yay! Completed",
                 description: "Your booking is completed, we will email you later",
-                content: (
-                    <Completed/>
-                )
+                content: <Completed/>
             },
         }
+
         return (
             <>
-                <Header isCentered {...this.props}></Header>
-                <Stepper steps={steps}>
+                <Header isCentered {...this.props}/>
+                <Stepper steps={steps} initialStep={checkoutState}>
                     {
                         (prevStep, nextStep, currentStep, steps) => (
                             <>
-                                <Numbering
-                                    data={steps}
-                                    current={currentStep}/>
-
+                                <Numbering data={steps} current={currentStep}/>
                                 <Meta data={steps} current={currentStep}/>
                                 <MainContent data={steps} current={currentStep}/>
                                 {
                                     currentStep === "bookingInformation" && (
                                         <Controller>
                                             {
-                                                data.firstName !== "" && data.lastName !== "" && data.email !== "" && data.phone !== "" && (
+                                                data.name !== "" && data.address !== "" && data.email !== "" && data.phone !== "" && (
                                                     <Fade>
-                                                        <Button
-                                                            className="btn btn-action mb-3"
-                                                            type="button"
-                                                            isBlock
-                                                            isPrimary
-                                                            hasShadow
-                                                            onClick={nextStep}>
-                                                            Continue to Book
+                                                        <Button className="btn btn-action mb-3" type="button" isBlock isPrimary hasShadow
+                                                                isLoading={this.state.isSubmitting}
+                                                                onClick={() => this.onSubmitBooking(nextStep)}>
+                                                            Checkout Booking
                                                         </Button>
                                                     </Fade>
                                                 )
                                             }
 
-                                            <Button
-                                                className="btn"
-                                                type="link"
-                                                isBlock
-                                                isLight
-                                                href={`/properties/${itemDetails._id}`}>
+                                            <Button className="btn" type="link" isBlock isLight href={`/properties/${page._id}`}>
                                                 Cancel
                                             </Button>
                                         </Controller>
@@ -165,26 +157,16 @@ class CheckoutPage extends Component {
                                             {
                                                 data.proofPayment !== "" && data.bankName !== "" && data.bankHolder !== "" && (
                                                     <Fade>
-                                                        <Button
-                                                            className="btn btn-action mb-3"
-                                                            type="button"
-                                                            isBlock
-                                                            isPrimary
-                                                            hasShadow
-                                                            onClick={() => this.onSubmit(nextStep)}>
+                                                        <Button className="btn btn-action mb-3" type="button" isBlock isPrimary hasShadow
+                                                                isLoading={this.state.isSubmitting}
+                                                                onClick={() => this.onSubmitPayment(nextStep)}>
                                                             Completing Booking
                                                         </Button>
                                                     </Fade>
                                                 )
                                             }
-
-                                            <Button
-                                                className="btn"
-                                                type="button"
-                                                isBlock
-                                                isLight
-                                                onClick={nextStep}>
-                                                Cancel
+                                            <Button className="btn" type="link" isBlock isLight href="/profile/outstanding">
+                                                Back to Booking
                                             </Button>
                                         </Controller>
                                     )
@@ -193,12 +175,7 @@ class CheckoutPage extends Component {
                                 {
                                     currentStep === "completed" && (
                                         <Controller>
-                                            <Button
-                                                className="btn btn-action"
-                                                type="link"
-                                                isBlock
-                                                isPrimary
-                                                href="/">
+                                            <Button className="btn btn-action" type="link" isBlock isPrimary href="/profile">
                                                 Back To Home
                                             </Button>
                                         </Controller>
@@ -215,6 +192,7 @@ class CheckoutPage extends Component {
 
 const mapStateToProps = (state) => ({
     checkout: state.checkout,
-    page: state.page.detailPage
+    page: state.page.detailPage,
+    checkoutState: state.checkoutState
 });
-export default connect(mapStateToProps, {submitBooking})(CheckoutPage);
+export default connect(mapStateToProps, {submitBooking, submitPayment})(CheckoutPage);

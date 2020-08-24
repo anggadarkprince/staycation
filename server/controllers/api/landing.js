@@ -1,6 +1,7 @@
 const Item = require('../../models/Item');
 const Category = require('../../models/Category');
 const User = require('../../models/User');
+const Bank = require('../../models/Bank');
 
 module.exports = {
     index: async (req, res) => {
@@ -132,7 +133,14 @@ module.exports = {
             })
 
         } catch (error) {
-            console.log(error);
+            res.status(500).json({message: "Internal server error"});
+        }
+    },
+    banks: async (req, res) => {
+        try {
+            const banks = await Bank.find();
+            res.status(200).json(banks.map(bank => ({...bank._doc, logo: res.locals._baseUrl + bank.logo.replace(/\\/g, "/")})));
+        } catch (error) {
             res.status(500).json({message: "Internal server error"});
         }
     },

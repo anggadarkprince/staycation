@@ -67,12 +67,14 @@ class BookingForm extends Component {
         const {data} = this.state;
         this.props.startBooking({
             _id: this.props.itemDetails._id,
+            price: this.props.itemDetails.price,
             duration: data.duration,
             date: {
                 startDate: data.date.startDate,
                 endDate: data.date.endDate
             }
         });
+        this.props.checkoutState('bookingInformation');
         this.props.history.push('/checkout')
     }
 

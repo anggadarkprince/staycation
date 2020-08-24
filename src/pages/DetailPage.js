@@ -11,7 +11,7 @@ import Footer from "parts/Footer";
 import config from 'config';
 
 import {connect} from 'react-redux';
-import {checkoutBooking} from 'store/actions/checkout';
+import {checkoutBooking, checkoutState} from 'store/actions/checkout';
 import {fetchPage} from "store/actions/page";
 
 class DetailPage extends Component {
@@ -65,7 +65,7 @@ class DetailPage extends Component {
                         </div>
                         <div className="col-5">
                             <Fade bottom>
-                                <BookingForm itemDetails={detailPage} startBooking={this.props.checkoutBooking}/>
+                                <BookingForm itemDetails={detailPage} checkoutState={this.props.checkoutState} startBooking={this.props.checkoutBooking}/>
                             </Fade>
                         </div>
                     </div>
@@ -83,4 +83,4 @@ const mapStateToProps = (state) => {
         page: state.page
     }
 };
-export default connect(mapStateToProps, {fetchPage, checkoutBooking})(DetailPage);
+export default connect(mapStateToProps, {fetchPage, checkoutBooking, checkoutState})(DetailPage);

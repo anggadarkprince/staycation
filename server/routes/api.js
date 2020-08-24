@@ -10,8 +10,10 @@ const authApi  = require('../middleware/authAPI');
 
 router.get('/landing', landing.index);
 router.get('/detail/:id', landing.detail);
-router.get('/booking/invoice/:id', booking.print);
-router.post('/booking', upload.single("image"), booking.save);
+router.get('/banks', landing.banks);
+router.post('/booking', authApi, booking.save);
+router.post('/booking/payment', authApi, upload.single("image"), booking.payment);
+router.get('/booking/invoice/:id', authApi, booking.print);
 router.post('/register', auth.register);
 router.post('/login', auth.login);
 router.post('/token', auth.token);

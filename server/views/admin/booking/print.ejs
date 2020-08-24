@@ -92,7 +92,7 @@
             <td style="font-weight: bold; width: 150px">Email</td>
             <td><%= booking.userId.email %></td>
             <td style="font-weight: bold; width: 130px">Paid At</td>
-            <td><%= booking.paidAt ? moment(booking.payment.paidAt).format('DD MMMM Y HH:mm') : 'WAITING' %></td>
+            <td><%= booking.payment.paidAt ? moment(booking.payment.paidAt).format('DD MMMM Y HH:mm') : 'WAITING' %></td>
         </tr>
     </table>
 

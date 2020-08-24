@@ -40,35 +40,25 @@ export default function BookingInformation(props) {
                     </div>
                     <div className="col-5 py-5 pl-5">
                         <Fade delay={400}>
-                            <label htmlFor="firstName">First Name</label>
-                            <InputText
-                                id="firstName"
-                                name="firstName"
-                                value={data.firstName}
-                                onChange={props.onChange}/>
-
-                            <label htmlFor="lastName">Last Name</label>
-                            <InputText
-                                id="lastName"
-                                name="lastName"
-                                value={data.lastName}
-                                onChange={props.onChange}/>
+                            <label htmlFor="name">Name</label>
+                            <InputText id="name" name="name" value={data.name} onChange={props.onChange}/>
 
                             <label htmlFor="email">Email Address</label>
-                            <InputText
-                                id="email"
-                                name="email"
-                                type="email"
-                                value={data.email}
-                                onChange={props.onChange}/>
+                            <InputText id="email" name="email" type="email" value={data.email} onChange={props.onChange}/>
 
                             <label htmlFor="phone">Phone Number</label>
-                            <InputText
-                                id="phone"
-                                name="phone"
-                                type="tel"
-                                value={data.phone}
-                                onChange={props.onChange}/>
+                            <InputText id="phone" name="phone" type="tel" value={data.phone} onChange={props.onChange}/>
+
+                            <label htmlFor="address">Address</label>
+                            <InputText id="address" name="address" value={data.address} onChange={props.onChange}/>
+
+                            <label htmlFor="description">Booking Note</label>
+                            <div className="input-text mb-3">
+                                <div className="input-group">
+                                    <textarea className="form-control" id="description" name="description" placeholder="Add note for this booking"
+                                              value={data.description} onChange={props.onChange}/>
+                                </div>
+                            </div>
                         </Fade>
                     </div>
                 </div>

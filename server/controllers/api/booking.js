@@ -34,23 +34,11 @@ module.exports = {
         }
     },
     save: async (req, res) => {
-        const {
-            itemId, bookingStartDate, bookingEndDate, bankId, description,
-            bankFrom, accountNumber, accountHolder
-        } = req.body;
-        const userId = req.user._id;
+        const {itemId, bookingStartDate, bookingEndDate, description} = req.body;
 
         try {
             const itemData = await Item.findById(itemId);
-            const userData = await User.findById(userId);
 
-            const payment = {
-                bank: bankFrom, accountNumber, accountHolder,
-                paidAt: new Date()
-            };
-            if (req.file) {
-                payment.proofPayment = path.join('/', req.file.path);
-            }
             const booking = await Booking.create({
                 transactionNumber: `TRN-${(new Date()).getTime()}`,
                 bookingStartDate: new Date(bookingStartDate),
@@ -60,17 +48,15 @@ module.exports = {
                     price: itemData.price,
                     duration: moment(bookingEndDate).diff(moment(bookingStartDate), 'days'),
                 },
-                status: payment.proofPayment ? 'PAID' : 'BOOKED',
-                userId,
-                bankId,
+                status: 'BOOKED',
+                userId: req.user._id,
                 description,
-                payment,
             });
 
-            if (userData.preferences && userData.preferences.notificationNewBooking) {
+            if (req.user.preferences && req.user.preferences.notificationNewBooking) {
                 const notificationMessage = {
-                    message: `Booking for item ${itemData.title}, please review if necessary`,
-                    url: `/admin/booking/view/${booking._id}`
+                    message: `Booking for item ${itemData.title} submitted, continue to payment?`,
+                    url: `/profile/outstanding`
                 };
                 req.io.emit('new-booking', notificationMessage);
 
@@ -82,8 +68,80 @@ module.exports = {
                 });
             }
 
-            res.status(201).json({message: "Accommodation are successfully booked", booking});
+            const resultBooking = await Booking.findById(booking._id)
+                .populate({
+                    path: 'itemId._id',
+                    populate: {
+                        path: 'imageId',
+                        select: '_id imageUrl isPrimary',
+                    }
+                });
+
+            res.status(201).json({
+                message: "Accommodation are successfully booked",
+                booking: {
+                    _id: resultBooking._id,
+                    transactionNumber: resultBooking.transactionNumber,
+                    status: resultBooking.status,
+                    createdAt: resultBooking.createdAt,
+                    bookingStartDate: resultBooking.bookingStartDate,
+                    bookingEndDate: resultBooking.bookingEndDate,
+                    description: resultBooking.description,
+                    item: {
+                        _id: resultBooking.itemId._id._id,
+                        title: resultBooking.itemId._id.title,
+                        city: resultBooking.itemId._id.city,
+                        country: resultBooking.itemId._id.country,
+                        imageUrl: res.locals._baseUrl + resultBooking.itemId._id.imageId.find(image => image.isPrimary === true).imageUrl.replace(/\\/g, "/")
+                    },
+                    price: resultBooking.itemId.price,
+                    duration: resultBooking.itemId.duration,
+                    payment: {
+                        ...resultBooking._doc.payment
+                    }
+                }
+            });
         } catch (err) {
+            console.log(err);
+            res.status(500).json({message: "Something went wrong, try again later"});
+        }
+    },
+    payment: async (req, res) => {
+        const {bookingId, bankFrom, accountNumber, accountHolder, bankId} = req.body;
+
+        try {
+            const booking = await Booking.findById(bookingId);
+
+            const payment = {
+                bank: bankFrom, accountNumber, accountHolder,
+                paidAt: new Date()
+            };
+            if (req.file) {
+                payment.proofPayment = path.join('/', req.file.path);
+            }
+            booking.bankId = bankId;
+            booking.payment = payment;
+            booking.status = 'PAID';
+            booking.save();
+
+            if (req.user.preferences.notificationNewBooking) {
+                const notificationMessage = {
+                    message: `Payment for booking ${booking.transactionNumber} is submitted`,
+                    url: `/profile/outstanding`
+                };
+                req.io.emit('booking-payment', notificationMessage);
+
+                Notification.create({
+                    userId: booking.userId,
+                    channel: 'booking-payment',
+                    ...notificationMessage,
+                    createdAt: new Date(),
+                });
+            }
+
+            res.status(204).json({message: `Booking item ${booking.transactionNumber} successfully paid`, booking});
+        } catch (err) {
+            console.log(err);
             res.status(500).json({message: "Something went wrong, try again later"});
         }
     }
