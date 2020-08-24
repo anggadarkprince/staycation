@@ -1,4 +1,5 @@
 const User = require('../../models/User');
+const Member = require('../../models/Member');
 const Notification = require('../../models/Notification');
 const Log = require('../../models/Log');
 const {sendMail} = require('../../helpers/mailer');
@@ -38,9 +39,10 @@ module.exports = {
         }
 
         User.findOne(condition).select('_id name username email password avatar status preferences tokens')
-            .then(user => {
+            .then(async user => {
                 if (user) {
                     if (user.status === 'ACTIVATED') {
+                        const member = await Member.findOne({userId: user._id});
                         bcrypt.compare(password, user.password)
                             .then(matchedPassword => {
                                 if(matchedPassword) {
@@ -119,6 +121,7 @@ module.exports = {
                                                 status: user.status,
                                                 avatar: res.locals._baseUrl + user.avatar.replace(/\\/g, "/"),
                                                 preferences: user.preferences,
+                                                member: member
                                             },
                                         }
                                     });

@@ -28,6 +28,7 @@ module.exports = {
                     bookingEndDate: booking.bookingEndDate,
                     description: booking.description,
                     item: {
+                        _id: booking.itemId._id._id,
                         title: booking.itemId._id.title,
                         city: booking.itemId._id.city,
                         country: booking.itemId._id.country,

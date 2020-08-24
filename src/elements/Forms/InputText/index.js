@@ -3,7 +3,7 @@ import propTypes from 'prop-types';
 import './index.scss';
 
 export default function Text(props) {
-    const {value, type, placeholder, name, prepend, append, outerClassName, inputClassName, errorResponse} = props;
+    const {value, type, placeholder, name, isRequired, prepend, append, outerClassName, inputClassName, errorResponse} = props;
 
     const [hasError, setHasError] = useState(null);
     let pattern = "";
@@ -45,6 +45,7 @@ export default function Text(props) {
                     className={["form-control", inputClassName].join(" ")}
                     value={value}
                     placeholder={placeholder}
+                    required={isRequired}
                     onChange={onChange}
                 />
                 {append && (
@@ -59,12 +60,14 @@ export default function Text(props) {
 }
 
 Text.defaultProps = {
+    isRequired: false,
     type: "text",
     pattern: "",
     placeholder: "Please type here...",
     errorResponse: "Please match the requested format",
 }
 Text.propTypes = {
+    isRequired: propTypes.bool,
     name: propTypes.string.isRequired,
     value: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
     onChange: propTypes.func.isRequired,
