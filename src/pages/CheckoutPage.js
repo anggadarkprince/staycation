@@ -28,8 +28,8 @@ class CheckoutPage extends Component {
         }
     }
 
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         props.onChangeLayout('checkout');
     }
 
