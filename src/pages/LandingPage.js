@@ -3,6 +3,7 @@ import Hero from 'parts/Hero';
 import MostPicked from 'parts/MostPicked';
 import Categories from 'parts/Categories';
 import Testimony from "parts/Testimony";
+import Spinner from "elements/Spinner";
 import config from 'config';
 
 import {connect} from "react-redux";
@@ -39,7 +40,7 @@ class LandingPage extends Component {
     render() {
         const {hero, mostPicked, categories, testimonial} = this.props.page.landingPage || {};
         return (
-            !this.props.page.isLoading &&
+            this.props.page.isLoading ? <Spinner className="text-center" style={{minHeight: 200}}/> :
             <>
                 <Hero refMostPicked={this.refMostPicked} data={hero}/>
                 <MostPicked refMostPicked={this.refMostPicked} data={mostPicked}/>

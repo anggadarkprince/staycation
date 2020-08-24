@@ -6,6 +6,7 @@ import PageDetailDescription from 'parts/PageDetailDescription';
 import BookingForm from 'parts/BookingForm';
 import Categories from 'parts/Categories';
 import Testimony from 'parts/Testimony';
+import Spinner from 'elements/Spinner';
 import config from 'config';
 
 import {connect} from 'react-redux';
@@ -49,7 +50,7 @@ class DetailPage extends Component {
             {pageTitle: "House Detail", pageHref: "/detail"},
         ];
         return (
-            !this.props.page.isLoading &&
+            this.props.page.isLoading ? <Spinner className="text-center" style={{minHeight: 200}}/> :
             <>
                 <PageDetailTitle breadcrumb={breadcrumb} data={detailPage}/>
                 <FeaturedImage data={detailPage.imageId}/>
