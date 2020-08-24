@@ -1,8 +1,6 @@
 import axios from 'axios';
 import React, {Component} from 'react';
 import {Route, Switch} from 'react-router-dom';
-import Header from "../parts/Header";
-import Footer from "../parts/Footer";
 import Button from "../elements/Button";
 import Spinner from "../elements/Spinner";
 import config from 'config';
@@ -50,7 +48,6 @@ class ProfilePage extends Component {
 
         return (
             <>
-                <Header {...this.props}/>
                 <div className="container my-4 mb-5">
                     {
                         this.state.isLoading ? <Spinner className="text-center" style={{minHeight: 200}}/> :
@@ -58,7 +55,7 @@ class ProfilePage extends Component {
                                 <Fade>
                                     <div className="d-flex align-items-center">
                                         <img src={user.avatar} alt={user.name} className="rounded-circle mb-3 mr-3"
-                                             style={{maxWidth: 120}}/>
+                                             style={{maxWidth: 120, height: 120}}/>
                                         <div>
                                             <h4 className="mb-1">{user.name}</h4>
                                             <p className="mb-0">@{user.username} <span className="mx-2">•</span>
@@ -101,7 +98,6 @@ class ProfilePage extends Component {
                             </>
                     }
                 </div>
-                <Footer/>
             </>
         )
     }

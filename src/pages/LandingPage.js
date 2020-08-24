@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import Header from 'parts/Header';
 import Hero from 'parts/Hero';
 import MostPicked from 'parts/MostPicked';
 import Categories from 'parts/Categories';
 import Testimony from "parts/Testimony";
-import Footer from "parts/Footer";
 import config from 'config';
 
 import {connect} from "react-redux";
@@ -43,12 +41,10 @@ class LandingPage extends Component {
         return (
             !this.props.page.isLoading &&
             <>
-                <Header {...this.props}/>
                 <Hero refMostPicked={this.refMostPicked} data={hero}/>
                 <MostPicked refMostPicked={this.refMostPicked} data={mostPicked}/>
                 <Categories refMostPicked={this.refMostPicked} data={categories}/>
                 <Testimony data={testimonial}/>
-                <Footer/>
             </>
         );
     }

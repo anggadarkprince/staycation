@@ -18,6 +18,7 @@ import ProfilePage from "pages/ProfilePage";
 import ForgotPassword from "pages/ForgotPassword";
 import ResetPassword from "pages/ResetPassword";
 import Error404 from "pages/Error404";
+import Layout from "Layout";
 
 class App extends Component {
     guestRoutes = ['/login', '/register', '/forgot-password', '/password/reset', '/email/verify'];
@@ -30,6 +31,7 @@ class App extends Component {
 
         const apiTokenData = this.getAuthToken();
         this.state = {
+            layout: 'landing',
             auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue,
             pageReady: false
         }
@@ -139,25 +141,31 @@ class App extends Component {
             .catch(console.log);
     }
 
+    onChangeLayout(layout) {
+        this.setState({layout: layout});
+    }
+
     render() {
         return (
             this.state.pageReady && <AuthContext.Provider value={this.state.auth}>
                 <div className='App'>
                     <Router>
-                        <Switch>
-                            <Route path='/' exact component={LandingPage}/>
-                            <Route path='/properties/:id' component={DetailPage}/>
-                            <Route path='/checkout' component={CheckoutPage}/>
-                            <Route path='/terms' component={TermPage}/>
-                            <Route path='/privacy' component={PrivacyPage}/>
-                            <Route path='/careers' component={CareerPage}/>
-                            <Route path='/register' render={(props) => <RegisterPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
-                            <Route path='/login' render={(props) => <LoginPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
-                            <Route path='/forgot-password' component={ForgotPassword}/>
-                            <Route path='/reset-password/:token' component={ResetPassword}/>
-                            <Route path='/profile' component={ProfilePage}/>
-                            <Route component={Error404} />
-                        </Switch>
+                        <Layout layout={this.state.layout}>
+                            <Switch>
+                                <Route path='/' exact component={LandingPage}/>
+                                <Route path='/properties/:id' component={DetailPage}/>
+                                <Route path='/checkout' render={(props) => <CheckoutPage {...props} onChangeLayout={this.onChangeLayout.bind(this)} />}/>
+                                <Route path='/terms' component={TermPage}/>
+                                <Route path='/privacy' component={PrivacyPage}/>
+                                <Route path='/careers' component={CareerPage}/>
+                                <Route path='/register' render={(props) => <RegisterPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
+                                <Route path='/login' render={(props) => <LoginPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
+                                <Route path='/forgot-password' component={ForgotPassword}/>
+                                <Route path='/reset-password/:token' component={ResetPassword}/>
+                                <Route path='/profile' component={ProfilePage}/>
+                                <Route component={Error404} />
+                            </Switch>
+                        </Layout>
                     </Router>
                 </div>
             </AuthContext.Provider>

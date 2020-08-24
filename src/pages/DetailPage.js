@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
 import Fade from 'react-reveal/Fade';
-import Header from 'parts/Header';
 import PageDetailTitle from 'parts/PageDetailTitle';
 import FeaturedImage from 'parts/FeaturedImage';
 import PageDetailDescription from 'parts/PageDetailDescription';
 import BookingForm from 'parts/BookingForm';
 import Categories from 'parts/Categories';
 import Testimony from 'parts/Testimony';
-import Footer from "parts/Footer";
 import config from 'config';
 
 import {connect} from 'react-redux';
@@ -53,7 +51,6 @@ class DetailPage extends Component {
         return (
             !this.props.page.isLoading &&
             <>
-                <Header {...this.props}/>
                 <PageDetailTitle breadcrumb={breadcrumb} data={detailPage}/>
                 <FeaturedImage data={detailPage.imageId}/>
                 <section className="container">
@@ -72,7 +69,6 @@ class DetailPage extends Component {
                 </section>
                 <Categories data={detailPage.categories}/>
                 <Testimony data={detailPage.testimonial}/>
-                <Footer/>
             </>
         );
     }

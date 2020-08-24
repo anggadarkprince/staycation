@@ -1,11 +1,8 @@
 import React from "react";
-import Header from "parts/Header";
 import Fade from "react-reveal/Fade";
-import Footer from "parts/Footer";
 
 export default props => (
     <>
-        <Header {...props}/>
         <Fade duration={600}>
             <div className="d-flex align-items-center justify-content-center text-center" style={{height: 'calc(100vh - 250px)'}}>
                 <div className="px-3 mb-5">
@@ -18,6 +15,5 @@ export default props => (
                 </div>
             </div>
         </Fade>
-        <Footer/>
     </>
 );

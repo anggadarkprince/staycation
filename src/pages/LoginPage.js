@@ -1,10 +1,8 @@
 import axios from 'axios'
 import React, { Component } from 'react'
 import {Link} from "react-router-dom";
-import Header from "../parts/Header";
 import Fade from "react-reveal/Fade";
-import Button from "../elements/Button";
-import Footer from "../parts/Footer";
+import Button from "elements/Button";
 import config from 'config';
 
 class Login extends Component {
@@ -125,7 +123,6 @@ class Login extends Component {
     render () {
         return (
             <>
-                <Header {...this.props}/>
                 <Fade duration={600}>
                     <div className="container">
                         <div className='row'>
@@ -177,7 +174,6 @@ class Login extends Component {
                         </div>
                     </div>
                 </Fade>
-                <Footer/>
             </>
         )
     }

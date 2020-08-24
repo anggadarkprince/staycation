@@ -1,6 +1,4 @@
 import React, {useEffect} from "react";
-import Header from "parts/Header";
-import Footer from "parts/Footer";
 import Fade from "react-reveal/Fade";
 import {backToTop} from "utilities/scroller";
 
@@ -12,7 +10,6 @@ export default props => {
 
     return (
         <>
-            <Header {...props}/>
             <div className="container mb-5">
                 <Fade bottom>
                     <div className="text-center mb-5">
@@ -109,7 +106,6 @@ export default props => {
                     </Fade>
                 </ul>
             </div>
-            <Footer/>
         </>
     )
 };

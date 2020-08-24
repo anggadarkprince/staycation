@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import Fade from 'react-reveal/Fade';
-import Header from 'parts/Header';
 import Button from 'elements/Button';
 import Stepper, {Numbering, Meta, MainContent, Controller} from 'elements/Stepper';
 import itemDetails from 'json/itemDetails';
@@ -26,9 +25,18 @@ class CheckoutPage extends Component {
         }
     }
 
+    constructor(props) {
+        super(props);
+        props.onChangeLayout('checkout');
+    }
+
     componentDidMount() {
         document.title = "Staycation | Checkout";
         window.scrollTo(0, 0);
+    }
+    
+    componentWillUnmount() {
+        this.props.onChangeLayout('landing');
     }
 
     onChange = (event) => {
@@ -117,7 +125,6 @@ class CheckoutPage extends Component {
         }
         return (
             <>
-                <Header isCentered {...this.props}></Header>
                 <Stepper steps={steps}>
                     {
                         (prevStep, nextStep, currentStep, steps) => (

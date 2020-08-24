@@ -7,10 +7,6 @@ import {Link} from 'react-router-dom'
 
 export default class Header extends Component {
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return false;
-    }
-
     getActiveLinkClass = path => {
         return this.props.location.pathname === path ? ' active' : '';
     }
@@ -48,9 +44,9 @@ export default class Header extends Component {
                                                         Home
                                                     </Button>
                                                 </li>
-                                                <li className={`nav-item${this.getActiveLinkClass('/browse-by')}`}>
-                                                    <Button className='nav-link' type='link' href='/browse-by'>
-                                                        Browse By
+                                                <li className={`nav-item${this.getActiveLinkClass('/explore')}`}>
+                                                    <Button className='nav-link' type='link' href='/explore'>
+                                                        Explore
                                                     </Button>
                                                 </li>
                                                 <li className={`nav-item${this.getActiveLinkClass('/stories')}`}>

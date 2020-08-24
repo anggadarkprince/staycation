@@ -50,7 +50,7 @@
                             <fieldset>
                                 <div class="form-group mb-2">
                                     <input type="text" class="form-control form-control-user" id="username" name="username"
-                                           required maxlength="50" placeholder="Username or email">
+                                           required maxlength="50" placeholder="Username or email" value="<%= _old.username || '' %>">
                                 </div>
                                 <div class="form-group">
                                     <input type="password" class="form-control form-control-user" id="password" name="password"
@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="mb-3 d-flex justify-content-between">
                                     <div class="custom-control custom-checkbox small">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck" name="remember"<%= _old.remember ? ' checked' : '' %>>
                                         <label class="custom-control-label" for="customCheck">Remember Me</label>
                                     </div>
                                     <a class="small" href="/auth/forgot-password">Forgot Password?</a>

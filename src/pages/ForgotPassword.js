@@ -1,9 +1,8 @@
 import axios from 'axios'
 import React, {Component} from 'react'
 import {Link} from "react-router-dom";
-import Header from "../parts/Header";
 import Fade from "react-reveal/Fade";
-import Footer from "../parts/Footer";
+import config from "config";
 
 class ForgotPassword extends Component {
 
@@ -60,7 +59,7 @@ class ForgotPassword extends Component {
 
         this.setState({isLoading: true, errors: []});
 
-        axios.post('http://localhost:3000/api/password/email', {email: this.state.email, url: 'http://localhost:3001/reset-password'})
+        axios.post(`${config.apiUrl}/api/password/email`, {email: this.state.email, url: 'http://localhost:3001/reset-password'})
             .then(response => response.data)
             .then(data => {
                 if (data.status === 'success') {
@@ -104,7 +103,6 @@ class ForgotPassword extends Component {
     render() {
         return (
             <>
-                <Header {...this.props}/>
                 <Fade duration={600}>
                     <div className="container">
                         <div className='row mb-4'>
@@ -135,7 +133,6 @@ class ForgotPassword extends Component {
                         </div>
                     </div>
                 </Fade>
-                <Footer/>
             </>
         )
     }

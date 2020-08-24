@@ -1,6 +1,4 @@
 import React, {useEffect} from "react";
-import Header from "../parts/Header";
-import Footer from "../parts/Footer";
 import Fade from "react-reveal/Fade";
 import {backToTop} from "utilities/scroller";
 
@@ -12,7 +10,6 @@ export default props => {
 
     return (
         <>
-            <Header {...props}/>
             <Fade bottom>
                 <div className='container mb-5'>
                     <h4>Terms and Agreement</h4>
@@ -138,7 +135,6 @@ export default props => {
                     <p>If you have any questions about these Terms, please contact us.</p>
                 </div>
             </Fade>
-            <Footer/>
         </>
     )
 };

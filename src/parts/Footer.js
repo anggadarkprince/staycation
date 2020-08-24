@@ -6,10 +6,6 @@ import AuthContext from "../AuthContext";
 
 export default class Footer extends Component {
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return false;
-    }
-
     render() {
         return (
             <Fade bottom>
@@ -45,7 +41,7 @@ export default class Footer extends Component {
                                         </AuthContext.Consumer>
                                     </li>
                                     <li className="list-group-item">
-                                        <Button type="link" href="/explore">Recommendation</Button>
+                                        <Button type="link" href="/explore">Explore</Button>
                                     </li>
                                 </ul>
                             </div>

@@ -34,8 +34,8 @@ export default function Hero(props) {
                                 Show Me Now
                             </Button>
                         </Fade>
-                        <div className="row justify-content-between mt-5 mr-4 mr-lg-5">
-                            <div className="col-auto">
+                        <div className="row mt-5 mr-4 mr-lg-5">
+                            <div className="col-auto" style={{minWidth: 130}}>
                                 <Fade bottom delay={500}>
                                     <img src={IconTraveler} alt={`${props.data.travelers} Traveler`}/>
                                     <h6 className='mt-3'>
@@ -46,7 +46,7 @@ export default function Hero(props) {
                                     </h6>
                                 </Fade>
                             </div>
-                            <div className="col-auto">
+                            <div className="col-auto" style={{minWidth: 130}}>
                                 <Fade bottom delay={700}>
                                     <img src={IconCamera} alt={`${props.data.treasures} Treasures`}/>
                                     <h6 className='mt-3'>
@@ -57,7 +57,7 @@ export default function Hero(props) {
                                     </h6>
                                 </Fade>
                             </div>
-                            <div className="col-auto">
+                            <div className="col-auto" style={{minWidth: 130}}>
                                 <Fade bottom delay={900}>
                                     <img src={IconLocation} alt={`${props.data.cities} Cities`}/>
                                     <h6 className='mt-3'>

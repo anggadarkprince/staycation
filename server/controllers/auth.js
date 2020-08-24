@@ -60,30 +60,28 @@ module.exports = {
             .then(matchedPassword => {
                 if (matchedPassword) {
                     req.session.isLoggedIn = true;
-                    req.session.userId = foundUser.id;
+                    req.session.userId = foundUser._id;
                     req.session.save();
 
-                    return foundUser;
+                    Log.create({
+                        userId: foundUser._id,
+                        type: 'Login',
+                        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+                        userAgent: {
+                            browser: req.useragent.browser,
+                            version: req.useragent.version,
+                            os: req.useragent.os,
+                            platform: req.useragent.platform
+                        },
+                        data: foundUser,
+                        time: new Date(),
+                    });
+                    res.redirect('/admin/dashboard');
                 } else {
+                    req.flash('old', req.body);
                     req.flash('danger', 'Invalid credentials, try again!');
                     res.redirect('/auth/login');
                 }
-            })
-            .then(loggedUser => {
-                Log.create({
-                    userId: loggedUser._id,
-                    type: 'Login',
-                    ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-                    userAgent: {
-                        browser: req.useragent.browser,
-                        version: req.useragent.version,
-                        os: req.useragent.os,
-                        platform: req.useragent.platform
-                    },
-                    data: loggedUser,
-                    time: new Date(),
-                });
-                res.redirect('/admin/dashboard');
             })
             .catch((err) => {
                 next(createError(500));

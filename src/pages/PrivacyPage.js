@@ -1,6 +1,4 @@
 import React, {useEffect} from "react";
-import Header from "parts/Header";
-import Footer from "parts/Footer";
 import Fade from "react-reveal/Fade";
 import {backToTop} from "utilities/scroller";
 
@@ -12,7 +10,6 @@ const PrivacyPage = props => {
 
     return (
         <>
-            <Header {...props}/>
             <Fade bottom>
                 <div className='container mb-5'>
                     <h4>Privacy Policy</h4>
@@ -115,7 +112,6 @@ const PrivacyPage = props => {
                     <p>If you have any questions about these Terms, please contact us.</p>
                 </div>
             </Fade>
-            <Footer/>
         </>
     );
 }
