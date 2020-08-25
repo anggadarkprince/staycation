@@ -6,9 +6,12 @@ const createError = require('http-errors');
 const bcrypt = require('bcryptjs');
 const ejs = require('ejs');
 const fs = require('fs');
+const https = require('https');
 const path = require('path');
 const crypto = require("crypto");
 const moment = require("moment");
+const OAuth2 = require('googleapis').google.auth.OAuth2;
+const {OAuth2Client} = require('google-auth-library');
 
 function isEmailAddress(value) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -29,7 +32,18 @@ function isValidResetToken(tokens, token) {
 
 module.exports = {
     login: (req, res) => {
-        res.render('auth/login', {title: 'Login'});
+        const clientId = process.env.GOOGLE_CLIENT_ID;
+        const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+        const oauth2Client = new OAuth2(clientId, clientSecret, process.env.GOOGLE_CALLBACK);
+        const googleLoginLink = oauth2Client.generateAuthUrl({
+            access_type: 'offline',
+            scope: [
+                'https://www.googleapis.com/auth/userinfo.profile',
+                'https://www.googleapis.com/auth/userinfo.email',
+            ]
+        });
+
+        res.render('auth/login', {title: 'Login', googleLoginLink});
     },
     authenticate: async (req, res, next) => {
         const {username, password} = req.body;
@@ -86,6 +100,55 @@ module.exports = {
             .catch((err) => {
                 next(createError(500));
             });
+    },
+    googleCallback: (req, res) => {
+        const clientId = process.env.GOOGLE_CLIENT_ID;
+        const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+        const oauth2Client = new OAuth2(clientId, clientSecret, process.env.GOOGLE_CALLBACK);
+        if (req.query.error) {
+            req.flash('danger', 'You are not authorized to login with Google');
+            return res.redirect('auth/login');
+        } else {
+            oauth2Client.getToken(req.query.code, async function(err, token) {
+                if (err) {
+                    req.flash('danger', 'Login with Google failed');
+                    return res.redirect('auth/login');
+                }
+
+                const client = new OAuth2Client(clientId);
+                const ticket = await client.verifyIdToken({
+                    idToken: token['id_token'],
+                    audience: clientId,
+                });
+                const payload = ticket.getPayload();
+
+                let user = await User.findOne({email: payload.email});
+                if (!user) {
+                    const year = (new Date()).getFullYear().toString();
+                    const month = ((new Date()).getMonth() + 1).toString();
+                    const localPath = `uploads/${year}/${month}/${Date.now()}.jpg`;
+                    const file = fs.createWriteStream(localPath);
+                    const request = https.get(payload.picture, function(response) {
+                        response.pipe(file);
+                    });
+
+                    user = new User({
+                        name: payload.name,
+                        username: payload.sub,
+                        email: payload.email,
+                        status: 'ACTIVATED',
+                        avatar: path.join('/', localPath)
+                    });
+                    await user.save();
+                }
+
+                req.session.isLoggedIn = true;
+                req.session.userId = user._id;
+                req.session.save();
+
+                res.redirect('/dashboard');
+            });
+        }
     },
     register: (req, res) => {
         if (req.settings.publicRegistration) {
