@@ -46,19 +46,6 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
     .catch(console.log);
 mongoose.Promise = Promise;
 
-const errorController = require('./controllers/error');
-const indexRouter = require('./routes/index');
-const apiRouter = require('./routes/api');
-const adminRouter = require('./routes/admin');
-const authRouter = require('./routes/auth');
-const uploadRouter = require('./routes/upload');
-const consoleRouter = require('./routes/console');
-const Notification = require('./models/Notification');
-const Setting = require('./models/Setting');
-const User = require('./models/User');
-const Auth = require('./modules/Auth');
-const permissions = require('./config/permissions');
-
 const app = express();
 app.use(favicon(path.join(__dirname, 'public', 'dist/img/favicon.png')));
 app.use(helmet());
@@ -74,7 +61,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/theme', express.static(path.join(__dirname, 'node_modules', 'startbootstrap-sb-admin-2')));
-const sess = session({
+app.use(useragent.express());
+const sessionDriver = session({
     secret: 'secret98sh968sdf7s8df6',
     resave: false,
     saveUninitialized: true,
@@ -84,7 +72,7 @@ const sess = session({
     }),
     cookie: { secure: false } // set to true if your using https
 });
-app.use(sess);
+app.use(sessionDriver);
 app.use(flash());
 app.use(compression());
 app.use(cors({
@@ -93,10 +81,10 @@ app.use(cors({
     credentials: true
 }));
 
-// io socket
+// io socket for push notification
 const server = http.createServer(app);
 const io = require('socket.io')(server);
-io.use(ioSession(sess));
+io.use(ioSession(sessionDriver));
 app.use((req, res, next) => {
     req.io = io;
     return next();
@@ -142,7 +130,11 @@ if (process.env.NODE_ENV !== 'production') {
     }));
 }
 
-app.use(useragent.express());
+const Notification = require('./models/Notification');
+const Setting = require('./models/Setting');
+const User = require('./models/User');
+const Auth = require('./modules/Auth');
+const permissions = require('./config/permissions');
 
 // populate user data to request and local data
 app.use((req, res, next) => {
@@ -174,6 +166,7 @@ app.use((req, res, next) => {
         .catch(console.log);
 });
 
+// add app setting to request and local view
 app.use(async (req, res, next) => {
     const systemSetting = {
         appName: (await Setting.findOne({key: 'app-name'})).value || process.env.APP_NAME,
@@ -189,8 +182,8 @@ app.use(async (req, res, next) => {
     next();
 });
 
+// add general variable and helper to the view
 app.use((req, res, next) => {
-    // add general variable to the view
     res.locals._baseUrl = `${req.protocol}://${req.get('host')}`;
     res.locals._path = req.path;
     res.locals._query = req._parsedUrl.query || '';
@@ -234,9 +227,11 @@ app.use(methodOverride(function (req, res) {
     }
 }));
 
+// Add router api before middleware csrf
+const apiRouter = require('./routes/api');
 app.use('/api', apiRouter);
 
-// Add router api before middleware csrf
+// Protect route from csrf
 const csrfProtection = csrf({sessionKey: 'session'});
 app.use(csrfProtection);
 app.use((req, res, next) => {
@@ -244,13 +239,15 @@ app.use((req, res, next) => {
     next();
 });
 
-// add app high level router
+// add web app router
 const mustAuthenticated = require('./middleware/mustAuthenticated');
-app.use('/', indexRouter);
-app.use('/admin', [mustAuthenticated, adminRouter]);
-app.use('/upload', [mustAuthenticated, uploadRouter]);
+const consoleRouter = require('./routes/console');
+const authRouter = require('./routes/auth');
+const adminRouter = require('./routes/admin');
+
 app.use('/console', consoleRouter);
 app.use('/auth', authRouter);
+app.use('/', [mustAuthenticated, adminRouter]);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -258,6 +255,7 @@ app.use(function (req, res, next) {
 });
 
 // error handler
+const errorController = require('./controllers/error');
 app.use(function (err, req, res, next) {
     // put auth state fallback
     if (!res.locals._isAuthenticated) {

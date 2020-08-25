@@ -1,0 +1,185 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Booking', url: '/booking'},
+                        {title: 'Payment', url: '/booking/payment/' + booking.id},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <form action="/booking/payment/<%= booking._id %>?_csrf=<%= _csrfToken %>" method="post" id="form-booking" enctype="multipart/form-data">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
+                    <fieldset>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Booking Summary</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <p class="col-sm-4 col-form-label pb-0 font-weight-bold">Transaction ID</p>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= booking.transactionNumber %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <p class="col-sm-4 col-form-label pb-0 font-weight-bold">Name</p>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= booking.userId.name %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Item</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= booking.itemId._id.title %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Start Date</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= moment(booking.bookingStartDate).format('DD MMMM Y') %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <label class="col-sm-4 col-form-label pb-0 font-weight-bold">End Date</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= moment(booking.bookingEndDate).format('DD MMMM Y') %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Night</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= booking.itemId.duration || 0 %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Price</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= numberFormat(booking.itemId.price, 'IDR ') %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Payment Method</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= booking.payment.paymentMethod || 'No payment' %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Transfer To</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= booking.bankId.bank || 'No bank' %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-2 mb-md-0 row">
+                                            <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Transfer Number</label>
+                                            <div class="col-sm-8">
+                                                <p class="form-control-plaintext">
+                                                    <%= booking.bankId.accountNumber || 'No number' %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Booking Payment</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="bank">Bank</label>
+                                    <input type="text" class="form-control" id="bank" name="bank" required maxlength="20"
+                                           value="<%= _old.bank || booking.payment.bank %>" placeholder="From bank">
+                                    <%- validationError('payment') %>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="account_holder">Account Holder</label>
+                                            <input type="text" class="form-control" id="account_holder" name="account_holder" required maxlength="30"
+                                                   value="<%= _old.account_holder || booking.payment.accountHolder %>" placeholder="Account holder name">
+                                            <%- validationError('account_holder') %>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="account_number">Account Number</label>
+                                            <input type="text" class="form-control" id="account_number" name="account_number" required maxlength="20"
+                                                   value="<%= _old.account_number || booking.payment.accountNumber %>" placeholder="Account number">
+                                            <%- validationError('account_number') %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Logo</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="proof_payment" name="proof_payment" accept="image/*">
+                                        <label class="custom-file-label" for="proof_payment"><%= booking.payment.proofPayment || 'Pick File' %></label>
+                                    </div>
+                                    <%- validationError('proof_payment') %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body d-flex justify-content-between">
+                                <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                                <button type="submit" class="btn btn-primary" data-toggle="one-touch">Update Payment</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

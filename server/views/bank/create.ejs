@@ -1,0 +1,95 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Bank', url: '/bank'},
+                        {title: 'Create', url: '/bank/create'},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <form action="/bank/save?_csrf=<%= _csrfToken %>" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
+                    <fieldset>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">New Bank Data</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="bank">Bank Name</label>
+                                    <input type="text" class="form-control" id="bank" name="bank" required maxlength="50"
+                                           placeholder="Enter bank" value="<%= _old.bank || '' %>">
+                                    <%- validationError('bank') %>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="account_holder">Account Holder</label>
+                                            <input type="text" class="form-control" id="account_holder" name="account_holder" required maxlength="50"
+                                                   placeholder="Account holder name" value="<%= _old.account_holder || '' %>">
+                                            <%- validationError('accountHolder') %>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="account_number">Account Number</label>
+                                            <input type="text" class="form-control" id="account_number" name="account_number" required maxlength="50"
+                                                   placeholder="Account holder name" value="<%= _old.account_number || '' %>">
+                                            <%- validationError('accountNumber') %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Logo</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="logo" name="logo" accept="image/*">
+                                        <label class="custom-file-label" for="logo">Pick Image</label>
+                                    </div>
+                                    <%- validationError('logo') %>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea class="form-control" id="description" name="description" maxlength="500"
+                                              placeholder="Enter bank description"><%= _old.description || '' %></textarea>
+                                    <%- validationError('description') %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body d-flex justify-content-between">
+                                <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                                <button type="submit" class="btn btn-success" data-toggle="one-touch">Save Bank</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

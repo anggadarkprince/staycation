@@ -4,7 +4,7 @@ const createError = require('http-errors');
 module.exports = {
     index: async (req, res) => {
         const logs = await Log.find({userId: req.user._id}).populate('userId');
-        res.render('admin/activity-log/index', {title: 'Activity Log', logs});
+        res.render('activity-log/index', {title: 'Activity Log', logs});
     },
     view: async (req, res, next) => {
         const id = req.params.id;
@@ -16,7 +16,7 @@ module.exports = {
                if(log.data._id) delete log.data._id;
                if(log.data.__v) delete log.data.__v;
             }
-            res.render('admin/activity-log/view', {title: `View log ${log.type}`, log});
+            res.render('activity-log/view', {title: `View log ${log.type}`, log});
         } catch (err) {
             next(createError(404))
         }

@@ -38,20 +38,20 @@ module.exports = {
                 .attachment('facilities.xlsx')
                 .send(exporter.toExcel('Facilities', facilities, ['facility', 'description', 'createdAt', 'updatedAt']));
         } else {
-            res.render('admin/facility/index', {facilities, title: 'Facility'});
+            res.render('facility/index', {facilities, title: 'Facility'});
         }
     },
     view: async (req, res, next) => {
         const id = req.params.id;
         try {
             const facility = await Facility.findOne({_id: id});
-            res.render('admin/facility/view', {facility, title: `View facility ${facility.facility}`});
+            res.render('facility/view', {facility, title: `View facility ${facility.facility}`});
         } catch (err) {
             next(createError(404))
         }
     },
     create: (req, res) => {
-        res.render('admin/facility/create', {title: `Create facility`});
+        res.render('facility/create', {title: `Create facility`});
     },
     save: async (req, res) => {
         const {facility, description} = req.body;
@@ -62,7 +62,7 @@ module.exports = {
                 description
             });
             req.flash('success', `Facility ${facility} successfully created`);
-            res.redirect('/admin/facility');
+            res.redirect('/facility');
         } catch (err) {
             req.flash('error', err);
             req.flash('old', req.body);
@@ -74,7 +74,7 @@ module.exports = {
         const id = req.params.id;
         const facility = await Facility.findOne({_id: id});
 
-        res.render('admin/facility/edit', {facility, title: `Edit facility ${facility.facility}`});
+        res.render('facility/edit', {facility, title: `Edit facility ${facility.facility}`});
     },
     update: async (req, res) => {
         const id = req.params.id;
@@ -93,7 +93,7 @@ module.exports = {
             await result.save();
 
             req.flash('success', `Facility ${facility} successfully updated`);
-            return res.redirect('/admin/facility');
+            return res.redirect('/facility');
         } catch (err) {
             req.flash('error', err);
             req.flash('old', req.body);
@@ -113,7 +113,7 @@ module.exports = {
             }
 
             req.flash('warning', `Facility ${result.facility} successfully deleted`);
-            return res.redirect('/admin/facility');
+            return res.redirect('/facility');
         } catch (err) {
             req.flash('danger', `Delete facility failed, try again later`);
             res.redirect('back');

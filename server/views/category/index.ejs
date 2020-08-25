@@ -1,0 +1,121 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Category', url: '/category'},
+                    ]}) %>
+                    <div>
+                        <a href="#modal-filter" data-toggle="modal" class="btn btn-warning btn-sm pr-2 pl-2">
+                            <i class="fas fa-sort-amount-down-alt" data-toggle="tooltip" data-title="Filter data"></i>
+                        </a>
+                        <a href="<%= `${_currentUrl}?${_query}&export=true` %>" class="btn btn-danger btn-sm pr-2 pl-2">
+                            <i class="fas fa-file-export" data-toggle="tooltip" data-title="Export data"></i>
+                        </a>
+                        <% if(authorize(PERMISSION_CATEGORY_CREATE)) { %>
+                            <a href="/category/create" class="btn btn-sm btn-primary shadow-sm">
+                                Create Category
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <!-- DataTales Example -->
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Category Data</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-hover" id="dataTable">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Created At</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% for (const [i, category] of categories.entries()) { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= category.category %></td>
+                                    <td class="text-truncate" style="max-width: 200px"><%= category.description || '-' %></td>
+                                    <td><%= moment(category.createdAt).format('DD MMMM Y HH:mm') %></td>
+                                    <td class="text-md-right">
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <% if(authorize(PERMISSION_CATEGORY_VIEW)) { %>
+                                                    <a class="dropdown-item" href="/category/view/<%= category._id %>">
+                                                        View
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_CATEGORY_EDIT)) { %>
+                                                    <a class="dropdown-item" href="/category/edit/<%= category._id %>">
+                                                        Edit
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_CATEGORY_DELETE)) { %>
+                                                    <div class="dropdown-divider"></div>
+                                                    <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                            data-title="Category" data-label="<%= category.category %>"
+                                                            data-url="/category/delete/<%= category._id %>">
+                                                        Delete
+                                                    </button>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>No</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Created At</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <%- include('../partials/delete.ejs') %>
+                <%- include('_modal_filter.ejs') %>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

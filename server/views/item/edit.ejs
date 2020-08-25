@@ -1,0 +1,264 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Item', url: '/item'},
+                        {title: 'Edit', url: '/item/edit/' + item.id},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <form action="/item/update/<%= item._id %>?_csrf=<%= _csrfToken %>" method="post" id="form-item">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
+                    <fieldset>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Edit Item Data</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="title">Title</label>
+                                    <input type="text" class="form-control" id="title" name="title" required maxlength="50"
+                                           value="<%= _old.title || item.title %>" placeholder="Enter item title">
+                                    <%- validationError('title') %>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <select class="custom-select" name="category" id="category" required>
+                                        <option value="">Select Category</option>
+                                        <% categories.forEach(category => { %>
+                                            <option value="<%= category._id %>"<%= (_old.category || item.categoryId) == category._id.toString() ? ' selected' : '' %>>
+                                                <%= category.category %>
+                                            </option>
+                                        <% }) %>
+                                    </select>
+                                    <%- validationError('category') %>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="city">City</label>
+                                            <input type="text" class="form-control" id="city" name="city" required maxlength="20"
+                                                   value="<%= _old.city || item.city %>" placeholder="City location">
+                                            <%- validationError('city') %>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="country">Country</label>
+                                            <input type="text" class="form-control" id="country" name="country" maxlength="20"
+                                                   value="<%= _old.country || item.country %>" placeholder="Country of the city">
+                                            <%- validationError('country') %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="is_popular">Is Popular</label>
+                                            <select class="custom-select" name="is_popular" id="is_popular" required>
+                                                <option value="">Select Popular</option>
+                                                <option value="1"<%= (_old.is_popular || item.isPopular) == true ? ' selected' : '' %>>
+                                                    YES
+                                                </option>
+                                                <option value="0"<%= (_old.is_popular || item.isPopular) == false ? ' selected' : '' %>>
+                                                    NO
+                                                </option>
+                                            </select>
+                                            <%- validationError('isPopular') %>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="price">Price</label>
+                                            <input type="text" class="form-control numerical" id="price" name="price" maxlength="18"
+                                                   value="<%= _old.price || numberFormat(item.price) %>" placeholder="Price per night">
+                                            <%- validationError('price') %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body">
+                                <div class="text-editor-wrapper">
+                                    <%- include('../partials/text_editor_toolbar') %>
+                                    <div class="text-editor" data-change-target="#description" style="min-height: 200px">
+                                        <%- _old.description || item.description %>
+                                    </div>
+                                    <textarea class="form-control d-none" id="description" name="description" rows="5"
+                                              placeholder="Enter item description"><%= _old.description || item.description %></textarea>
+                                    <%- validationError('description') %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Facilities</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <% facilities.forEach((facility, i) => { %>
+                                        <% facilitySelected = _old.facility_checks && _old.facility_checks.includes(facility._id.toString()) || item.facilities.map(f => f._id).includes(facility._id.toString()) %>
+                                        <div class="col-md-6 check-facility-wrapper d-flex justify-content-between align-items-center mb-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input check-facility" id="facility_<%= facility._id %>" name="facility_checks[<%= i %>]"
+                                                       value="<%= facility._id %>" <%= facilitySelected ? 'checked' : '' %>>
+                                                <label class="custom-control-label mr-2 mb-2" for="facility_<%= facility._id %>"><%= facility.facility %></label>
+                                            </div>
+                                            <div class="mx-md-5">
+                                                <input type="number" required min="0" max="100" class="form-control form-control-sm facility-quantity" id="quantity" name="facilities[<%= facility._id %>]"
+                                                       value="<%= (_old.facilities && _old.facilities[facility._id]) || (facilitySelected ? item.facilities.find(f => f._id.toString() == facility._id.toString()).qty : '') %>" placeholder="Total" style="max-width: 150px"
+                                                        <%= facilitySelected ? '' : 'disabled' %>>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                                <%- validationError('facilities') %>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Item Photo</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="document-uploader">
+                                    <div class="row" id="uploaded-file">
+                                        <% (_old.input_photos || item.imageId).forEach(function (photo, index) { %>
+                                            <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3 uploaded-item">
+                                                <div class="card w-100 border border-primary">
+                                                    <a href="<%= photo.imageUrl ? photo.imageUrl.replace(/\\/g, "/") : ('/uploads/temp/' + photo) %>" class="upload-file-preview-link" target="_blank">
+                                                        <div class="card-img-top upload-file-preview" style="height: 200px; background: url('<%= photo.imageUrl ? photo.imageUrl.replace(/\\/g, "/") : ('/uploads/temp/' + photo) %>') center center / cover no-repeat"></div>
+                                                    </a>
+                                                    <div class="card-body">
+                                                        <div id="progress" class="progress progress-upload" style="width: 100%">
+                                                            <div class="progress-bar progress-bar-danger progress-bar-success progress-bar-striped" style="width: 100%">UPLOADED</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                                        <input type="hidden" name="input_photos[<%= index %>][_id]" value="<%= (photo._id || '') %>" class="input-uploaded-file">
+                                                        <input type="hidden" name="input_photos[<%= index %>][fileName]" value="<%= photo.fileName || photo %>" class="input-uploaded-file">
+                                                        <div class="custom-control custom-radio">
+                                                            <input type="radio" id="is_primary_<%= index %>" name="is_primary_photo" value="<%= photo.fileName || photo %>" <%= (photo.isPrimary ? photo.isPrimary : (_old.is_primary_photo || '') == photo) ? 'checked' : '' %> class="custom-control-input btn-defer-upload input-primary">
+                                                            <label class="custom-control-label label-primary" for="is_primary_<%= index %>">Primary Photo</label>
+                                                        </div>
+                                                        <button type="button" class="btn btn-danger btn-sm ml-2 <%= photo._id ? 'btn-delete-uploaded-file' : 'btn-delete-file' %>"
+                                                                data-url="<%= photo._id ? `/item/delete-image/${photo._id}` : '/upload/delete-temp' %>">
+                                                            DELETE
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% }) %>
+                                        <div class="col-md-6 col-lg-4 d-flex align-items-stretch mb-3" id="file-chooser">
+                                            <div class="card w-100 rounded" style="min-height: 310px; border: 2px dashed #aaaaaa">
+                                                <input id="input-file" type="file" multiple name="input_files" accept="image/*" class="d-none">
+                                                <label class="card-body mb-0 d-flex align-items-center justify-content-center cursor-pointer" for="input-file">
+                                                    <div class="text-center d-flex flex-column">
+                                                        <i class="fas fa-image mr-2 display-4"></i>
+                                                        <h4>Choose file</h4>
+                                                        <small class="text-fade">You can select multiple files</small>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 font-weight-bold text-primary">Activities</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table mb-0" id="table-activity">
+                                    <tbody>
+                                    <tr class="row-placeholder"<%- ((_old.activities || item.activities).length > 0 ? 'style="display: none"' : '') %>>
+                                        <td colspan="4" class="text-center">No activity available, click add to make one.</td>
+                                    </tr>
+                                    <% (_old.activities || item.activities).forEach(function (activity, index) { %>
+                                        <tr data-id="<%= index %>">
+                                            <td class="font-weight-bold">
+                                                <div class="d-inline-block position-relative mr-2 activity-photo-wrapper">
+                                                    <img src="<%= activity.image.includes('uploads') ? activity.image : ('/uploads/temp/' + activity.image) %>" alt="<%= activity.activity %>" class="img-fluid" style="max-width: 75px">
+                                                </div>
+                                                <%= activity.activity %>
+                                            </td>
+                                            <td style="max-width: 600px; min-width: 300px">
+                                                <%= activity.description.substr(0, 200) %><%= activity.description.length > 200 ? '...' : '' %>
+                                            </td>
+                                            <td><%= activity.isPopular ? 'Popular' : 'Regular' %></td>
+                                            <td style="width: 60px">
+                                                <input type="hidden" name="activities[<%= index %>][_id]" value="<%= activity._id %>">
+                                                <input type="hidden" name="activities[<%= index %>][activity]" value="<%= activity.activity %>">
+                                                <input type="hidden" name="activities[<%= index %>][description]" value="<%= activity.description %>">
+                                                <input type="hidden" name="activities[<%= index %>][isPopular]" value="<%= activity.isPopular %>">
+                                                <input type="hidden" class="input-uploaded-file" name="activities[<%= index %>][image]" value="<%= activity.image %>">
+                                                <button type="button" class="btn btn-danger btn-sm btn-delete-activity">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="4">
+                                            <button id="btn-add-activity" type="button" class="btn btn-outline-light btn-link btn-block link-plain" style="border: 2px dashed #aaaaaa">
+                                                <i class="fas fa-running mr-2"></i>ADD ACTIVITY
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body d-flex justify-content-between">
+                                <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                                <button type="submit" class="btn btn-primary" data-toggle="one-touch">Save Update</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('_template_item.ejs') %>
+<%- include('_modal_activity.ejs') %>
+<%- include('../partials/confirm.ejs') %>
+<%- include('../partials/js.ejs') %>

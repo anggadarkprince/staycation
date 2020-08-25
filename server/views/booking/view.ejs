@@ -1,0 +1,264 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Bank', url: '/booking'},
+                        {title: 'View', url: '/booking/view/' + booking.id},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header border-bottom-0 py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Booking</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-4 col-form-label pb-0 font-weight-bold">Transaction ID</p>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.transactionNumber %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-4 col-form-label pb-0 font-weight-bold">Name</p>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.userId.name %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-4 col-form-label pb-0 font-weight-bold">Item</p>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.itemId._id.title %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Status</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <% bookingStatuses = {
+                                                'BOOKED': 'light',
+                                                'PAID': 'warning',
+                                                'COMPLETED': 'success',
+                                                'REJECTED': 'danger',
+                                            } %>
+                                            <span class="badge badge-<%= bookingStatuses[booking.status || 'BOOKED'] %>">
+                                                <%= booking.status %>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-4 col-form-label pb-0 font-weight-bold">Created At</p>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= moment(booking.createdAt).format('DD MMMM Y HH:mm') %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold" for="description">Updated At</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext" id="description">
+                                            <%= booking.updatedAt ? moment(booking.updatedAt).format('DD MMMM Y HH:mm') : '-' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header border-bottom-0 py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Order Detail</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Start Date</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= moment(booking.bookingStartDate).format('DD MMMM Y') %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">End Date</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= moment(booking.bookingEndDate).format('DD MMMM Y') %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Duration</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.itemId.duration || 0 %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Location</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.itemId._id.city %>, <%= booking.itemId._id.country %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Item</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.itemId._id.title %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Base Price</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= numberFormat(booking.itemId.price, 'IDR ') %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Tax <%= _settings.taxPercent %>%</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= numberFormat(booking.itemId.price * (_settings.taxPercent / 100), `${_settings.currencySymbol} `) %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Total Price</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= numberFormat(booking.itemId.price * (1 + (_settings.taxPercent / 100)) - (booking.itemId.discount || 0), 'IDR ') %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header border-bottom-0 py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Payment</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Payment Method</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.payment.paymentMethod || 'No payment' %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Transfer To</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.bankId.bank || 'No bank' %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Transfer Number</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.bankId.accountNumber || 'No number' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Account Holder</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.payment.accountHolder || 'No name' %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Account Number</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <%= booking.payment.accountNumber || 'No number' %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-4 col-form-label pb-0 font-weight-bold">Proof Payment</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-plaintext">
+                                            <% if (booking.payment.proofPayment) { %>
+                                                <a href="<%= booking.payment.proofPayment %>">
+                                                    Download
+                                                </a>
+                                            <% } else { %>
+                                                WAITING
+                                            <% } %>
+                                            <%= booking.payment.paidAt ? ' - ' + moment(booking.payment.paidAt).format('DD MMM Y HH:mm') : '' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body d-flex justify-content-between">
+                        <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                        <a href="/booking/print/<%= booking._id %>" onclick="history.back()" type="button" class="btn btn-primary">
+                            <i class="fas fa-print mr-1"></i>Print Invoice
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

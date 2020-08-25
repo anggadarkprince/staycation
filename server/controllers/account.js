@@ -9,7 +9,7 @@ module.exports = {
         try {
             const account = await User.findById(req.user._id);
             const member = await Member.findOne({userId: req.user._id});
-            res.render('admin/account/index', {title: 'My Account', account, member});
+            res.render('account/index', {title: 'My Account', account, member});
         } catch (err) {
             res.redirect('/auth/login');
         }
@@ -48,7 +48,7 @@ module.exports = {
             }
 
             req.flash('success', `Your account successfully updated`);
-            return res.redirect('/admin/account');
+            return res.redirect('/account');
         } catch (err) {
             req.flash('old', req.body);
             req.flash('danger', `Update account failed, try again later`);

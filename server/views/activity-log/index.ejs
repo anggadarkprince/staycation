@@ -1,0 +1,88 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Activity Log', url: '/activity-log'},
+                    ]}) %>
+                </div>
+
+                <!-- DataTales Example -->
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Logger</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-hover" id="dataTable">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>IP</th>
+                                <th>Agent</th>
+                                <th>Time</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% logs.forEach((log, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= log.userId.name %></td>
+                                    <td><%= log.type %></td>
+                                    <td><%= log.ip %></td>
+                                    <td><%= typeof log.userAgent === 'object' ? `${log.userAgent.os} ${log.userAgent.browser}` : '' %></td>
+                                    <td><%= moment(log.time).format('DD MMMM Y HH:mm') %></td>
+                                    <td class="text-md-right">
+                                        <% if(authorize(PERMISSION_LOG_VIEW)) { %>
+                                            <a href="/activity-log/view/<%= log._id %>" class="btn btn-primary btn-sm">
+                                                View
+                                            </a>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>No</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>IP</th>
+                                <th>Agent</th>
+                                <th>Time</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

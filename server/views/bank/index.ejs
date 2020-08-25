@@ -1,0 +1,120 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Bank', url: '/bank'},
+                    ]}) %>
+                    <div>
+                        <a href="#modal-filter" data-toggle="modal" class="btn btn-warning btn-sm pr-2 pl-2">
+                            <i class="fas fa-sort-amount-down-alt" data-toggle="tooltip" data-title="Filter data"></i>
+                        </a>
+                        <a href="<%= `${_currentUrl}?${_query}&export=true` %>" class="btn btn-danger btn-sm pr-2 pl-2">
+                            <i class="fas fa-file-export" data-toggle="tooltip" data-title="Export data"></i>
+                        </a>
+                        <% if(authorize(PERMISSION_BANK_CREATE)) { %>
+                            <a href="/bank/create" class="btn btn-sm btn-primary shadow-sm">
+                                Create Bank
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Bank Data</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-hover" id="dataTable">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>Bank</th>
+                                <th>Account Holder</th>
+                                <th>Account Number</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% banks.forEach((bank, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= bank.bank %></td>
+                                    <td><%= bank.accountHolder %></td>
+                                    <td><%= bank.accountNumber %></td>
+                                    <td class="text-md-right">
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <% if(authorize(PERMISSION_BANK_VIEW)) { %>
+                                                    <a class="dropdown-item" href="/bank/view/<%= bank._id %>">
+                                                        View
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_BANK_EDIT)) { %>
+                                                    <a class="dropdown-item" href="/bank/edit/<%= bank._id %>">
+                                                        Edit
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_BANK_DELETE)) { %>
+                                                    <div class="dropdown-divider"></div>
+                                                    <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                            data-title="Bank" data-label="<%= bank.bank %> (<%= bank.accountNumber %>)"
+                                                            data-url="/bank/delete/<%= bank._id %>">
+                                                        Delete
+                                                    </button>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>No</th>
+                                <th>Bank</th>
+                                <th>Account Holder</th>
+                                <th>Account Number</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <%- include('../partials/delete.ejs') %>
+                <%- include('_modal_filter.ejs') %>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

@@ -1,0 +1,159 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Booking', url: '/booking'},
+                    ]}) %>
+                    <div>
+                        <a href="#modal-filter" data-toggle="modal" class="btn btn-warning btn-sm pr-2 pl-2">
+                            <i class="fas fa-sort-amount-down-alt" data-toggle="tooltip" data-title="Filter data"></i>
+                        </a>
+                        <a href="<%= `${_currentUrl}?${_query}&export=true` %>" class="btn btn-danger btn-sm pr-2 pl-2">
+                            <i class="fas fa-file-export" data-toggle="tooltip" data-title="Export data"></i>
+                        </a>
+                        <% if(authorize(PERMISSION_BOOKING_CREATE)) { %>
+                            <a href="/booking/create" class="btn btn-sm btn-primary shadow-sm">
+                                Create Booking
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Order Data</h6>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm table-hover responsive data-table" id="table-booking">
+                            <thead>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>No Order</th>
+                                <th>Name</th>
+                                <th>Item</th>
+                                <th>Duration</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% bookingStatuses = {
+                                'BOOKED': 'light',
+                                'PAID': 'warning',
+                                'COMPLETED': 'success',
+                                'REJECTED': 'danger',
+                            } %>
+                            <% bookings.forEach((booking, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= booking.transactionNumber %></td>
+                                    <td><%= booking.userId.name %></td>
+                                    <td><%= booking.itemId._id.title %></td>
+                                    <td><%= booking.itemId.duration %> night</td>
+                                    <td><%= numberFormat(booking.itemId.price * (1 + (_settings.taxPercent / 100)) - (booking.itemId.discount || 0), `${_settings.currencySymbol} `) %></td>
+                                    <td>
+                                        <span class="badge badge-<%= bookingStatuses[booking.status || 'BOOKED'] %>">
+                                            <%= booking.status %>
+                                        </span>
+                                    </td>
+                                    <td class="text-md-right">
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary btn-sm dropdown-toggle btn-action" type="button" data-toggle="dropdown">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <% if(authorize(PERMISSION_BOOKING_VIEW)) { %>
+                                                    <a class="dropdown-item" href="/booking/view/<%= booking._id %>">
+                                                        View
+                                                    </a>
+                                                    <a class="dropdown-item" href="/booking/print/<%= booking._id %>">
+                                                        Print
+                                                    </a>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_BANK_EDIT)) { %>
+                                                        <% if(['BOOKED', 'REJECTED'].includes(booking.status)) { %>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="/booking/edit/<%= booking._id %>">
+                                                                Edit
+                                                            </a>
+                                                            <a class="dropdown-item" href="/booking/payment/<%= booking._id %>">
+                                                                Payment
+                                                            </a>
+                                                        <% } %>
+                                                        <% if(booking.status === 'PAID') { %>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item btn-validate" data-action="approve" data-title="<%= booking.transactionNumber %>"
+                                                               href="/booking/approve/<%= booking._id %>">
+                                                                Approve
+                                                            </a>
+                                                            <a class="dropdown-item btn-validate" data-action="reject" data-title="<%= booking.transactionNumber %>"
+                                                               href="/booking/reject/<%= booking._id %>">
+                                                                Reject
+                                                            </a>
+                                                        <% } %>
+                                                <% } %>
+                                                <% if(authorize(PERMISSION_BANK_DELETE)) { %>
+                                                    <div class="dropdown-divider"></div>
+                                                    <button class="dropdown-item btn-delete" data-toggle="modal"
+                                                            data-title="Booking" data-label="<%= booking.transactionNumber %>"
+                                                            data-url="/booking/delete/<%= booking._id %>">
+                                                        Delete
+                                                    </button>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th style="width: 35px">No</th>
+                                <th>No Order</th>
+                                <th>Name</th>
+                                <th>Item</th>
+                                <th>Duration</th>
+                                <th>Price</th>
+                                <th class="text-md-right" style="max-width: 80px">Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <%- include('../partials/delete.ejs') %>
+                <%- include('_modal_filter.ejs') %>
+                <%- include('_modal_validate_payment.ejs') %>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

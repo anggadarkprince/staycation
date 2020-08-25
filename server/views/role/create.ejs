@@ -1,0 +1,108 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Role', url: '/role'},
+                        {title: 'Create', url: '/role/create'},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <form action="/role/save" method="post">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
+                    <fieldset>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">New Role Data</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="role">Role Name</label>
+                                    <input type="text" class="form-control" id="role" name="role" required maxlength="50"
+                                           value="<%= _old.role || '' %>" placeholder="Enter a role name">
+                                    <%- validationError('role') %>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea class="form-control" id="description" name="description" maxlength="500"
+                                              placeholder="Enter role description"><%= _old.description || '' %></textarea>
+                                    <%- validationError('description') %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Permissions</h5>
+                                <p class="text-muted mb-0">Role at least must has one permission</p>
+                                <%- validationError('permissions') %>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <% lastGroup = ''; lastSubGroup = ''; %>
+                                        <% permissions.forEach((permission, i) => { %>
+                                            <% if(lastGroup != permission.module){ %>
+                                                <div class="col-12 mt-4 border-top border-bottom font-weight-bold">
+                                                    <h5 class="m-0 py-2">Module <%= permission.module %></h5>
+                                                </div>
+                                                <% lastGroup = permission.module %>
+                                            <% } %>
+
+                                            <% if(lastSubGroup != permission.submodule){ %>
+                                                <div class="col-12 mt-3 font-weight-bold text-gray-500">
+                                                    Module <%= permission.submodule %>
+                                                </div>
+                                                <% lastSubGroup = permission.submodule %>
+                                            <% } %>
+
+                                            <div class="col-sm-6">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                           id="permission_<%= i %>" name="permissions[<%= i %>]"
+                                                           value="<%= permission._id %>" <%= _old.permissions && _old.permissions.includes(permission._id.toString()) ? 'checked' : '' %>>
+                                                    <label class="custom-control-label text-capitalize" for="permission_<%= i %>">
+                                                        <%= permission.permission.replace(/[-_]/, ' ') %> : <span class="text-muted"><%= permission.description %></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        <% }) %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body d-flex justify-content-between">
+                                <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                                <button type="submit" class="btn btn-success" data-toggle="one-touch">Save Role</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

@@ -20,7 +20,7 @@ module.exports = {
                 }
             });
             const logoUrl = '../../public/dist/img/favicon.png';
-            ejs.renderFile('views/admin/booking/print.ejs', {booking, logoUrl, moment, numberFormat, require, path}, {}, (err, html) => {
+            ejs.renderFile('views/booking/print.ejs', {booking, logoUrl, moment, numberFormat, require, path}, {}, (err, html) => {
                 if (err) return console.log(err);
                 pdf.create(html, { format: 'A4' }).toStream((err, stream) => {
                     if (err) return console.log(err);

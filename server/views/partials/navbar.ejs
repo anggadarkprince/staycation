@@ -7,7 +7,7 @@
     </button>
 
     <!-- Topbar Search -->
-    <form action="/admin/search" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" method="get">
+    <form action="/search" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" method="get">
         <div class="input-group">
             <input type="search" name="q" value="<%= getUrlParam('q') %>" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
             <div class="input-group-append">
@@ -28,7 +28,7 @@
             </a>
             <!-- Dropdown - Messages -->
             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                <form action="/admin/search" class="form-inline mr-auto w-100 navbar-search" method="get">
+                <form action="/search" class="form-inline mr-auto w-100 navbar-search" method="get">
                     <div class="input-group">
                         <input type="search" name="q" value="<%= getUrlParam('q') %>" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search">
                         <div class="input-group-append">
@@ -41,7 +41,7 @@
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/admin/booking">
+            <a class="nav-link" href="/booking">
                 <i class="fas fa-cart-plus"></i>
             </a>
         </li>
@@ -74,7 +74,7 @@
                     'booking-reject': 'bg-danger',
                 } %>
                 <% _unreadNotifications.forEach(notification => { %>
-                    <a class="dropdown-item d-flex align-items-center" href="/admin/notification/read/<%= notification._id %>" data-url="<%= notification.url || '/' %>">
+                    <a class="dropdown-item d-flex align-items-center" href="/notification/read/<%= notification._id %>" data-url="<%= notification.url || '/' %>">
                         <div class="mr-3">
                             <div class="icon-circle <%= notificationColors[notification.channel] || 'bg-primary' %>">
                                 <i class="fas <%= notificationIcons[notification.channel] || 'fa-file-alt' %> text-white"></i>
@@ -86,7 +86,7 @@
                         </div>
                     </a>
                 <% }) %>
-                <a class="dropdown-item text-center small text-gray-500" href="/admin/notification">Show All Alerts</a>
+                <a class="dropdown-item text-center small text-gray-500" href="/notification">Show All Alerts</a>
             </div>
         </li>
 
@@ -100,11 +100,11 @@
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="/admin/account">
+                <a class="dropdown-item" href="/account">
                     <i class="fas fa-user-circle fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                 </a>
-                <a class="dropdown-item" href="/admin/settings">
+                <a class="dropdown-item" href="/settings">
                     <i class="fas fa-wrench fa-sm fa-fw mr-2 text-gray-400"></i>
                     Settings
                 </a>

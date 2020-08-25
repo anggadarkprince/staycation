@@ -60,28 +60,28 @@ module.exports = {
                 .attachment('roles.xlsx')
                 .send(exporter.toExcel('Roles', dataRoles));
         } else {
-            res.render('admin/role/index', {roles, title: 'Role'});
+            res.render('role/index', {roles, title: 'Role'});
         }
     },
     view: async (req, res, next) => {
         const id = req.params.id;
         try {
             const role = await Role.findOne({_id: id}).populate('permissionId');
-            res.render('admin/role/view', {role, title: `View role ${role.role}`});
+            res.render('role/view', {role, title: `View role ${role.role}`});
         } catch (err) {
             next(createError(404))
         }
     },
     create: async (req, res) => {
         const permissions = await Permission.find();
-        res.render('admin/role/create', {title: 'Create role', permissions});
+        res.render('role/create', {title: 'Create role', permissions});
     },
     save: async (req, res) => {
         const {role, description, permissions: permissionId} = req.body;
         try {
             await Role.create({role, description, permissionId});
             req.flash('success', `Role ${role} successfully created`);
-            res.redirect('/admin/role');
+            res.redirect('/role');
         } catch (err) {
             req.flash('old', req.body);
             req.flash('danger', `Save role ${role} failed, try again later`);
@@ -93,7 +93,7 @@ module.exports = {
         const role = await Role.findOne({_id: id});
         const permissions = await Permission.find();
 
-        res.render('admin/role/edit', {title: `Edit role ${role.role}`, role, permissions});
+        res.render('role/edit', {title: `Edit role ${role.role}`, role, permissions});
     },
     update: async (req, res) => {
         const id = req.params.id;
@@ -107,7 +107,7 @@ module.exports = {
             result.save();
 
             req.flash('success', `Role ${role} successfully updated`);
-            return res.redirect('/admin/role');
+            return res.redirect('/role');
         } catch (err) {
             req.flash('old', req.body);
             req.flash('danger', `Update role ${role} failed, try again later`);
@@ -122,7 +122,7 @@ module.exports = {
             result.remove();
 
             req.flash('warning', `Role ${result.role} successfully deleted`);
-            return res.redirect('/admin/role');
+            return res.redirect('/role');
         } catch (err) {
             req.flash('danger', `Delete role failed, try again later`);
             res.redirect('back');

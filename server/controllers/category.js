@@ -34,27 +34,27 @@ module.exports = {
                 .attachment('categories.xlsx')
                 .send(exporter.toExcel('Categories', categories, ['category', 'description', 'createdAt', 'updatedAt']));
         } else {
-            res.render('admin/category/index', {categories, title: 'Category'});
+            res.render('category/index', {categories, title: 'Category'});
         }
     },
     view: async (req, res, next) => {
         const id = req.params.id;
         try {
             const category = await Category.findOne({_id: id});
-            res.render('admin/category/view', {category, title: `View category ${category.category}`});
+            res.render('category/view', {category, title: `View category ${category.category}`});
         } catch (err) {
             next(createError(404));
         }
     },
     create: (req, res) => {
-        res.render('admin/category/create', {title: 'Create category'});
+        res.render('category/create', {title: 'Create category'});
     },
     save: async (req, res) => {
         const {category, description} = req.body;
         try {
             await Category.create({category, description});
             req.flash('success', `Category ${category} successfully created`);
-            res.redirect('/admin/category');
+            res.redirect('/category');
         } catch (err) {
             req.flash('old', req.body);
             req.flash('danger', `Save category ${category} failed, try again later`);
@@ -65,7 +65,7 @@ module.exports = {
         const id = req.params.id;
         const category = await Category.findOne({_id: id});
 
-        res.render('admin/category/edit', {category, title: `Edit category ${category.category}`});
+        res.render('category/edit', {category, title: `Edit category ${category.category}`});
     },
     update: async (req, res) => {
         const id = req.params.id;
@@ -78,7 +78,7 @@ module.exports = {
             result.save();
 
             req.flash('success', `Category ${category} successfully updated`);
-            return res.redirect('/admin/category');
+            return res.redirect('/category');
         }
         catch (err) {
             req.flash('old', req.body);
@@ -94,7 +94,7 @@ module.exports = {
             result.remove();
 
             req.flash('warning', `Category ${result.category} successfully deleted`);
-            return res.redirect('/admin/category');
+            return res.redirect('/category');
         }
         catch (err) {
             req.flash('danger', `Delete category failed, try again later`);

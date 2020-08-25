@@ -13,8 +13,9 @@ const accountRouter = require('./account');
 const settingRouter = require('./setting');
 const logRouter = require('./log');
 const notificationRouter = require('./notification');
+const uploadRouter = require('./upload');
 
-router.get('/', (req, res) => res.redirect('/admin/dashboard'));
+router.get('/', (req, res) => res.redirect('/dashboard'));
 router.get('/dashboard', dashboard.index);
 router.get('/search', dashboard.search);
 router.use('/role', roleRouter);
@@ -28,5 +29,6 @@ router.use('/account', accountRouter);
 router.use('/settings', settingRouter);
 router.use('/activity-log', logRouter);
 router.use('/notification', notificationRouter);
+router.use('/upload', uploadRouter);
 
 module.exports = router;

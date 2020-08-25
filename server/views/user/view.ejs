@@ -1,0 +1,123 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'User', url: '/user'},
+                        {title: 'View', url: '/user/view/' + user.id},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Name</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= user.name %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Username</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= user.username %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Email</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= user.email %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-3 col-form-label pb-0 font-weight-bold">Avatar</label>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <img class="img-fluid rounded" style="max-width: 200px" src="<%= user.avatar %>" alt="<%= user.name %>">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Status</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= user.status %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Roles</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <% user.roleId.forEach((role, i) => { %>
+                                                <a href="/role/view/<%= role._id %>" class="d-block">
+                                                    <%= role.role %>
+                                                </a>
+                                            <% }) %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Created At</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= moment(user.createdAt).format('DD MMMM Y HH:mm') %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-3 col-form-label pb-0 font-weight-bold" for="description">Updated At</label>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext" id="description">
+                                            <%= user.updatedAt ? moment(user.updatedAt).format('DD MMMM Y HH:mm') : '-' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body d-flex justify-content-between">
+                        <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

@@ -40,21 +40,21 @@ module.exports = {
                 .attachment('users.xlsx')
                 .send(exporter.toExcel('Users', users, ['name', 'username', 'email', 'status', 'createdAt', 'updatedAt']));
         } else {
-            res.render('admin/user/index', {users, title: 'User'});
+            res.render('user/index', {users, title: 'User'});
         }
     },
     view: async (req, res, next) => {
         const id = req.params.id;
         try {
             const user = await User.findOne({_id: id}).populate('roleId', 'role');
-            res.render('admin/user/view', {user, title: `View user ${user.name}`});
+            res.render('user/view', {user, title: `View user ${user.name}`});
         } catch (err) {
             next(createError(404))
         }
     },
     create: async (req, res) => {
         const roles = await Role.find();
-        res.render('admin/user/create', {title: `Create user`, roles});
+        res.render('user/create', {title: `Create user`, roles});
     },
     save: async (req, res) => {
         const {name, username, email, password, status, roles: roleId} = req.body;
@@ -73,13 +73,13 @@ module.exports = {
             if (req.user.preferences.notificationNewUser) {
                 const notificationMessage = {
                     message: `User ${name} recently registered to our system`,
-                    url: `/admin/user/view/${user._id}`
+                    url: `/user/view/${user._id}`
                 };
                 req.io.emit('new-user', notificationMessage);
             }
 
             req.flash('success', `User ${req.body.name} successfully created`);
-            res.redirect('/admin/user');
+            res.redirect('/user');
         } catch (err) {
             req.flash('old', req.body);
             req.flash('danger', `Save user ${req.body.name} failed, try again later`);
@@ -91,7 +91,7 @@ module.exports = {
         const user = await User.findOne({_id: id});
         const roles = await Role.find();
 
-        res.render('admin/user/edit', {title: `Edit user ${user.name}`, user, roles});
+        res.render('user/edit', {title: `Edit user ${user.name}`, user, roles});
     },
     update: async (req, res) => {
         const id = req.params.id;
@@ -114,7 +114,7 @@ module.exports = {
             result.save();
 
             req.flash('success', `User ${name} successfully updated`);
-            return res.redirect('/admin/user');
+            return res.redirect('/user');
         } catch (err) {
             req.flash('old', req.body);
             req.flash('danger', `Update user ${name} failed, try again later`);
@@ -133,7 +133,7 @@ module.exports = {
             }
 
             req.flash('warning', `User ${result.name} successfully deleted`);
-            return res.redirect('/admin/user');
+            return res.redirect('/user');
         } catch (err) {
             req.flash('danger', `Delete user failed, try again later`);
             res.redirect('back');

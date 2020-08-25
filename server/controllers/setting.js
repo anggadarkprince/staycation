@@ -18,7 +18,7 @@ module.exports = {
             notificationNewUser: 'notificationNewUser' in userPreference ? userPreference.notificationNewUser : 1,
             notificationInsight: 'notificationInsight' in userPreference ? userPreference.notificationInsight : 1,
         };
-        res.render('admin/setting/index', {title: 'Settings', systemSetting, userSetting});
+        res.render('setting/index', {title: 'Settings', systemSetting, userSetting});
     },
     update: async (req, res) => {
         const {notification_new_booking, notification_new_user, notification_insight} = req.body;
@@ -61,7 +61,7 @@ module.exports = {
             req.user.save();
 
             req.flash('success', `Setting successfully updated`);
-            return res.redirect('/admin/settings');
+            return res.redirect('/settings');
         }
         catch (err) {
             console.log(err);

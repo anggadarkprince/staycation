@@ -61,7 +61,7 @@ module.exports = {
                 .attachment('bookings.xlsx')
                 .send(exporter.toExcel('Bookings', exportedBookings, headers));
         } else {
-            res.render('admin/booking/index', {title: 'Booking', bookings});
+            res.render('booking/index', {title: 'Booking', bookings});
         }
     },
     view: async (req, res, next) => {
@@ -74,7 +74,7 @@ module.exports = {
                     model: 'Category'
                 }
             });
-            res.render('admin/booking/view', {title: `View booking ${booking.transactionNumber}`, booking});
+            res.render('booking/view', {title: `View booking ${booking.transactionNumber}`, booking});
         } catch (err) {
             next(createError(404))
         }
@@ -90,7 +90,7 @@ module.exports = {
                 }
             });
             const logoUrl = '../public/dist/img/favicon.png';
-            ejs.renderFile('views/admin/booking/print.ejs', {booking, logoUrl, moment, numberFormat, require, path}, {}, (err, html) => {
+            ejs.renderFile('views/booking/print.ejs', {booking, logoUrl, moment, numberFormat, require, path}, {}, (err, html) => {
                 if (err) return console.log(err);
                 pdf.create(html, { format: 'A4' }).toStream((err, stream) => {
                     if (err) return console.log(err);
@@ -107,7 +107,7 @@ module.exports = {
         const users = await User.find();
         const banks = await Bank.find();
 
-        res.render('admin/booking/create', {title: 'Create Booking', items, users, banks});
+        res.render('booking/create', {title: 'Create Booking', items, users, banks});
     },
     save: async (req, res) => {
         const {item: itemId, user: userId, from_date: fromDate, until_date: untilDate, bank: bankId, description} = req.body;
@@ -131,7 +131,7 @@ module.exports = {
             if (req.user.preferences.notificationNewBooking) {
                 const notificationMessage = {
                     message: `Booking for item ${itemData.title}, please review if necessary`,
-                    url: `/admin/booking/view/${booking._id}`
+                    url: `/booking/view/${booking._id}`
                 };
                 req.io.emit('new-booking', notificationMessage);
 
@@ -144,7 +144,7 @@ module.exports = {
             }
 
             req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully created`);
-            res.redirect('/admin/booking');
+            res.redirect('/booking');
         } catch (err) {
             console.log(err);
             req.flash('error', err);
@@ -161,7 +161,7 @@ module.exports = {
         const users = await User.find();
         const banks = await Bank.find();
 
-        res.render('admin/booking/edit', {title: 'Edit Booking', booking, items, users, banks});
+        res.render('booking/edit', {title: 'Edit Booking', booking, items, users, banks});
     },
     update: async (req, res) => {
         const id = req.params.id;
@@ -185,7 +185,7 @@ module.exports = {
             await booking.save();
 
             req.flash('success', `Booking item ${itemData.title} for ${userData.name} successfully updated`);
-            return res.redirect('/admin/booking');
+            return res.redirect('/booking');
         } catch (err) {
             req.flash('error', err);
             req.flash('old', req.body);
@@ -203,7 +203,7 @@ module.exports = {
             }
         });
 
-        res.render('admin/booking/payment', {title: 'Booking Payment', booking});
+        res.render('booking/payment', {title: 'Booking Payment', booking});
     },
     updatePayment: async (req, res) => {
         const id = req.params.id;
@@ -229,7 +229,7 @@ module.exports = {
             if (req.user.preferences.notificationNewBooking) {
                 const notificationMessage = {
                     message: `Payment for booking ${booking.transactionNumber} is submitted`,
-                    url: `/admin/booking/print/${booking._id}`
+                    url: `/booking/print/${booking._id}`
                 };
                 req.io.emit('booking-payment', notificationMessage);
 
@@ -242,7 +242,7 @@ module.exports = {
             }
 
             req.flash('success', `Booking item ${booking.transactionNumber} successfully paid`);
-            return res.redirect('/admin/booking');
+            return res.redirect('/booking');
         } catch (err) {
             req.flash('error', err);
             req.flash('old', req.body);
@@ -258,7 +258,7 @@ module.exports = {
             if (req.user.preferences.notificationNewBooking) {
                 const notificationMessage = {
                     message: `Booking ${booking.transactionNumber} is approved`,
-                    url: `/admin/booking/view/${booking._id}`
+                    url: `/booking/view/${booking._id}`
                 };
                 if (req.socketConnections && req.socketConnections.hasOwnProperty(booking.userId)) {
                     const socketId = req.socketConnections[booking.userId];
@@ -274,7 +274,7 @@ module.exports = {
             }
 
             req.flash('success', `Booking item ${booking.transactionNumber} is completed`);
-            return res.redirect('/admin/booking');
+            return res.redirect('/booking');
         } catch (err) {
             req.flash('error', err);
             req.flash('old', req.body);
@@ -290,7 +290,7 @@ module.exports = {
             if (req.user.preferences.notificationNewBooking) {
                 const notificationMessage = {
                     message: `Booking ${booking.transactionNumber} is REJECTED`,
-                    url: `/admin/booking/view/${booking._id}`
+                    url: `/booking/view/${booking._id}`
                 };
                 if (req.socketConnections && req.socketConnections.hasOwnProperty(booking.userId)) {
                     const socketId = req.socketConnections[booking.userId];
@@ -306,7 +306,7 @@ module.exports = {
             }
 
             req.flash('warning', `Booking item ${booking.transactionNumber} is REJECTED`);
-            return res.redirect('/admin/booking');
+            return res.redirect('/booking');
         } catch (err) {
             req.flash('error', err);
             req.flash('old', req.body);
@@ -326,7 +326,7 @@ module.exports = {
             }
 
             req.flash('warning', `Item ${result.bank} successfully deleted`);
-            return res.redirect('/admin/booking');
+            return res.redirect('/booking');
         } catch (err) {
             req.flash('danger', `Delete item failed, try again later`);
             res.redirect('back');

@@ -1,0 +1,120 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Booking', url: '/booking'},
+                        {title: 'Edit', url: '/booking/edit/' + booking.id},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <form action="/booking/update/<%= booking._id %>" method="post" id="form-booking">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
+                    <fieldset>
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Edit Booking Data</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="item">Item</label>
+                                    <select class="custom-select" name="item" id="item" required>
+                                        <option value="">Select Item</option>
+                                        <% items.forEach(item => { %>
+                                            <option value="<%= item._id %>"<%= (_old.item || booking.itemId._id.toString()) == item._id ? ' selected' : '' %>>
+                                                <%= item.title %>
+                                            </option>
+                                        <% }) %>
+                                    </select>
+                                    <%- validationError('item') %>
+                                </div>
+                                <div class="form-group">
+                                    <label for="user">User</label>
+                                    <select class="custom-select" name="user" id="user" required>
+                                        <option value="">Select User</option>
+                                        <% users.forEach(user => { %>
+                                            <option value="<%= user._id %>"<%= (_old.user || booking.userId.toString()) == user._id ? ' selected' : '' %>>
+                                                <%= user.name %> (<%= user.email %>)
+                                            </option>
+                                        <% }) %>
+                                    </select>
+                                    <%- validationError('user') %>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="from_date">From Date</label>
+                                            <input type="text" class="form-control datepicker" id="from_date" name="from_date" required maxlength="20"
+                                                   value="<%= _old.from_date || moment(booking.bookingStartDate).format('DD MMMM Y') %>" placeholder="From date" autocomplete="off">
+                                            <%- validationError('from_date') %>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="until_date">Until Date</label>
+                                            <input type="text" class="form-control datepicker" id="until_date" name="until_date" required maxlength="20"
+                                                   value="<%= _old.until_date || moment(booking.bookingEndDate).format('DD MMMM Y') %>" placeholder="Until date" autocomplete="off">
+                                            <%- validationError('until_date') %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea class="form-control" id="description" name="description" maxlength="500"
+                                              placeholder="Enter description"><%= _old.description || booking.description %></textarea>
+                                    <%- validationError('description') %>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bank">Payment Bank</label>
+                                    <select class="custom-select" name="bank" id="bank" required>
+                                        <option value="">Select Bank</option>
+                                        <% banks.forEach(bank => { %>
+                                            <option value="<%= bank._id %>"<%= (_old.bank || booking.bankId.toString()) == bank._id ? ' selected' : '' %>>
+                                                <%= bank.bank %> (<%= bank.accountNumber %>)
+                                            </option>
+                                        <% }) %>
+                                    </select>
+                                    <%- validationError('bank') %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body d-flex justify-content-between">
+                                <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                                <button type="submit" class="btn btn-primary" data-toggle="one-touch">Update Booking</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

@@ -67,7 +67,7 @@ module.exports = {
             return {year: monthly._id.year, month: moment(monthly._id.month, 'M').format('MMMM'), total: monthly.total}
         });
 
-        res.render('admin/dashboard/index', {title: 'Dashboard', earningMonthAvg, earningYearTotal, totalBooking, totalBookingOutstanding, monthlyReport});
+        res.render('dashboard/index', {title: 'Dashboard', earningMonthAvg, earningYearTotal, totalBooking, totalBookingOutstanding, monthlyReport});
     },
     search: async (req, res) => {
         const search = req.query.q;
@@ -107,6 +107,6 @@ module.exports = {
             .sort([['createdAt', -1]])
             .limit(5);
 
-        res.render('admin/dashboard/search', {title: 'Search', bookings, items});
+        res.render('dashboard/search', {title: 'Search', bookings, items});
     }
 }

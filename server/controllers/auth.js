@@ -76,7 +76,7 @@ module.exports = {
                         data: foundUser,
                         time: new Date(),
                     });
-                    res.redirect('/admin/dashboard');
+                    res.redirect('/dashboard');
                 } else {
                     req.flash('old', req.body);
                     req.flash('danger', 'Invalid credentials, try again!');
@@ -106,7 +106,7 @@ module.exports = {
             .then(user => {
                 const notificationMessage = {
                     message: `User ${name} recently registered to our system, please review it`,
-                    url: `/admin/user/view/${user._id}`
+                    url: `/user/view/${user._id}`
                 };
                 req.io.emit('new-user', notificationMessage);
                 Notification.create({

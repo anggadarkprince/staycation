@@ -1,0 +1,158 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Settings', url: '/settings'},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <form action="/settings" method="post">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
+
+                    <div class="card shadow border-0 mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">System Preferences</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="app_name" class="col-md-3 col-form-label">App Name</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="app_name" name="app_name"
+                                           value="<%= _old.app_name || systemSetting.appName %>" placeholder="Public app name, include in email or customer invoice">
+                                    <%- validationError('appName') %>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="contact" class="col-md-3 col-form-label">Contact</label>
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="contact" name="contact" required maxlength="50"
+                                                   value="<%= _old.contact || systemSetting.contact %>" placeholder="Phone contact">
+                                            <%- validationError('contact') %>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="email" class="form-control" id="email" name="email" required maxlength="50"
+                                                   value="<%= _old.email || systemSetting.email %>" placeholder="Email address">
+                                            <%- validationError('email') %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="address" class="col-md-3 col-form-label">Address</label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" id="address" name="address" required maxlength="300"
+                                              placeholder="Full address"><%= _old.address || systemSetting.address %></textarea>
+                                    <%- validationError('address') %>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="currency" class="col-md-3 col-form-label">Currency Symbol</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="currency" name="currency" required maxlength="5"
+                                           value="<%= _old.currency || systemSetting.currencySymbol %>" placeholder="Currency symbol">
+                                    <%- validationError('currency') %>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="tax_percent" class="col-md-3 col-form-label">Tax Percent</label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="tax_percent" name="tax_percent" required max="100"
+                                               value="<%= _old.tax_percent || systemSetting.taxPercent %>" placeholder="Default tax percent">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
+                                    <%- validationError('taxPercent') %>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="public_registration_yes" class="col-form-label col-md-3 pt-0">Allow Public Registration</label>
+                                    <div class="col-md-9">
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" id="public_registration_yes" name="public_registration" value="1" class="custom-control-input"<%= (_old.public_registration || systemSetting.publicRegistration) == 1 ? ' checked' : '' %>>
+                                            <label class="custom-control-label" for="public_registration_yes">
+                                                Allow registration
+                                            </label>
+                                        </div>
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" id="public_registration_no" name="public_registration" value="0" class="custom-control-input"<%= (_old.public_registration || systemSetting.publicRegistration) == 0 ? ' checked' : '' %>>
+                                            <label class="custom-control-label" for="public_registration_no">
+                                                User is created by Admin
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%- validationError('publicRegistration') %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow border-0 mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">User Preferences</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-3">Notifications</div>
+                                <div class="col-md-9">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="notification_new_booking"
+                                               name="notification_new_booking" value="1"<%= (_old.notification_new_booking || userSetting.notificationNewBooking) == 1 ? ' checked' : '' %>>
+                                        <label class="custom-control-label" for="notification_new_booking">Notify me about new booking</label>
+                                        <%- validationError('notificationNewBooking') %>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="notification_new_user"
+                                               name="notification_new_user" value="1"<%= (_old.notification_new_user || userSetting.notificationNewUser) == 1 ? ' checked' : '' %>>
+                                        <label class="custom-control-label" for="notification_new_user">Notify me about new user</label>
+                                        <%- validationError('notificationNewUser') %>
+                                    </div>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="notification_insight"
+                                               name="notification_insight" value="1"<%= (_old.notification_insight || userSetting.notificationInsight) == 1 ? ' checked' : '' %>>
+                                        <label class="custom-control-label" for="notification_insight">I want to know weekly insight</label>
+                                        <%- validationError('notificationInsight') %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

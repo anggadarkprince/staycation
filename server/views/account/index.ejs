@@ -1,0 +1,173 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Account', url: '/account'},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <form action="/account/update?_csrf=<%= _csrfToken %>" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="_csrf" value="<%= _csrfToken %>">
+
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-xl-6 d-flex align-items-stretch">
+                                <div class="card shadow w-100 border-0 mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Basic Info</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name">Full Name</label>
+                                                    <input type="text" class="form-control" id="name" name="name" required maxlength="50"
+                                                           value="<%= _old.name || account.name %>" placeholder="Enter your full name">
+                                                    <%- validationError('name') %>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="username">Username</label>
+                                                    <input type="text" class="form-control" id="username" name="username" maxlength="50"
+                                                           value="<%= _old.username || account.username %>" placeholder="User unique ID">
+                                                    <%- validationError('username') %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" class="form-control" id="email" name="email" required maxlength="50"
+                                                   value="<%= _old.email || account.email %>" placeholder="Enter email address">
+                                            <%- validationError('email') %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 d-flex align-items-stretch">
+                                <div class="card shadow w-100 border-0 mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 font-weight-bold text-primary">Avatar</h6>
+                                    </div>
+                                    <div class="card-body d-flex">
+                                        <div class="d-flex flex-column align-self-center flex-sm-row align-items-center w-100 mb-2">
+                                            <div class="rounded mb-3 mb-sm-0 flex-shrink-0" style="height:135px; width: 135px; background: url('<%= (account.avatar || '').replace(/\\/g, "/") %>') center center / cover"></div>
+                                            <div class="mr-lg-3 ml-sm-4 flex-fill" style="max-width: 500px">
+                                                <label for="avatar" class="d-none d-md-block">Select a photo</label>
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="avatar" name="avatar" accept="image/*">
+                                                    <label class="custom-file-label text-truncate" for="avatar">Change Avatar</label>
+                                                </div>
+                                                <small class="form-text">Leave it unselected if you don't change avatar.</small>
+                                                <%- validationError('avatar') %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Profile</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="phone_number">Phone Number</label>
+                                            <input type="text" class="form-control" id="phone_number" name="phone_number" required maxlength="20"
+                                                   placeholder="Account holder name" value="<%= _old.phone_number || (member ? member.phoneNumber : '') %>">
+                                            <%- validationError('phone_number') %>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="date_of_birth">Date of Birth</label>
+                                            <input type="text" class="form-control datepicker" id="date_of_birth" name="date_of_birth" autocomplete="off" required maxlength="20"
+                                                   placeholder="Your birthday" value="<%= _old.date_of_birth || (member ? moment(member.dateOfBirth).format('DD MMMM Y') : '') %>">
+                                            <%- validationError('date_of_birth') %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <textarea class="form-control" id="address" name="address" maxlength="200"
+                                              placeholder="Enter your address"><%= _old.address || (member ? member.address : '') %></textarea>
+                                    <%- validationError('address') %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Password</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="password">Current Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" required maxlength="50"
+                                           placeholder="Enter your current password">
+                                    <%- validationError('password') %>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="new_password">New Password</label>
+                                            <input type="password" class="form-control" id="new_password" name="new_password" minlength="6" maxlength="50"
+                                                   placeholder="Replace password with">
+                                            <small class="form-text text-gray mt-2">Leave it blank if you don't intent to change your password.</small>
+                                        </div>
+                                        <%- validationError('newPassword') %>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="confirm_password">Confirm Password</label>
+                                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" maxlength="50"
+                                                   placeholder="Confirm new password">
+                                            <%- validationError('confirmPassword') %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow border-0 mb-4">
+                            <div class="card-body d-flex justify-content-between">
+                                <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                                <button type="submit" class="btn btn-primary" data-toggle="one-touch">Update Account</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

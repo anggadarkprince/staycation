@@ -1,0 +1,72 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Notification', url: '/notification'},
+                    ]}) %>
+                    <a href="/notification/read-all">Read All</a>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <% notificationIcons = {
+                            'new-booking': 'fa-file-alt',
+                            'booking-payment': 'fa-donate',
+                            'new-user': 'fa-user',
+                            'booking-approve': 'fa-check',
+                            'booking-reject': 'fa-times',
+                        } %>
+                        <% notificationColors = {
+                            'new-booking': 'bg-primary',
+                            'booking-payment': 'bg-success',
+                            'new-user': 'bg-success',
+                            'booking-approve': 'bg-warning',
+                            'booking-reject': 'bg-danger',
+                        } %>
+                        <% notifications.forEach(notification => { %>
+                            <a href="/notification/read/<%= notification._id %>" class="d-flex mb-3 border-bottom pb-2 link-plain <%= notification.isRead ? 'text-muted' : 'font-weight-bold' %>">
+                                <div class="icon-circle <%= notificationColors[notification.channel] || 'bg-primary' %>">
+                                    <i class="fas <%= notificationIcons[notification.channel] || 'fa-file-alt' %> text-white"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="mb-0"><%= notification.message %></p>
+                                    <small class="text-gray-500">
+                                        <%= moment(notification.createdAt).format('MMMM DD, Y HH:mm') %>
+                                    </small>
+                                </div>
+                            </a>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

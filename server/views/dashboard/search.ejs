@@ -1,0 +1,144 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Search', url: '/search'},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <% if (getUrlParam('q')) { %>
+                    <div class="card shadow border-0 mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Booking Result</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm table-hover responsive" id="table-booking">
+                                <thead>
+                                <tr>
+                                    <th style="width: 35px">No</th>
+                                    <th>No Order</th>
+                                    <th>Name</th>
+                                    <th>Item</th>
+                                    <th>Night</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th class="text-md-right" style="max-width: 80px">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <% bookingStatuses = {
+                                    'BOOKED': 'light',
+                                    'PAID': 'warning',
+                                    'COMPLETED': 'success',
+                                    'REJECTED': 'danger',
+                                } %>
+                                <% bookings.forEach((booking, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= booking.transactionNumber %></td>
+                                    <td><%= booking.userId.name %></td>
+                                    <td><%= booking.itemId._id.title %><%= booking.itemId._id.categoryId %></td>
+                                    <td><%= booking.itemId.duration %></td>
+                                    <td><%= numberFormat(booking.itemId.price * 1.1 - (booking.itemId.discount || 0), 'IDR ') %></td>
+                                    <td>
+                                            <span class="badge badge-<%= bookingStatuses[booking.status || 'BOOKED'] %>">
+                                                <%= booking.status %>
+                                            </span>
+                                    </td>
+                                    <td class="text-md-right">
+                                        <a class="btn btn-primary" href="/booking/view/<%= booking._id %>">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                <% if (bookings.length === 0) { %>
+                                <tr>
+                                    <td colspan="8">No booking result</td>
+                                </tr>
+                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card shadow border-0 mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Item result</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="width: 35px">No</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Location</th>
+                                    <th>Price</th>
+                                    <th class="text-md-right" style="max-width: 80px">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <% items.forEach((item, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= item.title %></td>
+                                    <td><%= item.categoryId.category %></td>
+                                    <td><%= item.city %>, <%= item.country %></td>
+                                    <td><%= numberFormat(item.price, 'IDR ') %></td>
+                                    <td class="text-md-right">
+                                        <a class="btn btn-primary" href="/item/view/<%= item._id %>">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                <% if (items.length === 0) { %>
+                                <tr>
+                                    <td colspan="6">No item result</td>
+                                </tr>
+                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="card shadow border-0 mb-4">
+                        <div class="card-body">
+                            <p class="text-gray-500 mb-0">Search by input keyword...</p>
+                        </div>
+                    </div>
+                <% } %>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>

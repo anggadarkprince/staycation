@@ -46,7 +46,7 @@ module.exports = {
                 .send(exporter.toExcel('Items', items, ['title', 'city', 'country', 'price', 'createdAt', 'updatedAt']));
         } else {
             const categories = await Category.find();
-            res.render('admin/item/index', {title: 'Item', items, categories});
+            res.render('item/index', {title: 'Item', items, categories});
         }
     },
     view: async (req, res, next) => {
@@ -69,7 +69,7 @@ module.exports = {
                     select: 'category description'
                 }
             ]);
-            res.render('admin/item/view', {title: `View item ${item.title}`, item});
+            res.render('item/view', {title: `View item ${item.title}`, item});
         } catch (err) {
             next(createError(404))
         }
@@ -78,7 +78,7 @@ module.exports = {
         const categories = await Category.find();
         const facilities = await Facility.find();
 
-        res.render('admin/item/create', {title: 'Create Item', categories, facilities});
+        res.render('item/create', {title: 'Create Item', categories, facilities});
     },
     save: async (req, res) => {
         const {
@@ -140,7 +140,7 @@ module.exports = {
                     });
 
                     req.flash('success', `Item ${title} successfully created`);
-                    res.redirect('/admin/item');
+                    res.redirect('/item');
                 })
                 .catch(err => {
                     console.log(err);
@@ -164,7 +164,7 @@ module.exports = {
         const categories = await Category.find();
         const facilities = await Facility.find();
 
-        res.render('admin/item/edit', {title: `Edit item ${item.title}`, item, categories, facilities});
+        res.render('item/edit', {title: `Edit item ${item.title}`, item, categories, facilities});
     },
     update: async (req, res) => {
         const id = req.params.id;
@@ -274,7 +274,7 @@ module.exports = {
                     });
 
                     req.flash('success', `Item ${title} successfully updated`);
-                    return res.redirect('/admin/item');
+                    return res.redirect('/item');
                 })
                 .catch(console.log);
         }
@@ -298,7 +298,7 @@ module.exports = {
             }
 
             req.flash('warning', `Item ${result.title} successfully deleted`);
-            return res.redirect('/admin/item');
+            return res.redirect('/item');
         }
         catch (err) {
             req.flash('danger', `Delete item failed, try again later`);

@@ -216,7 +216,7 @@ module.exports = {
             .then(user => {
                 const notificationMessage = {
                     message: `User ${name} recently registered to our system`,
-                    url: `/admin/user/view/${user._id}`
+                    url: `/user/view/${user._id}`
                 };
                 req.io.emit('new-user', notificationMessage);
                 Notification.create({

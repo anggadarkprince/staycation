@@ -1,0 +1,160 @@
+<%- include('../partials/head.ejs') %>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <%- include('../partials/sidebar.ejs') %>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+            <%- include('../partials/navbar.ejs') %>
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <div class="mb-3">
+                    <%- include('../partials/breadcrumb.ejs', {breadcrumb: [
+                        {title: 'Item', url: '/item'},
+                        {title: 'View', url: '/item/view/' + item.id},
+                    ]}) %>
+                </div>
+
+                <%- include('../partials/alert.ejs') %>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <h3 class="mb-0 font-weight-bold text-primary"><%= item.title %></h3>
+                                <p class="mb-0 text-muted"><%= item.categoryId.category %> - <%= item.city %>, <%= item.country %></p>
+                            </div>
+                            <div class="text-md-right">
+                                <h4 class="font-weight-bold mb-1">
+                                    <span class="text-danger"><%= numberFormat(item.price, 'IDR ') %></span>
+                                    <small>/ night</small>
+                                </h4>
+                                <p class="mb-0 <%= item.isPopular ? 'text-success' : 'text-muted' %>"><%= item.isPopular ? 'Popular' : 'Regular' %></p>
+                            </div>
+                        </div>
+
+                        <div class="form-row mb-3">
+                            <% item.imageId.forEach(image => { %>
+                                <div class="col-md-4 mb-2">
+                                    <a href="<%= image.imageUrl %>" class="stretched-link">
+                                        <div class="position-relative rounded" style="height: 200px; background: url('<%= image.imageUrl.replace(/\\/g, "/") %>') center center / cover no-repeat">
+                                            <% if(image.isPrimary) { %>
+                                                <span class="small position-absolute bg-danger text-white rounded-bottom py-1 px-3" style="right: 0; top: 0; opacity: .92">PRIMARY</span>
+                                            <% } %>
+                                        </div>
+                                    </a>
+                                </div>
+                            <% }) %>
+                        </div>
+
+                        <div>
+                            <p class="mb-2 font-weight-bold">Description</p>
+                            <%- item.description || 'No description' %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Facilities</h5>
+                        <% if(item.facilities.length === 0) { %>
+                            <span class="text-muted">No specific facilities available</span>
+                        <% } else { %>
+                            <div class="row">
+                                <% item.facilities.forEach(facility => { %>
+                                    <div class="col-md-4 col-lg-3 mb-2 d-flex flex-row align-items-center">
+                                        <img src="<%= facility._id.image %>" alt="<%= facility._id.facility %>" style="width: 50px; height: 50px">
+                                        <div class="ml-3">
+                                            <span class="text-muted"><%= facility._id.facility %></span>
+                                            <h4 class="mb-0 font-weight-bold"><%= facility.qty %></h4>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Activities</h5>
+                        <% if(item.activities.length === 0) { %>
+                            <span class="text-muted">No specific activities available</span>
+                        <% } else { %>
+                            <% item.activities.forEach(activity => { %>
+                                <div class="mb-3 d-flex flex-column flex-sm-row">
+                                    <div class="position-relative mb-2 mb-sm-0">
+                                        <img src="<%= activity.image %>" alt="<%= activity.activity %>" class="img-fluid" style="max-width: 200px;">
+                                        <% if(activity.isPopular) { %>
+                                            <span class="small position-absolute bg-danger text-white rounded-bottom py-1 px-3" style="right: 0; top: 0; opacity: .92">
+                                                POPULAR
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                    <div class="ml-sm-3">
+                                        <h5 class="mb-0"><%= activity.activity %></h5>
+                                        <span class="text-muted"><%= activity.description %></span>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <p class="col-sm-3 col-form-label pb-0 font-weight-bold">Created At</p>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext">
+                                            <%= moment(item.createdAt).format('DD MMMM Y HH:mm') %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-2 mb-md-0 row">
+                                    <label class="col-sm-3 col-form-label pb-0 font-weight-bold" for="description">Updated At</label>
+                                    <div class="col-sm-9">
+                                        <p class="form-control-plaintext" id="description">
+                                            <%= item.updatedAt ? moment(item.updatedAt).format('DD MMMM Y HH:mm') : '-' %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 mb-4">
+                    <div class="card-body d-flex justify-content-between">
+                        <button onclick="history.back()" type="button" class="btn btn-light">Back</button>
+                        <% if(authorize(PERMISSION_ITEM_EDIT)) { %>
+                            <a class="btn btn-primary" href="/item/edit/<%= item._id %>">
+                                Edit
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer.ejs') %>
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<%- include('../partials/js.ejs') %>
