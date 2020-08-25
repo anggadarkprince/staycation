@@ -12,6 +12,8 @@ const crypto = require("crypto");
 const moment = require("moment");
 const OAuth2 = require('googleapis').google.auth.OAuth2;
 const {OAuth2Client} = require('google-auth-library');
+const queryString = require('query-string');
+const axios = require('axios');
 
 function isEmailAddress(value) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -35,7 +37,7 @@ module.exports = {
         const clientId = process.env.GOOGLE_CLIENT_ID;
         const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
         const oauth2Client = new OAuth2(clientId, clientSecret, process.env.GOOGLE_CALLBACK);
-        const googleLoginLink = oauth2Client.generateAuthUrl({
+        const googleLoginUrl = oauth2Client.generateAuthUrl({
             access_type: 'offline',
             scope: [
                 'https://www.googleapis.com/auth/userinfo.profile',
@@ -43,7 +45,16 @@ module.exports = {
             ]
         });
 
-        res.render('auth/login', {title: 'Login', googleLoginLink});
+        const stringifiedParams = queryString.stringify({
+            client_id: process.env.FACEBOOK_CLIENT_ID,
+            redirect_uri: process.env.FACEBOOK_CALLBACK,
+            scope: ['email'].join(','),
+            response_type: 'code',
+            auth_type: 'rerequest',
+        });
+        const facebookLoginUrl = `https://www.facebook.com/v4.0/dialog/oauth?${stringifiedParams}`;
+
+        res.render('auth/login', {title: 'Login', googleLoginUrl, facebookLoginUrl});
     },
     authenticate: async (req, res, next) => {
         const {username, password} = req.body;
@@ -109,7 +120,7 @@ module.exports = {
             req.flash('danger', 'You are not authorized to login with Google');
             return res.redirect('auth/login');
         } else {
-            oauth2Client.getToken(req.query.code, async function(err, token) {
+            oauth2Client.getToken(req.query.code, async function (err, token) {
                 if (err) {
                     req.flash('danger', 'Login with Google failed');
                     return res.redirect('auth/login');
@@ -128,7 +139,7 @@ module.exports = {
                     const month = ((new Date()).getMonth() + 1).toString();
                     const localPath = `uploads/${year}/${month}/${Date.now()}.jpg`;
                     const file = fs.createWriteStream(localPath);
-                    const request = https.get(payload.picture, function(response) {
+                    const request = https.get(payload.picture, function (response) {
                         response.pipe(file);
                     });
 
@@ -148,6 +159,66 @@ module.exports = {
 
                 res.redirect('/dashboard');
             });
+        }
+    },
+    facebookCallback: async (req, res) => {
+        try {
+            const {data} = await axios({
+                url: 'https://graph.facebook.com/v4.0/oauth/access_token',
+                method: 'get',
+                params: {
+                    client_id: process.env.FACEBOOK_CLIENT_ID,
+                    client_secret: process.env.FACEBOOK_CLIENT_SECRET,
+                    redirect_uri: process.env.FACEBOOK_CALLBACK,
+                    code: req.query.code,
+                },
+            });
+
+            const {data: facebookUser} = await axios({
+                url: 'https://graph.facebook.com/me',
+                method: 'get',
+                params: {
+                    fields: ['id', 'email', 'first_name', 'last_name', 'picture'].join(','),
+                    access_token: data.access_token,
+                },
+            });
+
+            let user = await User.findOne({email: facebookUser.email});
+            if (!user) {
+                const year = (new Date()).getFullYear().toString();
+                const month = ((new Date()).getMonth() + 1).toString();
+                const localPath = `uploads/${year}/${month}/${Date.now()}.jpg`;
+                const file = fs.createWriteStream(localPath);
+                https.get(facebookUser.picture.data.url, (response) => {
+                    response.pipe(file);
+                    file.on('finish', async () => {
+                        user = new User({
+                            name: facebookUser.first_name + ' ' + facebookUser.last_name,
+                            username: facebookUser.id,
+                            email: facebookUser.email,
+                            status: 'ACTIVATED',
+                            avatar: path.join('/', localPath)
+                        });
+                        await user.save();
+
+                        req.session.isLoggedIn = true;
+                        req.session.userId = user._id;
+                        req.session.save();
+
+                        res.redirect('/dashboard');
+                    });
+                });
+            } else {
+                req.session.isLoggedIn = true;
+                req.session.userId = user._id;
+                req.session.save();
+
+                res.redirect('/dashboard');
+            }
+        } catch (err) {
+            req.flash('old', req.body);
+            req.flash('danger', `Cannot login with facebook`);
+            res.redirect('/auth/login');
         }
     },
     register: (req, res) => {
