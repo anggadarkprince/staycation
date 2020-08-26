@@ -11,92 +11,124 @@
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
-    <li class="nav-item<%= _path == '/dashboard' ? ' active' : '' %>">
+    <li class="nav-item<%= _path === '/dashboard' ? ' active' : '' %>">
         <a class="nav-link" href="/dashboard">
             <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span>
         </a>
     </li>
     <hr class="sidebar-divider">
-    <div class="sidebar-heading">
-        Master
-    </div>
-    <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item<%= _path.startsWith('/role') || _path.startsWith('/user') ? ' active' : '' %>">
-        <a class="nav-link<%= _path.startsWith('/role') || _path.startsWith('/user') ? '' : ' collapsed' %>" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true" aria-controls="collapseUsers">
-            <i class="fas fa-fw fa-lock"></i>
-            <span>User Access</span>
-        </a>
-        <div id="collapseUsers" class="collapse<%= _path.startsWith('/role') || _path.startsWith('/user') ? ' show' : '' %>" aria-labelledby="headingUser" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">User Account</h6>
-                <a class="collapse-item<%= _path.startsWith('/role') ? ' active' : '' %>" href="/role">Role</a>
-                <a class="collapse-item<%= _path.startsWith('/user') ? ' active' : '' %>" href="/user">User</a>
-            </div>
+
+    <% if(authorize(PERMISSION_ROLE_VIEW) || authorize(PERMISSION_USER_VIEW) || authorize(PERMISSION_CATEGORY_VIEW) || authorize(PERMISSION_FACILITY_VIEW) || authorize(PERMISSION_BANK_VIEW)) { %>
+        <div class="sidebar-heading">
+            Master
         </div>
-    </li>
-    <li class="nav-item<%= _path.startsWith('/category') ? ' active' : '' %>">
-        <a class="nav-link" href="/category">
-            <i class="fas fa-fw fa-list-alt"></i>
-            <span>Category</span>
-        </a>
-    </li>
+    <% } %>
 
-    <li class="nav-item<%= _path.startsWith('/facility') ? ' active' : '' %>">
-        <a class="nav-link" href="/facility">
-            <i class="fas fa-fw fa-bed"></i>
-            <span>Facility</span>
-        </a>
-    </li>
-
-    <li class="nav-item<%= _path.startsWith('/bank') ? ' active' : '' %>">
-        <a class="nav-link" href="/bank">
-            <i class="fas fa-fw fa-money-check"></i>
-            <span>Bank Account</span>
-        </a>
-    </li>
-
-    <div class="sidebar-heading">
-        Order
-    </div>
-
-    <li class="nav-item<%= _path.startsWith('/item') ? ' active' : '' %>">
-        <a class="nav-link" href="/item">
-            <i class="fas fa-fw fa-hotel"></i>
-            <span>Homestay</span>
-        </a>
-    </li>
-
-    <li class="nav-item<%= _path.startsWith('/booking') ? ' active' : '' %>">
-        <a class="nav-link" href="/booking">
-            <i class="fas fa-fw fa-shopping-cart"></i>
-            <span>Booking</span>
-        </a>
-    </li>
-
-    <div class="sidebar-heading">
-        Preferences
-    </div>
-
-    <li class="nav-item<%= _path.startsWith('/account') ? ' active' : '' %>">
-        <a class="nav-link" href="/account">
-            <i class="fas fa-fw fa-user-circle"></i>
-            <span>My Account</span>
-        </a>
-    </li>
-    <li class="nav-item<%= _path.startsWith('/settings') || _path.startsWith('/activity-log') ? ' active' : '' %>">
-        <a class="nav-link<%= _path.startsWith('/settings') || _path.startsWith('/activity-log') ? '' : ' collapsed' %>" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-wrench"></i>
-            <span>Utilities</span>
-        </a>
-        <div id="collapseUtilities" class="collapse<%= _path.startsWith('/settings') || _path.startsWith('/activity-log') ? ' show' : '' %>" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities</h6>
-                <a class="collapse-item<%= _path.startsWith('/settings') ? ' active' : '' %>" href="/settings">Settings</a>
-                <a class="collapse-item<%= _path.startsWith('/activity-log') ? ' active' : '' %>" href="/activity-log">Activity Log</a>
+    <% if(authorize(PERMISSION_ROLE_VIEW) || authorize(PERMISSION_USER_VIEW)) { %>
+        <li class="nav-item<%= _path.startsWith('/role') || _path.startsWith('/user') ? ' active' : '' %>">
+            <a class="nav-link<%= _path.startsWith('/role') || _path.startsWith('/user') ? '' : ' collapsed' %>" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="true" aria-controls="collapseUsers">
+                <i class="fas fa-fw fa-lock"></i>
+                <span>User Access</span>
+            </a>
+            <div id="collapseUsers" class="collapse<%= _path.startsWith('/role') || _path.startsWith('/user') ? ' show' : '' %>" aria-labelledby="headingUser" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">User Account</h6>
+                    <% if(authorize(PERMISSION_ROLE_VIEW)) { %>
+                        <a class="collapse-item<%= _path.startsWith('/role') ? ' active' : '' %>" href="/role">Role</a>
+                    <% } %>
+                    <% if(authorize(PERMISSION_USER_VIEW)) { %>
+                        <a class="collapse-item<%= _path.startsWith('/user') ? ' active' : '' %>" href="/user">User</a>
+                    <% } %>
+                </div>
             </div>
+        </li>
+    <% } %>
+
+    <% if(authorize(PERMISSION_CATEGORY_VIEW)) { %>
+        <li class="nav-item<%= _path.startsWith('/category') ? ' active' : '' %>">
+            <a class="nav-link" href="/category">
+                <i class="fas fa-fw fa-list-alt"></i>
+                <span>Category</span>
+            </a>
+        </li>
+    <% } %>
+
+    <% if(authorize(PERMISSION_FACILITY_VIEW)) { %>
+        <li class="nav-item<%= _path.startsWith('/facility') ? ' active' : '' %>">
+            <a class="nav-link" href="/facility">
+                <i class="fas fa-fw fa-bed"></i>
+                <span>Facility</span>
+            </a>
+        </li>
+    <% } %>
+
+    <% if(authorize(PERMISSION_BANK_VIEW)) { %>
+        <li class="nav-item<%= _path.startsWith('/bank') ? ' active' : '' %>">
+            <a class="nav-link" href="/bank">
+                <i class="fas fa-fw fa-money-check"></i>
+                <span>Bank Account</span>
+            </a>
+        </li>
+    <% } %>
+
+    <% if(authorize(PERMISSION_ITEM_VIEW) || authorize(PERMISSION_BOOKING_VIEW)) { %>
+        <div class="sidebar-heading">
+            Accommodation
         </div>
-    </li>
+    <% } %>
+
+    <% if(authorize(PERMISSION_ITEM_VIEW)) { %>
+        <li class="nav-item<%= _path.startsWith('/item') ? ' active' : '' %>">
+            <a class="nav-link" href="/item">
+                <i class="fas fa-fw fa-hotel"></i>
+                <span>Homestay</span>
+            </a>
+        </li>
+    <% } %>
+
+    <% if(authorize(PERMISSION_BOOKING_VIEW)) { %>
+        <li class="nav-item<%= _path.startsWith('/booking') ? ' active' : '' %>">
+            <a class="nav-link" href="/booking">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span>Booking</span>
+            </a>
+        </li>
+    <% } %>
+
+    <% if(authorize(PERMISSION_ACCOUNT_EDIT) || authorize(PERMISSION_SETTING_EDIT) || authorize(PERMISSION_LOG_VIEW)) { %>
+        <div class="sidebar-heading">
+            Preferences
+        </div>
+    <% } %>
+
+    <% if(authorize(PERMISSION_ACCOUNT_EDIT)) { %>
+        <li class="nav-item<%= _path.startsWith('/account') ? ' active' : '' %>">
+            <a class="nav-link" href="/account">
+                <i class="fas fa-fw fa-user-circle"></i>
+                <span>My Account</span>
+            </a>
+        </li>
+    <% } %>
+    <% if(authorize(PERMISSION_SETTING_EDIT) || authorize(PERMISSION_LOG_VIEW)) { %>
+        <li class="nav-item<%= _path.startsWith('/settings') || _path.startsWith('/activity-log') ? ' active' : '' %>">
+            <a class="nav-link<%= _path.startsWith('/settings') || _path.startsWith('/activity-log') ? '' : ' collapsed' %>" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+                <i class="fas fa-fw fa-wrench"></i>
+                <span>Utilities</span>
+            </a>
+            <div id="collapseUtilities" class="collapse<%= _path.startsWith('/settings') || _path.startsWith('/activity-log') ? ' show' : '' %>" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Custom Utilities</h6>
+                    <% if(authorize(PERMISSION_SETTING_EDIT)) { %>
+                        <a class="collapse-item<%= _path.startsWith('/settings') ? ' active' : '' %>" href="/settings">Settings</a>
+                    <% } %>
+                    <% if(authorize(PERMISSION_LOG_VIEW)) { %>
+                        <a class="collapse-item<%= _path.startsWith('/activity-log') ? ' active' : '' %>" href="/activity-log">Activity Log</a>
+                    <% } %>
+                </div>
+            </div>
+        </li>
+    <% } %>
     <li class="nav-item<%= _path == '/logout' ? ' active' : '' %>">
         <a class="nav-link" href="/logout" data-toggle="modal" data-target="#logoutModal">
             <i class="fas fa-fw fa-sign-out-alt"></i>

@@ -46,20 +46,6 @@ module.exports = {
                         bcrypt.compare(password, user.password)
                             .then(matchedPassword => {
                                 if(matchedPassword) {
-                                    Log.create({
-                                        userId: user._id,
-                                        type: 'Login',
-                                        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-                                        userAgent: {
-                                            browser: req.useragent.browser,
-                                            version: req.useragent.version,
-                                            os: req.useragent.os,
-                                            platform: req.useragent.platform
-                                        },
-                                        data: user,
-                                        time: new Date(),
-                                    });
-
                                     const token = jwt.sign({
                                         email: user.email,
                                         userId: user._id.toString()
