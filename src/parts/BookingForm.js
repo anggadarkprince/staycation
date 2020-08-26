@@ -4,6 +4,7 @@ import propTypes from 'prop-types';
 import Button from 'elements/Button';
 import {InputNumber, InputDate} from "elements/Forms";
 import {numeric} from "utilities/formatter";
+import AuthContext from "../contexts/AuthContext";
 
 class BookingForm extends Component {
     constructor(props) {
@@ -122,14 +123,20 @@ class BookingForm extends Component {
                         {data.duration} night
                     </span>
                 </h6>
-                <Button
-                    className="btn btn-action"
-                    hasShadow
-                    isPrimary
-                    isBlock
-                    onClick={this.startBooking}>
-                    Start Booking
-                </Button>
+                <AuthContext.Consumer>
+                    {
+                        auth => {
+                            return auth.user ?
+                                <Button className="btn btn-action" hasShadow isPrimary isBlock onClick={this.startBooking}>
+                                    Start Booking
+                                </Button>
+                                :
+                                <Button type="link" className="btn btn-action" hasShadow isPrimary isBlock href={`/login?redirect=${window.location.pathname}`}>
+                                    Login to Booking
+                                </Button>
+                        }
+                    }
+                </AuthContext.Consumer>
             </div>
         );
     }

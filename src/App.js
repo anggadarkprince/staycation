@@ -5,7 +5,7 @@ import 'jquery';
 import 'bootstrap';
 import config from 'config';
 import axios from "axios";
-import AuthContext, {authDefaultValue} from "AuthContext";
+import AuthContext, {authDefaultValue} from "contexts/AuthContext";
 import LandingPage from "pages/LandingPage";
 import DetailPage from "pages/DetailPage";
 import CheckoutPage from "pages/CheckoutPage";
@@ -18,13 +18,13 @@ import ProfilePage from "pages/ProfilePage";
 import ForgotPassword from "pages/ForgotPassword";
 import ResetPassword from "pages/ResetPassword";
 import Error404 from "pages/Error404";
-import Layout from "Layout";
+import Layout from "pages/layouts/Layout";
+import AuthenticatedRoute from "routes/AuthenticatedRoute";
+import GuestRoute from "routes/GuestRoute";
 
 class App extends Component {
-    guestRoutes = ['/login', '/register', '/forgot-password', '/password/reset', '/email/verify'];
     homeRoute = '/profile';
     redirectRoute = '/login';
-    inGuestLocation = false;
 
     constructor(props) {
         super(props);
@@ -33,10 +33,7 @@ class App extends Component {
         this.state = {
             layout: 'landing',
             auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue,
-            pageReady: false
         }
-
-        this.inGuestLocation = this.guestRoutes.find(path => window.location.pathname.startsWith(path));
         this.initAuthState();
     }
 
@@ -46,25 +43,9 @@ class App extends Component {
         return apiToken ? JSON.parse(apiToken) : null;
     }
 
-    componentDidMount() {
+    initAuthState(callback = () => {}) {
         const apiTokenData = this.getAuthToken();
         if (apiTokenData) {
-            if (!this.inGuestLocation) {
-                this.setState({pageReady: true});
-            } // else redirect to home page (profile) we dont need to set page ready to prevent glitch view
-        } else {
-            //if (this.inGuestLocation) {
-                this.setState({pageReady: true});
-            //} // else redirect to login page (sign in)
-        }
-    }
-
-    initAuthState(redirect = true, callback = () => {}) {
-        const apiTokenData = this.getAuthToken();
-        if (apiTokenData) {
-            if (this.inGuestLocation && redirect) {
-                window.location = this.homeRoute;
-            }
             /**
              * we already set tokens in http only cookie (secure),
              * this line is optional (but server must set cookie for access token long-lived)
@@ -76,10 +57,6 @@ class App extends Component {
                 config.headers.Authorization = 'Bearer ' + apiTokenData.token;
                 return config;
             });
-        } else {
-            if (!this.inGuestLocation && redirect) {
-                //window.location = this.redirectRoute;
-            }
         }
 
         axios.defaults.withCredentials = true;
@@ -117,13 +94,11 @@ class App extends Component {
             }
         });
 
-        if (this.state.pageReady) {
-            this.setState({
-                auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue
-            }, function () {
-                callback();
-            });
-        }
+        this.setState({
+            auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue
+        }, function () {
+            callback();
+        });
     }
 
     logout(redirect = true, callback = () => {}) {
@@ -147,22 +122,22 @@ class App extends Component {
 
     render() {
         return (
-            this.state.pageReady && <AuthContext.Provider value={this.state.auth}>
+            <AuthContext.Provider value={this.state.auth}>
                 <div className='App'>
                     <Router>
                         <Layout layout={this.state.layout}>
                             <Switch>
                                 <Route path='/' exact component={LandingPage}/>
                                 <Route path='/properties/:id' component={DetailPage}/>
-                                <Route path='/checkout' render={(props) => <CheckoutPage {...props} onChangeLayout={this.onChangeLayout.bind(this)} />}/>
                                 <Route path='/terms' component={TermPage}/>
                                 <Route path='/privacy' component={PrivacyPage}/>
                                 <Route path='/careers' component={CareerPage}/>
-                                <Route path='/register' render={(props) => <RegisterPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
-                                <Route path='/login' render={(props) => <LoginPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
-                                <Route path='/forgot-password' component={ForgotPassword}/>
-                                <Route path='/reset-password/:token' component={ResetPassword}/>
-                                <Route path='/profile' component={ProfilePage}/>
+                                <GuestRoute path='/register' component={RegisterPage}/>
+                                <GuestRoute path='/login' render={(props) => <LoginPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
+                                <GuestRoute path='/forgot-password' component={ForgotPassword}/>
+                                <GuestRoute path='/reset-password/:token' component={ResetPassword}/>
+                                <AuthenticatedRoute path='/checkout' render={(props) => <CheckoutPage {...props} onChangeLayout={this.onChangeLayout.bind(this)} />}/>
+                                <AuthenticatedRoute path='/profile' component={ProfilePage}/>
                                 <Route component={Error404} />
                             </Switch>
                         </Layout>

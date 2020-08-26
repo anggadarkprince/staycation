@@ -25,8 +25,9 @@ class ProfilePage extends Component {
         this.fetchUser();
     }
 
-    getActiveLinkClass = path => {
-        return this.props.location.pathname === path ? 'active font-weight-medium' : 'text-muted';
+    getActiveLinkClass = (path, startWith = false) => {
+        const pathName = this.props.location.pathname;
+        return (startWith ? pathName.startsWith(path) : pathName === path) ? 'active font-weight-medium' : 'text-muted';
     }
 
     fetchUser() {
@@ -83,7 +84,7 @@ class ProfilePage extends Component {
                                             </Button>
                                         </li>
                                         <li className="nav-item">
-                                            <Button className={`nav-link ${this.getActiveLinkClass('/profile/setting')}`} type='link' href='/profile/setting'>
+                                            <Button className={`nav-link ${this.getActiveLinkClass('/profile/setting', true)}`} type='link' href='/profile/setting'>
                                                 Setting
                                             </Button>
                                         </li>

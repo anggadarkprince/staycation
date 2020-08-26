@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Fade from 'react-reveal/Fade';
 import Button from "elements/Button";
 import IconText from "parts/IconText";
-import AuthContext from "../AuthContext";
+import AuthContext from "../contexts/AuthContext";
 
 export default class Footer extends Component {
 

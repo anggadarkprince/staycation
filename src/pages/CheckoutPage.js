@@ -7,7 +7,7 @@ import Payment from "parts/Checkout/Payment";
 import Completed from "parts/Checkout/Completed";
 import {connect} from "react-redux";
 import {submitBooking, submitPayment} from 'store/actions/checkout';
-import AuthContext from 'AuthContext';
+import AuthContext from 'contexts/AuthContext';
 
 class CheckoutPage extends Component {
     static contextType = AuthContext;

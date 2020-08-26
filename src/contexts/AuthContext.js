@@ -9,4 +9,4 @@ export const authDefaultValue = {
     logout: () => {},
 };
 
-export default React.createContext(null);
+export default React.createContext(authDefaultValue);

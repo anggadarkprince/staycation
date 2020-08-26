@@ -9,11 +9,14 @@ class Login extends Component {
 
     constructor (props) {
         super(props);
+        const urlParams = new URLSearchParams(window.location.search);
+
         this.state = {
             isLoading: false,
             username: '',
             password: '',
             remember: false,
+            redirect: props.location.state || { from: { pathname: (urlParams.get('redirect') || '/') } },
             errors: []
         };
         this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -90,10 +93,10 @@ class Login extends Component {
                         user: data.payload.user,
                         remember: this.state.remember,
                     }));
-                    this.props.initAuthState(false, () => {
-                        this.props.history.push('/profile');
+                    this.props.initAuthState(() => {
+                        const { from } = this.state.redirect
+                        this.props.history.push(from);
                     });
-
                 } else {
                     this.setState({
                         isLoading: false,
