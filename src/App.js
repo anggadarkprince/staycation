@@ -9,16 +9,16 @@ import AuthContext, {authDefaultValue} from "contexts/AuthContext";
 import LandingPage from "pages/LandingPage";
 import DetailPage from "pages/DetailPage";
 import CheckoutPage from "pages/CheckoutPage";
-import TermPage from "pages/TermPage";
-import PrivacyPage from "pages/PrivacyPage";
-import CareerPage from "pages/CareerPage";
 import RegisterPage from "pages/RegisterPage";
 import LoginPage from "pages/LoginPage";
 import ProfilePage from "pages/ProfilePage";
-import ForgotPassword from "pages/ForgotPassword";
-import ResetPassword from "pages/ResetPassword";
-import Error404 from "pages/Error404";
+import ForgotPasswordPage from "pages/ForgotPasswordPage";
+import ResetPasswordPage from "pages/ResetPasswordPage";
 import Layout from "pages/layouts/Layout";
+import TermPage from "pages/TermPage";
+import PrivacyPage from "pages/PrivacyPage";
+import CareerPage from "pages/CareerPage";
+import Error404Page from "pages/Error404Page";
 import AuthenticatedRoute from "routes/AuthenticatedRoute";
 import GuestRoute from "routes/GuestRoute";
 
@@ -134,11 +134,11 @@ class App extends Component {
                                 <Route path='/careers' component={CareerPage}/>
                                 <GuestRoute path='/register' component={RegisterPage}/>
                                 <GuestRoute path='/login' render={(props) => <LoginPage {...props} initAuthState={this.initAuthState.bind(this)} />}/>
-                                <GuestRoute path='/forgot-password' component={ForgotPassword}/>
-                                <GuestRoute path='/reset-password/:token' component={ResetPassword}/>
+                                <GuestRoute path='/forgot-password' component={ForgotPasswordPage}/>
+                                <GuestRoute path='/reset-password/:token' component={ResetPasswordPage}/>
                                 <AuthenticatedRoute path='/checkout' render={(props) => <CheckoutPage {...props} onChangeLayout={this.onChangeLayout.bind(this)} />}/>
                                 <AuthenticatedRoute path='/profile' component={ProfilePage}/>
-                                <Route component={Error404} />
+                                <Route component={Error404Page} />
                             </Switch>
                         </Layout>
                     </Router>

@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import Fade from "react-reveal/Fade";
 import config from "config";
 
-class ForgotPassword extends Component {
+class ForgotPasswordPage extends Component {
 
     constructor(props) {
         super(props);
@@ -138,4 +138,4 @@ class ForgotPassword extends Component {
     }
 }
 
-export default ForgotPassword
+export default ForgotPasswordPage
