@@ -2,6 +2,7 @@ const Item = require('../../models/Item');
 const Category = require('../../models/Category');
 const User = require('../../models/User');
 const Bank = require('../../models/Bank');
+const Facility = require('../../models/Facility');
 
 module.exports = {
     index: async (req, res) => {
@@ -139,7 +140,53 @@ module.exports = {
     banks: async (req, res) => {
         try {
             const banks = await Bank.find();
-            res.status(200).json(banks.map(bank => ({...bank._doc, logo: res.locals._baseUrl + bank.logo.replace(/\\/g, "/")})));
+            const bankData = banks.map(bank => {
+                return {
+                    _id: bank._id,
+                    bank: bank.bank,
+                    logo: res.locals._baseUrl + bank.logo.replace(/\\/g, "/"),
+                    description: bank.description
+                }
+            });
+            res.json(bankData);
+        } catch (error) {
+            res.status(500).json({message: "Internal server error"});
+        }
+    },
+    facilities: async (req, res) => {
+        try {
+            const facilities = await Facility.find();
+            const facilityData = facilities.map(facility => {
+                return {
+                    _id: facility._id,
+                    facility: facility.facility,
+                    image: res.locals._baseUrl + facility.image.replace(/\\/g, "/"),
+                    description: facility.description
+                }
+            });
+            res.json(facilityData);
+        } catch (error) {
+            res.status(500).json({message: "Internal server error"});
+        }
+    },
+    categories: async (req, res) => {
+        try {
+            const categories = await Category.find();
+            const categoryData = categories.map(category => {
+                return {
+                    _id: category._id,
+                    category: category.category,
+                    description: category.description
+                }
+            });
+            res.json(categoryData);
+        } catch (error) {
+            res.status(500).json({message: "Internal server error"});
+        }
+    },
+    explore: async (req, res) => {
+        try {
+            res.json([]);
         } catch (error) {
             res.status(500).json({message: "Internal server error"});
         }

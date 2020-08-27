@@ -8,18 +8,24 @@ const profile = require('../controllers/api/profile');
 const { upload } = require('../middleware/multer');
 const authApi  = require('../middleware/authAPI');
 
+// public api
 router.get('/landing', landing.index);
 router.get('/detail/:id', landing.detail);
+router.get('/facilities', landing.facilities);
+router.get('/categories', landing.categories);
+router.get('/explore', landing.explore);
 router.get('/banks', landing.banks);
-router.post('/booking', authApi, booking.save);
-router.post('/booking/payment', authApi, upload.single("image"), booking.payment);
-router.get('/booking/invoice/:id', authApi, booking.print);
 router.post('/register', auth.register);
 router.post('/login', auth.login);
 router.post('/token', auth.token);
 router.post('/logout', auth.logout);
 router.post('/password/email', auth.sendEmailRecovery);
 router.post('/password/reset/:token', auth.resetPassword);
+
+// authenticated api
+router.post('/booking', authApi, booking.save);
+router.post('/booking/payment', authApi, upload.single("image"), booking.payment);
+router.get('/booking/invoice/:id', authApi, booking.print);
 router.get('/profile', authApi, profile.index);
 router.post('/setting/basic', authApi, profile.basic);
 router.post('/setting/notification', authApi, profile.notification);

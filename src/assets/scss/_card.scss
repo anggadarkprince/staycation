@@ -1,6 +1,4 @@
 .card {
-  height: 100%;
-
   .tag {
     background-color: $pink;
     padding: .25rem 1rem;
@@ -33,6 +31,7 @@
 
   &.card-featured,
   &.card-category {
+    height: 100%;
     overflow: hidden;
     border-radius: 15px;
     border: none;

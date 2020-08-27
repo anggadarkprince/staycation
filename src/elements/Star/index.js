@@ -9,7 +9,7 @@ export default function Star({className, value, size, spacing}) {
     for (let index = 0; index < 5 && index < value - decimals; index++) {
         stars.push(
             <div className="star" key={`star-${index}`}
-                 style={{left: leftPosition, width: size, height: size}}></div>
+                 style={{left: leftPosition, width: size, height: size, maskSize: size}}></div>
         )
         leftPosition += size + spacing;
     }
@@ -17,7 +17,7 @@ export default function Star({className, value, size, spacing}) {
     if (decimals > 0 && value <= 5) {
         stars.push((
             <div className="star" key={`star-decimal`}
-                 style={{left: leftPosition, width: decimals * size, height: size}}></div>
+                 style={{left: leftPosition, width: decimals * size, height: size, maskSize: size}}></div>
         ));
     }
 
@@ -25,7 +25,7 @@ export default function Star({className, value, size, spacing}) {
     for (let index = 0; index < 5; index++) {
         starPlaceholders.push(
             <div className="star star-placeholder" key={`star-${index}`}
-                 style={{left: index * (size + spacing), width: size, height: size}}></div>
+                 style={{left: index * (size + spacing), width: size, height: size, maskSize: size}}></div>
         )
     }
 

@@ -8,6 +8,7 @@ import axios from "axios";
 import AuthContext, {authDefaultValue} from "contexts/AuthContext";
 import LandingPage from "pages/LandingPage";
 import DetailPage from "pages/DetailPage";
+import ExplorePage from "pages/ExplorePage";
 import CheckoutPage from "pages/CheckoutPage";
 import RegisterPage from "pages/RegisterPage";
 import LoginPage from "pages/LoginPage";
@@ -32,6 +33,7 @@ class App extends Component {
         const apiTokenData = this.getAuthToken();
         this.state = {
             layout: 'landing',
+            pageReady: false,
             auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue,
         }
         this.initAuthState();
@@ -94,11 +96,17 @@ class App extends Component {
             }
         });
 
-        this.setState({
-            auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue
-        }, function () {
-            callback();
-        });
+        if (this.state.pageReady) {
+            this.setState({
+                auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue
+            }, function () {
+                callback();
+            });
+        }
+    }
+
+    componentDidMount() {
+        this.setState({pageReady: true});
     }
 
     logout(redirect = true, callback = () => {}) {
@@ -129,6 +137,7 @@ class App extends Component {
                             <Switch>
                                 <Route path='/' exact component={LandingPage}/>
                                 <Route path='/properties/:id' component={DetailPage}/>
+                                <Route path='/explore' component={ExplorePage}/>
                                 <Route path='/terms' component={TermPage}/>
                                 <Route path='/privacy' component={PrivacyPage}/>
                                 <Route path='/careers' component={CareerPage}/>
