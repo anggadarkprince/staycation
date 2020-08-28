@@ -9,6 +9,7 @@ import config from "config";
 import queryString from "query-string";
 import {withRouter} from "react-router-dom";
 import propTypes from "prop-types";
+import { debounce } from 'throttle-debounce';
 
 class FilterPanel extends Component {
     initialState = {
@@ -22,7 +23,7 @@ class FilterPanel extends Component {
             categories: [],
             facilities: [],
             sortBy: '',
-            sortMethod: 'desc',
+            sortMethod: '',
             sortLabel: '',
         },
         ratings: new Map(),
@@ -34,8 +35,9 @@ class FilterPanel extends Component {
         super(props);
         this.state = this.initFilterState(this.initialState);
         this.handleFieldChange = this.handleFieldChange.bind(this);
-        this.resetFilter = this.resetFilter.bind(this);
-        this.filterChanged = this.filterChanged.bind(this);
+        this.onResetFilter = this.onResetFilter.bind(this);
+        this.onFilterUpdated = this.onFilterUpdated.bind(this);
+        this.onFilterUpdated = debounce(this.props.debounceDelay, this.onFilterUpdated);
     }
 
     componentDidMount() {
@@ -46,9 +48,11 @@ class FilterPanel extends Component {
             .then(result => this.setState({facilityData: result.data}))
             .catch(console.log);
 
-        window.onpopstate = () => {
-            this.setState(this.initFilterState(this.state));
-            this.filterChanged(true);
+        if (this.props.backHistory) {
+            window.onpopstate = () => {
+                this.setState(this.initFilterState(this.state));
+                this.onFilterUpdated(true);
+            }
         }
     }
 
@@ -76,7 +80,7 @@ class FilterPanel extends Component {
 
         if (name === 'sort') {
             let sortBy = '';
-            let sortMethod = 'desc';
+            let sortMethod = '';
             switch (id) {
                 case 'highestPrice':
                     sortBy = 'price';
@@ -96,7 +100,7 @@ class FilterPanel extends Component {
                     break;
                 default:
                     sortBy = '';
-                    sortMethod = 'desc';
+                    sortMethod = '';
                     break;
             }
             this.setState(prevState => {
@@ -108,7 +112,7 @@ class FilterPanel extends Component {
                         sortLabel: value
                     }
                 }
-            }, this.filterChanged);
+            }, this.onFilterUpdated);
         } else if (['ratings[]', 'categories[]', 'facilities[]'].includes(name)) {
             this.setState(prevState => {
                 const inputName = name.replace('[]', '');
@@ -126,7 +130,7 @@ class FilterPanel extends Component {
                     },
                     [inputName]: mapValues,
                 }
-            }, this.filterChanged);
+            }, this.onFilterUpdated);
         } else if (name === 'priceFrom' || name === 'priceUntil') {
             if (!/[^0-9.,]+/.test(value)) {
                 let formattedValue = '';
@@ -144,7 +148,7 @@ class FilterPanel extends Component {
                             [name]: formattedValue
                         }
                     }
-                }, this.filterChanged);
+                }, this.onFilterUpdated);
             }
         } else {
             this.setState(prevState => {
@@ -154,23 +158,44 @@ class FilterPanel extends Component {
                         [name]: value
                     }
                 }
-            }, this.filterChanged);
+            }, this.onFilterUpdated);
         }
     }
 
-    filterChanged(isBack = false) {
+    onFilterUpdated(isBack = false) {
+        const {filters} = this.state;
+        if(this.props.pushHistory) {
+            const filterParams = queryString.stringify({
+                ...(filters.q && {q: filters.q}),
+                ...(filters.priceFrom && {priceFrom: filters.priceFrom}),
+                ...(filters.priceUntil && {priceUntil: filters.priceUntil}),
+                ...(filters.ratings && {ratings: filters.ratings}),
+                ...(filters.categories && {categories: filters.categories}),
+                ...(filters.facilities && {facilities: filters.facilities}),
+                ...(filters.sortBy && {sortBy: filters.sortBy}),
+                ...(filters.sortMethod && {sortMethod: filters.sortMethod}),
+                ...(filters.sortLabel && {sortLabel: filters.sortLabel}),
+            }); // queryString.stringify(filters)
+
+            if (!isBack) {
+                this.props.history.push({
+                    search: (filterParams ? '?' + filterParams : '')
+                });
+            }
+        }
+
         if (this.props.onFilterChanged) {
-            this.props.onFilterChanged(this.state.filters, isBack);
+            this.props.onFilterChanged(filters, isBack);
         }
     }
 
-    resetFilter() {
+    onResetFilter() {
         this.setState({
             ...this.initialState,
             categoryData: this.state.categoryData,
             facilityData: this.state.facilityData,
         });
-        this.filterChanged();
+        this.onFilterUpdated();
         if (this.props.onFilterReset) {
             this.props.onFilterReset();
         }
@@ -247,8 +272,9 @@ class FilterPanel extends Component {
                 <div className="card">
                     <div className="card-header bg-white d-flex justify-content-between">
                         Filter Result
-                        <Button type="button" className="btn btn-link p-0" onClick={this.resetFilter}>Reset
-                            Filter</Button>
+                        <Button type="button" className="btn btn-link p-0" onClick={this.onResetFilter}>Reset
+                            Filter
+                        </Button>
                     </div>
                     <div className="card-body">
                         <div className="form-group">
@@ -333,9 +359,18 @@ class FilterPanel extends Component {
     }
 }
 
+FilterPanel.defaultProps = {
+    pushHistory: true,
+    backHistory: true,
+    debounceDelay: 500,
+}
+
 FilterPanel.propTypes = {
     onFilterChanged: propTypes.func,
     onFilterReset: propTypes.func,
+    pushHistory: propTypes.bool,
+    backHistory: propTypes.bool,
+    debounceDelay: propTypes.number,
 }
 
 export default withRouter(FilterPanel);
