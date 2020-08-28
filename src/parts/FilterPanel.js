@@ -54,6 +54,10 @@ class FilterPanel extends Component {
                 this.onFilterUpdated(true);
             }
         }
+
+        if (this.props.triggerChangedOnMount) {
+            this.props.onFilterChanged(this.state.filters);
+        }
     }
 
     initFilterState(state) {
@@ -95,7 +99,7 @@ class FilterPanel extends Component {
                     sortMethod = 'desc';
                     break;
                 case 'popularity':
-                    sortBy = 'popular';
+                    sortBy = 'isPopular';
                     sortMethod = 'desc';
                     break;
                 default:
@@ -175,7 +179,7 @@ class FilterPanel extends Component {
                 ...(filters.sortBy && {sortBy: filters.sortBy}),
                 ...(filters.sortMethod && {sortMethod: filters.sortMethod}),
                 ...(filters.sortLabel && {sortLabel: filters.sortLabel}),
-            }); // queryString.stringify(filters)
+            });
 
             if (!isBack) {
                 this.props.history.push({
@@ -360,6 +364,7 @@ class FilterPanel extends Component {
 }
 
 FilterPanel.defaultProps = {
+    triggerChangedOnMount: true,
     pushHistory: true,
     backHistory: true,
     debounceDelay: 500,
@@ -368,6 +373,7 @@ FilterPanel.defaultProps = {
 FilterPanel.propTypes = {
     onFilterChanged: propTypes.func,
     onFilterReset: propTypes.func,
+    triggerChangedOnMount: propTypes.bool,
     pushHistory: propTypes.bool,
     backHistory: propTypes.bool,
     debounceDelay: propTypes.number,

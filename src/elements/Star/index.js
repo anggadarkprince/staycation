@@ -30,7 +30,7 @@ export default function Star({className, value, size, spacing}) {
     }
 
     return <>
-            <div className={['stars', className].join(' ')} style={{height: size}}>
+            <div className={['stars', className].join(' ')} style={{height: size, minWidth: size * 8}}>
                 {starPlaceholders}
                 {stars}
             </div>

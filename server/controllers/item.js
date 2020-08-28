@@ -105,19 +105,22 @@ module.exports = {
             });
             Promise.all(photoId)
                 .then(async photoId => {
-                    const activityData = activities.map(activity => {
-                        const year = (new Date()).getFullYear().toString();
-                        const month = ((new Date()).getMonth() + 1).toString();
-                        const oldPath = `uploads/temp/${activity.image}`;
-                        const dir = `uploads/${year}/${month}`;
-                        const newPath = `${dir}/${activity.image}`;
-                        if (!fs.existsSync(dir)) {
-                            fs.mkdirSync(dir);
-                        }
-                        fs.copyFileSync(oldPath, newPath);
-                        const image = path.join('/', newPath);
-                        return {...activity, image};
-                    });
+                    let activityData = [];
+                    if (activities) {
+                        activityData = activities.map(activity => {
+                            const year = (new Date()).getFullYear().toString();
+                            const month = ((new Date()).getMonth() + 1).toString();
+                            const oldPath = `uploads/temp/${activity.image}`;
+                            const dir = `uploads/${year}/${month}`;
+                            const newPath = `${dir}/${activity.image}`;
+                            if (!fs.existsSync(dir)) {
+                                fs.mkdirSync(dir);
+                            }
+                            fs.copyFileSync(oldPath, newPath);
+                            const image = path.join('/', newPath);
+                            return {...activity, image};
+                        });
+                    }
                     const item = await Item.create({
                         title, country, city, isPopular, description,
                         price: extractNumber(price),
@@ -201,25 +204,28 @@ module.exports = {
             });
             Promise.all(photoId)
                 .then(async photoId => {
-                    const activityData = activities.map(activity => {
-                        if (!activity._id) {
-                            const year = (new Date()).getFullYear().toString();
-                            const month = ((new Date()).getMonth() + 1).toString();
-                            const oldPath = `uploads/temp/${activity.image}`;
-                            const dir = `uploads/${year}/${month}`;
-                            const newPath = `${dir}/${activity.image}`;
-                            if (!fs.existsSync(dir)) {
-                                fs.mkdirSync(dir);
+                    let activityData = [];
+                    if (activities) {
+                        activityData = activities.map(activity => {
+                            if (!activity._id) {
+                                const year = (new Date()).getFullYear().toString();
+                                const month = ((new Date()).getMonth() + 1).toString();
+                                const oldPath = `uploads/temp/${activity.image}`;
+                                const dir = `uploads/${year}/${month}`;
+                                const newPath = `${dir}/${activity.image}`;
+                                if (!fs.existsSync(dir)) {
+                                    fs.mkdirSync(dir);
+                                }
+                                fs.copyFileSync(oldPath, newPath);
+                                const image = path.join('/', newPath);
+                                return {...activity, image};
+                            } else {
+                                return activity;
                             }
-                            fs.copyFileSync(oldPath, newPath);
-                            const image = path.join('/', newPath);
-                            return {...activity, image};
-                        } else {
-                            return activity;
-                        }
-                    });
+                        });
+                    }
 
-                    const activityIds = activities.filter(activity => activity._id || false).map(activity => activity._id);
+                    const activityIds = (activities || []).filter(activity => activity._id || false).map(activity => activity._id);
                     item.activities.forEach(activity => {
                         if (!activityIds.includes(activity._id.toString())) {
                             fs.unlinkSync(activity.image.replace(/^(\\)/, ''));

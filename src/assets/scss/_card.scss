@@ -37,6 +37,13 @@
     border: none;
   }
 
+  &.card-category {
+    .img-wrapper {
+      border-radius: 15px;
+      overflow: hidden;
+    }
+  }
+
   &.card-featured {
 
     &:after {

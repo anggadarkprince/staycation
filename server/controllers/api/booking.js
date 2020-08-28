@@ -1,12 +1,12 @@
 const Item = require('../../models/Item');
 const Booking = require('../../models/Booking');
-const User = require('../../models/User');
 const Notification = require('../../models/Notification');
 const {numberFormat} = require('../../helpers/formatter');
 const moment = require('moment');
 const pdf = require('html-pdf');
 const ejs = require('ejs');
 const path = require("path");
+const createError = require("http-errors");
 
 module.exports = {
     print: async (req, res) => {

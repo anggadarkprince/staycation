@@ -3,6 +3,8 @@ const Category = require('../../models/Category');
 const User = require('../../models/User');
 const Bank = require('../../models/Bank');
 const Facility = require('../../models/Facility');
+const Image = require('../../models/Image');
+const createError = require("http-errors");
 
 module.exports = {
     index: async (req, res) => {
@@ -184,11 +186,131 @@ module.exports = {
             res.status(500).json({message: "Internal server error"});
         }
     },
-    explore: async (req, res) => {
+    explore: async (req, res, next) => {
         try {
-            res.json([]);
+            const page = req.query.page || 1;
+            const search = req.query.q;
+            const priceFrom = req.query.priceFrom;
+            const priceUntil = req.query.priceUntil;
+            const categories = req.query.categories;
+            const facilities = req.query.facilities;
+            let ratings = req.query.ratings;
+            let sortMethod = (req.query.sortMethod || 'desc') === 'desc' ? -1 : 1;
+            let sortBy = req.query.sortBy || 'createdAt';
+            if (sortBy !== 'rating') {
+                sortBy = `_id.${sortBy}`;
+            }
+            if (ratings) {
+                if (!Array.isArray(ratings)) {
+                    ratings = [ratings];
+                }
+                ratings = ratings.map(rate => Number(rate));
+            }
+
+            const query = Item.aggregate([
+                {
+                    $match: {
+                        ...(search && {
+                            $and: [{
+                                $or: [
+                                    {title: {$regex: `.*${search}.*`, $options: 'i'}},
+                                    {city: {$regex: `.*${search}.*`, $options: 'i'}},
+                                    {country: {$regex: `.*${search}.*`, $options: 'i'}},
+                                ]
+                            }]
+                        }),
+                        ...(categories && {
+                            categoryId: categories
+                        }),
+                        ...(facilities && {
+                            "facilities._id": facilities
+                        }),
+                        ...((priceFrom || priceUntil) && {
+                            price: {
+                                ...(priceFrom && {$gte: priceFrom}),
+                                ...(priceUntil && {$lte: priceUntil}),
+                            }
+                        }),
+                    }
+                },
+                {
+                    $lookup: {
+                        "from": Category.collection.name,
+                        "localField": "categoryId",
+                        "foreignField": "_id",
+                        "as": "category"
+                    }
+                },
+                {$unwind: '$category'},
+                {
+                    $lookup: {
+                        "from": Image.collection.name,
+                        "localField": "imageId",
+                        "foreignField": "_id",
+                        "as": "images",
+                    }
+                },
+                {
+                    $unwind: {
+                        "path": "$bookings",
+                        "preserveNullAndEmptyArrays": true
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            _id: "$_id",
+                            title: '$title',
+                            price: '$price',
+                            city: '$city',
+                            country: '$country',
+                            isPopular: '$isPopular',
+                            categoryId: '$categoryId',
+                            category: '$category.category',
+                            images: '$images',
+                            createdAt: '$createdAt',
+                        },
+                        rating: {$avg: '$bookings.rating'},
+                    }
+                },
+                {
+                    $project: {
+                        rating: {$ifNull: ["$rating", 0]},
+                    }
+                },
+                {
+                    $project: {
+                        rating: 1,
+                        star: {$floor: '$rating'},
+                    }
+                },
+                {
+                    $match: {
+                        ...(ratings && {
+                            star: {$in: ratings}
+                        })
+                    }
+                },
+                {$sort: {[sortBy]: sortMethod}},
+            ])
+                .skip((page - 1) * 10)
+                .limit(10);
+
+            //const resultCategory = await Category.populate(resultData, {path: '_id.categoryId', select: 'category description'});
+            //const resultFacility = await Facility.populate(resultCategory, {path: '_id.facilities._id', select: 'facility description'});
+
+            const items = await query.exec();
+
+            const accommodations = items.map(item => {
+                const singleItem = {...item._id, rating: item.rating};
+                singleItem.imageUrl = res.locals._baseUrl + singleItem.images.find(image => image.isPrimary === true).imageUrl.replace(/\\/g, "/");
+                delete singleItem.images;
+                return singleItem;
+            });
+
+            return res.json(accommodations);
         } catch (error) {
-            res.status(500).json({message: "Internal server error"});
+            next(createError(error))
         }
     },
 }

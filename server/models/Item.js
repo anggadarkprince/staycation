@@ -41,6 +41,19 @@ const itemSchema = new mongoose.Schema({
             type: Number,
         },
     }],
+    bookings: [{
+        _id: {
+            type: ObjectId,
+            ref: 'Booking',
+            required: true,
+        },
+        comment: {
+            type: String,
+        },
+        rating: {
+            type: Number,
+        },
+    }],
     categoryId: {
         type: ObjectId,
         ref: 'Category',
