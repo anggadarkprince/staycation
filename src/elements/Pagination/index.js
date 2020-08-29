@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import {Link, withRouter} from "react-router-dom";
 import propTypes from "prop-types";
 import queryString from "query-string";
@@ -160,19 +160,19 @@ class Pagination extends Component {
 
                                         if (page === LEFT_PAGE) return (
                                             <li key={index} className="page-item">
-                                                <a className="page-link" href="#" aria-label="Previous" onClick={this.handleMoveLeft}>
+                                                <button type="button" className="page-link" aria-label="Previous" onClick={this.handleMoveLeft}>
                                                     <span aria-hidden="true">...</span>
                                                     <span className="sr-only">Previous</span>
-                                                </a>
+                                                </button>
                                             </li>
                                         );
 
                                         if (page === RIGHT_PAGE) return (
                                             <li key={index} className="page-item">
-                                                <a className="page-link" href="#" aria-label="Next" onClick={this.handleMoveRight}>
+                                                <button type="button" className="page-link" aria-label="Next" onClick={this.handleMoveRight}>
                                                     <span aria-hidden="true">...</span>
                                                     <span className="sr-only">Next</span>
-                                                </a>
+                                                </button>
                                             </li>
                                         );
 

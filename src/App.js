@@ -37,6 +37,7 @@ class App extends Component {
             auth: apiTokenData ? {...apiTokenData, logout: this.logout.bind(this)} : authDefaultValue,
         }
         this.initAuthState();
+        this.authCheck = this.authCheck.bind(this);
     }
 
     getAuthToken() {
@@ -114,7 +115,7 @@ class App extends Component {
             .then(result => {
                 this.setState({auth: authDefaultValue}, () => {
                     localStorage.removeItem('api_token');
-                    if(redirect) {
+                    if (redirect) {
                         window.location = this.redirectRoute;
                     } else {
                         callback();
@@ -128,12 +129,27 @@ class App extends Component {
         this.setState({layout: layout});
     }
 
+    authCheck() {
+        const apiTokenData = this.getAuthToken();
+        if (apiTokenData) {
+            if (apiTokenData.refreshTokenExpiredAt) {
+                const expiredTime = (new Date(apiTokenData.refreshTokenExpiredAt)).getTime();
+                const currentTime = (new Date().getTime());
+                if (currentTime > expiredTime) {
+                    this.logout(false);
+                }
+            }
+        }
+        return <></>
+    }
+
     render() {
         return (
             <AuthContext.Provider value={this.state.auth}>
                 <div className='App'>
                     <Router>
                         <Layout layout={this.state.layout}>
+                            <Route component={this.authCheck}/>
                             <Switch>
                                 <Route path='/' exact component={LandingPage}/>
                                 <Route path='/properties/:id' component={DetailPage}/>

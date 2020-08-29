@@ -62,7 +62,7 @@ module.exports = {
                                     user.tokens.push({
                                         type: 'REFRESH_TOKEN',
                                         token: refreshToken,
-                                        expiredAt: moment().add(60, 'minutes')
+                                        expiredAt: moment().add((remember ? 60 : 43200), 'minutes')
                                     });
                                     if (remember) {
                                         user.tokens.push({
@@ -80,7 +80,7 @@ module.exports = {
                                         httpOnly: true,
                                     });
                                     res.cookie('refreshToken', refreshToken, {
-                                        expires: new Date(Date.now() + (60 * 60 * 1000)), // 60 minutes
+                                        expires: new Date(Date.now() + ((remember ? 60 : 43200) * 60 * 1000)), // 60 minutes or 30 days if remember
                                         secure: false,
                                         httpOnly: true,
                                     });

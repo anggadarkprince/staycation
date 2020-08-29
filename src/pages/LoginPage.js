@@ -84,12 +84,15 @@ class Login extends Component {
             .then(data => {
                 if (data.status === 'success') {
                     this.setState({isLoading: false});
-                    let expiredDate = new Date();
-                    expiredDate.setMinutes(expiredDate.getMinutes() + 5);
+                    let expiredDateToken = new Date();
+                    let expiredDateRefreshToken = new Date();
+                    expiredDateToken.setMinutes(expiredDateToken.getMinutes() + 5);
+                    expiredDateRefreshToken.setMinutes(expiredDateRefreshToken.getMinutes() + (this.state.remember ? 43200 : 60));
                     localStorage.setItem('api_token', JSON.stringify({
-                        tokenExpiredAt: expiredDate,
+                        tokenExpiredAt: expiredDateToken,
                         token: data.payload.token,
-                        refreshToken: data.payload.refreshToken,
+                        refreshTokenExpiredAt: expiredDateRefreshToken,
+                        //refreshToken: data.payload.refreshToken, // we set in httpOnly cookie
                         user: data.payload.user,
                         remember: this.state.remember,
                     }));
@@ -110,7 +113,6 @@ class Login extends Component {
                 }
             })
             .catch(error => {
-                console.log(error);
                 this.setState({
                     isLoading: false,
                     errors: {
