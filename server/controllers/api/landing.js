@@ -5,6 +5,7 @@ const Bank = require('../../models/Bank');
 const Facility = require('../../models/Facility');
 const Image = require('../../models/Image');
 const createError = require("http-errors");
+const mongoose = require('mongoose');
 
 module.exports = {
     index: async (req, res) => {
@@ -189,11 +190,12 @@ module.exports = {
     explore: async (req, res, next) => {
         try {
             const page = req.query.page || 1;
+            const perPage = req.query.perPage || 10;
             const search = req.query.q;
             const priceFrom = req.query.priceFrom;
             const priceUntil = req.query.priceUntil;
-            const categories = req.query.categories;
-            const facilities = req.query.facilities;
+            let categories = req.query.categories;
+            let facilities = req.query.facilities;
             let ratings = req.query.ratings;
             let sortMethod = (req.query.sortMethod || 'desc') === 'desc' ? -1 : 1;
             let sortBy = req.query.sortBy || 'createdAt';
@@ -205,6 +207,18 @@ module.exports = {
                     ratings = [ratings];
                 }
                 ratings = ratings.map(rate => Number(rate));
+            }
+            if (categories) {
+                if (!Array.isArray(categories)) {
+                    categories = [categories];
+                }
+                categories = categories.map(cat => mongoose.Types.ObjectId(cat));
+            }
+            if (facilities) {
+                if (!Array.isArray(facilities)) {
+                    facilities = [facilities];
+                }
+                facilities = facilities.map(fa => mongoose.Types.ObjectId(fa));
             }
 
             const query = Item.aggregate([
@@ -220,15 +234,15 @@ module.exports = {
                             }]
                         }),
                         ...(categories && {
-                            categoryId: categories
+                            categoryId: {$in: categories}
                         }),
                         ...(facilities && {
-                            "facilities._id": facilities
+                            "facilities._id": {$in: facilities}
                         }),
                         ...((priceFrom || priceUntil) && {
                             price: {
-                                ...(priceFrom && {$gte: priceFrom}),
-                                ...(priceUntil && {$lte: priceUntil}),
+                                ...(priceFrom && {$gte: Number(priceFrom)}),
+                                ...(priceUntil && {$lte: Number(priceUntil)}),
                             }
                         }),
                     }
@@ -293,22 +307,22 @@ module.exports = {
                 },
                 {$sort: {[sortBy]: sortMethod}},
             ])
-                .skip((page - 1) * 10)
-                .limit(10);
+                //.skip((page - 1) * 10)
+                //.limit(10);
 
             //const resultCategory = await Category.populate(resultData, {path: '_id.categoryId', select: 'category description'});
             //const resultFacility = await Facility.populate(resultCategory, {path: '_id.facilities._id', select: 'facility description'});
 
-            const items = await query.exec();
+            const items = await Item.aggregatePaginate(query, {page: page, limit: perPage}); //await query.exec();
 
-            const accommodations = items.map(item => {
+            items.docs = items.docs.map(item => {
                 const singleItem = {...item._id, rating: item.rating};
                 singleItem.imageUrl = res.locals._baseUrl + singleItem.images.find(image => image.isPrimary === true).imageUrl.replace(/\\/g, "/");
                 delete singleItem.images;
                 return singleItem;
             });
 
-            return res.json(accommodations);
+            return res.json(items);
         } catch (error) {
             next(createError(error))
         }

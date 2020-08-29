@@ -6,7 +6,7 @@ export const numeric = function (number, locale = "id-ID") {
 export const reverseNumeric = function (val, locale = "id-ID") {
     const group = new Intl.NumberFormat(locale).format(1111).replace(/1/g, '');
     const decimal = new Intl.NumberFormat(locale).format(1.1).replace(/1/g, '');
-    let reversedVal = val.replace(new RegExp('\\' + group, 'g'), '');
+    let reversedVal = String(val).replace(new RegExp('\\' + group, 'g'), '');
     reversedVal = reversedVal.replace(new RegExp('\\' + decimal, 'g'), '.');
     return Number.isNaN(reversedVal) ? '' : +reversedVal;
 }

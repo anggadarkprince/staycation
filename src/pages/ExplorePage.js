@@ -4,20 +4,22 @@ import Spinner from 'elements/Spinner';
 import config from 'config';
 import FilterPanel from "parts/FilterPanel";
 import axios from "axios";
-import queryString from "query-string";
 import {numeric, reverseNumeric} from "../utilities/formatter";
 import Button from "../elements/Button";
 import Star from "../elements/Star";
+import Pagination from "../elements/Pagination";
 
 class ExplorePage extends Component {
     state = {
         isLoading: true,
+        filters: {},
         accommodations: []
     }
 
     constructor(props) {
         super(props);
         this.onFilterChanged = this.onFilterChanged.bind(this);
+        this.onPageChanged = this.onPageChanged.bind(this);
     }
 
     componentDidMount() {
@@ -26,12 +28,12 @@ class ExplorePage extends Component {
     }
 
     onFilterChanged(filters) {
-        const filteredData = {
-            ...filters,
-            ...(filters.priceFrom && {priceFrom: reverseNumeric(filters.priceFrom)}),
-            ...(filters.priceUntil && {priceUntil: reverseNumeric(filters.priceUntil)}),
-        };
-        this.setState({isLoading: true}, () => {
+        this.setState({isLoading: true, filters: filters}, () => {
+            const filteredData = {
+                ...filters,
+                ...(filters.priceFrom && {priceFrom: reverseNumeric(filters.priceFrom)}),
+                ...(filters.priceUntil && {priceUntil: reverseNumeric(filters.priceUntil)}),
+            };
             axios.get(`${config.apiUrl}/api/explore`, {params: filteredData})
                 .then(response => response.data)
                 .then(accommodations => {
@@ -43,8 +45,13 @@ class ExplorePage extends Component {
         });
     }
 
+    onPageChanged(currentPage) {
+        const filterData = {...this.state.filters, page: currentPage};
+        this.onFilterChanged(filterData);
+    }
+
     renderResult() {
-        const itemList = this.state.accommodations.map(item => {
+        const itemList = this.state.accommodations.docs.map(item => {
             return (
                 <div className="item column-6 row-1" key={`explore-item-${item._id}`}>
                     <Fade>
@@ -83,7 +90,11 @@ class ExplorePage extends Component {
         });
 
         return itemList.length
-            ? <div className="container-grid">{itemList}</div>
+            ? (
+                <>
+                    <div className="container-grid">{itemList}</div>
+                </>
+            )
             : (
                 <div className="text-center py-4">
                     <h4>Ops, found nothing!</h4>
@@ -93,12 +104,14 @@ class ExplorePage extends Component {
     }
 
     render() {
+        const accommodations = this.state.accommodations;
+        const page = Number(this.state.filters.page) || 1;
         return (
             <>
                 <div className="container">
                     <div className="row mb-5">
                         <div className="col-md-4">
-                            <FilterPanel onFilterChanged={this.onFilterChanged}/>
+                            <FilterPanel onFilterChanged={this.onFilterChanged} triggerChangedOnMount={true}/>
                         </div>
                         <div className="col-md-8">
                             <h5 className="mb-3">Explore Exciting Moments</h5>
@@ -108,6 +121,11 @@ class ExplorePage extends Component {
                                     this.state.isLoading
                                         ? <Spinner className="text-center" style={{minHeight: 200}} title="Search accommodation" subtitle="Please wait a moment"/>
                                         : this.renderResult()
+                                }
+                                {
+                                    accommodations.totalDocs > 0
+                                        ? <Pagination page={page} totalData={accommodations.totalDocs} totalPage={accommodations.totalPages} onPageChanged={this.onPageChanged} />
+                                        : null
                                 }
                             </div>
                         </div>

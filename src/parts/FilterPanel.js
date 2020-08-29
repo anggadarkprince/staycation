@@ -9,10 +9,11 @@ import config from "config";
 import queryString from "query-string";
 import {withRouter} from "react-router-dom";
 import propTypes from "prop-types";
-import { debounce } from 'throttle-debounce';
+import {debounce} from 'throttle-debounce';
 
 class FilterPanel extends Component {
     initialState = {
+        isMounted: false,
         categoryData: null,
         facilityData: null,
         filters: {
@@ -50,20 +51,26 @@ class FilterPanel extends Component {
 
         if (this.props.backHistory) {
             window.onpopstate = () => {
-                this.setState(this.initFilterState(this.state));
-                this.onFilterUpdated(true);
+                if (this.state.isMounted) {
+                    this.setState(this.initFilterState(this.state));
+                    this.onFilterUpdated(true);
+                }
             }
         }
 
         if (this.props.triggerChangedOnMount) {
             this.props.onFilterChanged(this.state.filters);
         }
+
+        this.setState({isMounted: true});
     }
 
     initFilterState(state) {
+        // isMounted and other dynamic states should remain kept when reset
         const params = queryString.parse(this.props.location.search);
         return {
             ...this.initialState,
+            isMounted: state.isMounted,
             categoryData: state.categoryData,
             facilityData: state.facilityData,
             filters: {
@@ -167,8 +174,9 @@ class FilterPanel extends Component {
     }
 
     onFilterUpdated(isBack = false) {
+        console.log(isBack)
         const {filters} = this.state;
-        if(this.props.pushHistory) {
+        if (this.props.pushHistory) {
             const filterParams = queryString.stringify({
                 ...(filters.q && {q: filters.q}),
                 ...(filters.priceFrom && {priceFrom: filters.priceFrom}),
@@ -346,8 +354,7 @@ class FilterPanel extends Component {
                                                        id={`category-${category._id}`} name="categories[]"
                                                        value={category._id} onChange={this.handleFieldChange}
                                                        checked={!!categories.includes(category._id.toString())}/>
-                                                <label className="custom-control-label pl-2"
-                                                       htmlFor={`category-${category._id}`}>
+                                                <label className="custom-control-label pl-2" htmlFor={`category-${category._id}`}>
                                                     {category.category}
                                                 </label>
                                             </div>
@@ -364,7 +371,7 @@ class FilterPanel extends Component {
 }
 
 FilterPanel.defaultProps = {
-    triggerChangedOnMount: true,
+    triggerChangedOnMount: false,
     pushHistory: true,
     backHistory: true,
     debounceDelay: 500,
