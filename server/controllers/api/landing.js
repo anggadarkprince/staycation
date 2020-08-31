@@ -3,6 +3,7 @@ const Category = require('../../models/Category');
 const User = require('../../models/User');
 const Bank = require('../../models/Bank');
 const Facility = require('../../models/Facility');
+const Booking = require('../../models/Booking');
 const Image = require('../../models/Image');
 const createError = require("http-errors");
 const mongoose = require('mongoose');
@@ -49,14 +50,27 @@ module.exports = {
             const treasure = await Item.find();
             const city = await Item.find();
 
-            const testimonial = {
-                _id: "asd1293uasdads1",
-                imageUrl: "http://localhost:3000/uploads/2020/8/1596522474815.jpg",
-                title: "Happy Family",
-                rate: 4.55,
-                content: "What a great trip with my family and I should try again next time soon...",
-                name: "Angga Ari Wijaya",
-                occupation: "Product Designer"
+            const lastGoodBooking = await Booking.findOne({
+                rating: {
+                    $gte: 4, $lte: 5
+                },
+                status: 'COMPLETED'
+            }).populate({
+                path: 'userId',
+                select: '_id name email',
+            }).sort([['createdAt', -1]]);
+
+            let testimonial = null;
+            if (lastGoodBooking) {
+                testimonial = {
+                    _id: lastGoodBooking._id,
+                    imageUrl: lastGoodBooking.reviewImage && (res.locals._baseUrl + lastGoodBooking.reviewImage.replace(/\\/g, "/")),
+                    title: "Happy Adventure",
+                    rating: lastGoodBooking.rating,
+                    content: lastGoodBooking.review,
+                    name: lastGoodBooking.userId.name,
+                    occupation: lastGoodBooking.userId.email
+                }
             }
 
             res.status(200).json({

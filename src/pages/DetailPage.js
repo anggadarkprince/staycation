@@ -5,7 +5,6 @@ import FeaturedImage from 'parts/FeaturedImage';
 import PageDetailDescription from 'parts/PageDetailDescription';
 import BookingForm from 'parts/BookingForm';
 import Categories from 'parts/Categories';
-import Testimony from 'parts/Testimony';
 import Spinner from 'elements/Spinner';
 import config from 'config';
 
@@ -69,7 +68,6 @@ class DetailPage extends Component {
                     </div>
                 </section>
                 <Categories data={detailPage.categories}/>
-                <Testimony data={detailPage.testimonial}/>
             </>
         );
     }

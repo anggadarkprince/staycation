@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import Fade from 'react-reveal/Fade';
-import logoBCA from 'assets/img/banks/bank-bca.png';
-import logoMandiri from 'assets/img/banks/bank-mandiri.png';
 import {InputText, InputFile} from "elements/Forms";
 import axios from 'axios';
 import moment from 'moment';
