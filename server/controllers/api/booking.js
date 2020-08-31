@@ -96,7 +96,7 @@ module.exports = {
                 itemId: {
                     _id: itemId,
                     price: itemData.price,
-                    duration: moment(bookingEndDate).diff(moment(bookingStartDate), 'days'),
+                    duration: moment(bookingEndDate).diff(moment(bookingStartDate), 'days') + 1,
                 },
                 status: 'BOOKED',
                 userId: req.user._id,

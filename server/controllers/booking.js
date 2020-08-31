@@ -121,7 +121,7 @@ module.exports = {
                 itemId: {
                     _id: itemId,
                     price: itemData.price,
-                    duration: moment(untilDate, 'DD MMMM Y').diff(moment(fromDate, 'DD MMMM Y'), 'days'),
+                    duration: moment(untilDate, 'DD MMMM Y').diff(moment(fromDate, 'DD MMMM Y'), 'days') + 1,
                 },
                 userId,
                 bankId,
@@ -177,7 +177,7 @@ module.exports = {
             booking.itemId = {
                 _id: itemId,
                 price: itemData.price,
-                duration: moment(untilDate).diff(moment(fromDate), 'days'),
+                duration: moment(untilDate).diff(moment(fromDate), 'days') + 1,
             };
             booking.userId = userId;
             booking.bankId = bankId;

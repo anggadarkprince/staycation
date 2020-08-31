@@ -49,7 +49,7 @@ class ExplorePage extends Component {
     onPageChanged(currentPage) {
         const filterData = {...this.state.filters, page: currentPage};
         this.onFilterChanged(filterData);
-        backToTop();
+        setTimeout(backToTop, 500);
     }
 
     renderResult() {

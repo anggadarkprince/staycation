@@ -148,6 +148,8 @@ module.exports = {
                     _id: bank._id,
                     bank: bank.bank,
                     logo: res.locals._baseUrl + bank.logo.replace(/\\/g, "/"),
+                    accountHolder: bank.accountHolder,
+                    accountNumber: bank.accountNumber,
                     description: bank.description
                 }
             });

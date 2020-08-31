@@ -50,31 +50,22 @@ export default class Payment extends Component {
                                     <p className="mb-1">Sub total: {numeric(subTotal)}</p>
                                     <p>Total: {numeric(grandTotal)}</p>
                                 </div>
-                                <div className="row">
-                                    <div className="col-3 text-right">
-                                        <img src={logoBCA} alt="BCA" width={60}/>
-                                    </div>
-                                    <div className="col">
-                                        <dl>
-                                            <dd className="font-weight-medium">Bank Central Asia</dd>
-                                            <dd className="mb-0">2208 1996</dd>
-                                            <dd>Staycation</dd>
-                                        </dl>
-                                    </div>
-                                </div>
-
-                                <div className="row">
-                                    <div className="col-3 text-right">
-                                        <img src={logoMandiri} alt="Mandiri" width={60}/>
-                                    </div>
-                                    <div className="col">
-                                        <dl>
-                                            <dd className="font-weight-medium">Bank Mandiri</dd>
-                                            <dd className="mb-0">2208 1996</dd>
-                                            <dd>Staycation</dd>
-                                        </dl>
-                                    </div>
-                                </div>
+                                {
+                                    this.state.banks.map(bank => (
+                                        <div className="row">
+                                            <div className="col-3 text-right">
+                                                <img src={bank.logo} alt={bank.bank} width={60}/>
+                                            </div>
+                                            <div className="col">
+                                                <dl>
+                                                    <dd className="font-weight-medium">{bank.accountHolder}</dd>
+                                                    <dd className="mb-0">{bank.accountNumber}</dd>
+                                                    <dd>{bank.bank}</dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
                             </Fade>
                         </div>
                         <div className="col-5 py-5 pl-5">
