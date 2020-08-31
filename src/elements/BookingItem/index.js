@@ -12,6 +12,7 @@ import {checkoutState, checkoutBooking} from "store/actions/checkout";
 import {withRouter} from 'react-router-dom';
 
 const BookingItem = (props) => {
+    const [currentItem, setItem] = useState(null);
     const [isLoading, setLoading] = useState(false);
     const [isLoadingDownload, setLoadingDownload] = useState(false);
 
@@ -23,6 +24,7 @@ const BookingItem = (props) => {
     };
 
     const printInvoice = (booking, download = false) => {
+        setItem(booking._id);
         if (download) setLoadingDownload(true);
         else setLoading(true);
 
@@ -87,7 +89,39 @@ const BookingItem = (props) => {
                         </small>
                         <div>
                             {
-                                booking.status === 'COMPLETED' &&
+                                booking.status === 'BOOKED' && !props.withDetail &&
+                                (
+                                    <>
+                                        <Button type="button" className="btn btn-link p-0" onClick={() => checkoutPayment(booking)}>
+                                            Payment
+                                        </Button>
+                                        <span className="mx-2">•</span>
+                                        <Button type="button" className="btn btn-link p-0" isLoading={isLoading && currentItem === booking._id} onClick={() => printInvoice(booking)}>
+                                            Print Invoice
+                                        </Button>
+                                        <span className="mx-2">•</span>
+                                        <Button type="link" href={`/properties/${booking.item._id}`}>
+                                            View
+                                        </Button>
+                                    </>
+                                )
+                            }
+                            {
+                                booking.status === 'PAID' && !props.withDetail &&
+                                (
+                                    <>
+                                        <Button type="button" className="btn btn-link p-0" isLoading={isLoading && currentItem === booking._id} onClick={() => printInvoice(booking)}>
+                                            Print Invoice
+                                        </Button>
+                                        <span className="mx-2">•</span>
+                                        <Button type="link" href={`/properties/${booking.item._id}`}>
+                                            View
+                                        </Button>
+                                    </>
+                                )
+                            }
+                            {
+                                booking.status === 'COMPLETED' && !props.withDetail &&
                                 (
                                     booking.rating && booking.rating > 0
                                         ? (
@@ -95,14 +129,18 @@ const BookingItem = (props) => {
                                                 <Star value={booking.rating} size={15} spacing={8} />
                                                 <span className="mx-2">•</span>
                                                 <Button type="link" href={`/booking/rate/${booking._id}`}>Edit Rating</Button>
+                                                <span className="mx-2">•</span>
+                                                <Button type="button" className="btn btn-link p-0" isLoading={isLoadingDownload && currentItem === booking._id} onClick={() => printInvoice(booking, true)}>
+                                                    Invoice
+                                                </Button>
                                             </>
                                         )
                                         : (
                                             <>
                                                 <Button type="link" href={`/booking/rate/${booking._id}`}>Give a Review</Button>
                                                 <span className="mx-2">•</span>
-                                                <Button type="button" className="btn btn-link p-0" isLoading={isLoadingDownload} onClick={() => printInvoice(booking, true)}>
-                                                    Download Invoice
+                                                <Button type="button" className="btn btn-link p-0" isLoading={isLoadingDownload && currentItem === booking._id} onClick={() => printInvoice(booking, true)}>
+                                                    Invoice
                                                 </Button>
                                             </>
                                         )
@@ -212,7 +250,9 @@ const BookingItem = (props) => {
                                                 </div>
                                             </div>
                                             <div className="card-footer bg-white text-right">
-                                                <Button type="button" className="btn mr-2" isLight isLoading={isLoading} onClick={() => printInvoice(booking)}>Print Invoice</Button>
+                                                <Button type="button" className="btn mr-2" isLight isLoading={isLoading && currentItem === booking._id} onClick={() => printInvoice(booking)}>
+                                                    Print Invoice
+                                                </Button>
                                                 {booking.status === 'BOOKED' && <Button type="button" className="btn" isPrimary onClick={() => checkoutPayment(booking)}>Payment</Button>}
                                             </div>
                                         </div>
