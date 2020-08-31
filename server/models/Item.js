@@ -48,7 +48,7 @@ const itemSchema = new mongoose.Schema({
             ref: 'Booking',
             required: true,
         },
-        comment: {
+        review: {
             type: String,
         },
         rating: {

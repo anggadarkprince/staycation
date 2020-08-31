@@ -15,6 +15,7 @@ import LoginPage from "pages/LoginPage";
 import ProfilePage from "pages/ProfilePage";
 import ForgotPasswordPage from "pages/ForgotPasswordPage";
 import ResetPasswordPage from "pages/ResetPasswordPage";
+import RatingPage from "pages/RatingPage";
 import Layout from "pages/layouts/Layout";
 import TermPage from "pages/TermPage";
 import PrivacyPage from "pages/PrivacyPage";
@@ -126,6 +127,7 @@ class App extends Component {
     }
 
     onChangeLayout(layout) {
+        console.log(layout)
         this.setState({layout: layout});
     }
 
@@ -163,6 +165,7 @@ class App extends Component {
                                 <GuestRoute path='/reset-password/:token' component={ResetPasswordPage}/>
                                 <AuthenticatedRoute path='/checkout' render={(props) => <CheckoutPage {...props} onChangeLayout={this.onChangeLayout.bind(this)} />}/>
                                 <AuthenticatedRoute path='/profile' component={ProfilePage}/>
+                                <AuthenticatedRoute path='/booking/rate/:id' render={(props) => <RatingPage {...props} onChangeLayout={this.onChangeLayout.bind(this)} />}/>
                                 <Route component={Error404Page} />
                             </Switch>
                         </Layout>

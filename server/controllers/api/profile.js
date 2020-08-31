@@ -27,6 +27,8 @@ module.exports = {
                     bookingStartDate: booking.bookingStartDate,
                     bookingEndDate: booking.bookingEndDate,
                     description: booking.description,
+                    rating: booking.rating,
+                    review: booking.review,
                     item: {
                         _id: booking.itemId._id._id,
                         title: booking.itemId._id.title,

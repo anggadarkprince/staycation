@@ -5,6 +5,9 @@ import propTypes from 'prop-types';
 export default function Button(props) {
     const className = [props.className]
     if (props.isPrimary) className.push('btn-primary');
+    if (props.isWarning) className.push('btn-warning');
+    if (props.isInfo) className.push('btn-info');
+    if (props.isDanger) className.push('btn-danger');
     if (props.isLarge) className.push('btn-lg');
     if (props.isSmall) className.push('btn-sm');
     if (props.isBlock) className.push('btn-block');
@@ -22,7 +25,7 @@ export default function Button(props) {
                 {
                     props.isLoading ?
                         <>
-                            <span className="spinner-border spinner-border-sm mr-2"/>{props.children}
+                            <span className="small spinner-border spinner-border-sm mr-1" style={{lineHeight: 1}}/>{props.children}
                             <span className="sr-only">Loading...</span>
                         </>
                         : props.children
@@ -72,6 +75,9 @@ Button.propTypes = {
     isSmall: propTypes.bool,
     isLarge: propTypes.bool,
     isPrimary: propTypes.bool,
+    isWarning: propTypes.bool,
+    isInfo: propTypes.bool,
+    isDanger: propTypes.bool,
     isLight: propTypes.bool,
     isBlock: propTypes.bool,
     isExternal: propTypes.bool,

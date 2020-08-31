@@ -9,7 +9,49 @@ const path = require("path");
 const createError = require("http-errors");
 
 module.exports = {
-    print: async (req, res) => {
+    view: async (req, res, next) => {
+        const id = req.params.id;
+        try {
+            const booking = await Booking.findOne({_id: id}).populate('userId').populate('bankId').populate({
+                path: 'itemId._id',
+                populate: [{
+                    path: 'categoryId',
+                    model: 'Category'
+                }, {
+                    path: 'imageId',
+                    select: '_id imageUrl isPrimary',
+                }]
+            });
+
+            return res.json({
+                _id: booking._id,
+                transactionNumber: booking.transactionNumber,
+                status: booking.status,
+                createdAt: booking.createdAt,
+                bookingStartDate: booking.bookingStartDate,
+                bookingEndDate: booking.bookingEndDate,
+                description: booking.description,
+                rating: booking.rating,
+                review: booking.review,
+                item: {
+                    _id: booking.itemId._id._id,
+                    title: booking.itemId._id.title,
+                    city: booking.itemId._id.city,
+                    country: booking.itemId._id.country,
+                    imageUrl: res.locals._baseUrl + booking.itemId._id.imageId.find(image => image.isPrimary === true).imageUrl.replace(/\\/g, "/")
+                },
+                price: booking.itemId.price,
+                duration: booking.itemId.duration,
+                payment: {
+                    ...booking._doc.payment,
+                    proofPayment: booking.payment.proofPayment && (res.locals._baseUrl + booking.payment.proofPayment.replace(/\\/g, "/"))
+                }
+            });
+        } catch (err) {
+            next(createError(404))
+        }
+    },
+    print: async (req, res, next) => {
         const id = req.params.id;
         try {
             const booking = await Booking.findOne({_id: id}).populate('userId').populate('bankId').populate({
@@ -20,9 +62,16 @@ module.exports = {
                 }
             });
             const logoUrl = '../../public/dist/img/favicon.png';
-            ejs.renderFile('views/booking/print.ejs', {booking, logoUrl, moment, numberFormat, require, path}, {}, (err, html) => {
+            ejs.renderFile('views/booking/print.ejs', {
+                booking,
+                logoUrl,
+                moment,
+                numberFormat,
+                require,
+                path
+            }, {}, (err, html) => {
                 if (err) return console.log(err);
-                pdf.create(html, { format: 'A4' }).toStream((err, stream) => {
+                pdf.create(html, {format: 'A4'}).toStream((err, stream) => {
                     if (err) return console.log(err);
                     res.setHeader('Content-type', 'application/pdf');
                     //res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
@@ -111,6 +160,7 @@ module.exports = {
 
         try {
             const booking = await Booking.findById(bookingId);
+            const item = await Item.findById(booking.itemId._id);
 
             const payment = {
                 bank: bankFrom, accountNumber, accountHolder,
@@ -123,6 +173,10 @@ module.exports = {
             booking.payment = payment;
             booking.status = 'PAID';
             booking.save();
+
+            item.bookings.push({
+                _id: booking._id,
+            });
 
             if (req.user.preferences.notificationNewBooking) {
                 const notificationMessage = {
@@ -140,6 +194,33 @@ module.exports = {
             }
 
             res.status(204).json({message: `Booking item ${booking.transactionNumber} successfully paid`, booking});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({message: "Something went wrong, try again later"});
+        }
+    },
+    rate: async (req, res) => {
+        const id = req.params.id;
+        const {review, rating} = req.body;
+
+        try {
+            const booking = await Booking.findById(id);
+            const item = await Item.findById(booking.itemId._id);
+
+            booking.review = review;
+            booking.rating = rating;
+            await booking.save();
+
+            const itemsBookings = item.bookings.filter(booked => booked._id.toString() !== booking._id.toString());
+            itemsBookings.push({
+                _id: booking._id,
+                review: review,
+                rating: rating
+            });
+            item.bookings = itemsBookings;
+            item.save();
+
+            res.status(204).send(); // send json will not delivered to requester (204 always no content)
         } catch (err) {
             console.log(err);
             res.status(500).json({message: "Something went wrong, try again later"});

@@ -58,6 +58,12 @@ const bookingSchema = new mongoose.Schema({
             type: Date,
         },
     },
+    review: {
+        type: String,
+    },
+    rating: {
+        type: Number,
+    },
     description: {
         type: String,
     },
