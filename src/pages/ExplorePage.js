@@ -4,10 +4,11 @@ import Spinner from 'elements/Spinner';
 import config from 'config';
 import FilterPanel from "parts/FilterPanel";
 import axios from "axios";
-import {numeric, reverseNumeric} from "../utilities/formatter";
-import Button from "../elements/Button";
-import Star from "../elements/Star";
-import Pagination from "../elements/Pagination";
+import {numeric, reverseNumeric} from "utilities/formatter";
+import Button from "elements/Button";
+import Star from "elements/Star";
+import Pagination from "elements/Pagination";
+import {backToTop} from "utilities/scroller";
 
 class ExplorePage extends Component {
     state = {
@@ -23,8 +24,8 @@ class ExplorePage extends Component {
     }
 
     componentDidMount() {
-        window.scrollTo(0, 0);
         document.title = "Staycation | Explore";
+        backToTop();
     }
 
     onFilterChanged(filters) {
@@ -48,6 +49,7 @@ class ExplorePage extends Component {
     onPageChanged(currentPage) {
         const filterData = {...this.state.filters, page: currentPage};
         this.onFilterChanged(filterData);
+        backToTop();
     }
 
     renderResult() {

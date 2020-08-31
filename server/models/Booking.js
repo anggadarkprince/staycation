@@ -64,6 +64,9 @@ const bookingSchema = new mongoose.Schema({
     rating: {
         type: Number,
     },
+    reviewImage: {
+        type: String,
+    },
     description: {
         type: String,
     },

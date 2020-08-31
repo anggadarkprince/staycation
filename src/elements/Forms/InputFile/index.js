@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import propTypes from 'prop-types';
 import './index.scss';
 
@@ -39,7 +39,7 @@ export default function File(props) {
                 />
                 <input
                     onClick={() => refInputFile.current.click()}
-                    defaultValue={fileName}
+                    defaultValue={typeof props.value === 'string' || props.value instanceof String ? props.value.split('/').pop() : fileName}
                     placeholder={placeholder}
                     className={["form-control", inputClassName].join(" ")}
                 />

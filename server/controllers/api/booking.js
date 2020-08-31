@@ -33,6 +33,7 @@ module.exports = {
                 description: booking.description,
                 rating: booking.rating,
                 review: booking.review,
+                reviewImage: booking.reviewImage && (res.locals._baseUrl + booking.reviewImage.replace(/\\/g, "/")),
                 item: {
                     _id: booking.itemId._id._id,
                     title: booking.itemId._id.title,
@@ -136,6 +137,9 @@ module.exports = {
                     bookingStartDate: resultBooking.bookingStartDate,
                     bookingEndDate: resultBooking.bookingEndDate,
                     description: resultBooking.description,
+                    rating: booking.rating,
+                    review: booking.review,
+                    reviewImage: booking.reviewImage && (res.locals._baseUrl + booking.reviewImage.replace(/\\/g, "/")),
                     item: {
                         _id: resultBooking.itemId._id._id,
                         title: resultBooking.itemId._id.title,
@@ -193,7 +197,7 @@ module.exports = {
                 });
             }
 
-            res.status(204).json({message: `Booking item ${booking.transactionNumber} successfully paid`, booking});
+            res.status(204).send();
         } catch (err) {
             console.log(err);
             res.status(500).json({message: "Something went wrong, try again later"});
@@ -209,6 +213,9 @@ module.exports = {
 
             booking.review = review;
             booking.rating = rating;
+            if (req.file) {
+                booking.reviewImage = path.join('/', req.file.path);
+            }
             await booking.save();
 
             const itemsBookings = item.bookings.filter(booked => booked._id.toString() !== booking._id.toString());

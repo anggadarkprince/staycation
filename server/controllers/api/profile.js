@@ -29,6 +29,7 @@ module.exports = {
                     description: booking.description,
                     rating: booking.rating,
                     review: booking.review,
+                    reviewImage: booking.reviewImage && (res.locals._baseUrl + booking.reviewImage.replace(/\\/g, "/")),
                     item: {
                         _id: booking.itemId._id._id,
                         title: booking.itemId._id.title,

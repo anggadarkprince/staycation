@@ -1,17 +1,16 @@
 import React, {Component} from 'react';
-import Fade from 'react-reveal/Fade';
-import Button from 'elements/Button';
-import AuthContext from 'contexts/AuthContext';
 import {connect} from "react-redux";
+import Fade from 'react-reveal/Fade';
+import {backToTop} from "utilities/scroller";
 import {submitRating} from 'store/actions/rating';
 import {fetchPage} from "store/actions/page";
-import {backToTop} from "utilities/scroller";
-import config from "../config";
-import Spinner from "../elements/Spinner";
-import Star from "../elements/Star";
+import {InputFile} from "elements/Forms";
+import Button from 'elements/Button';
+import Spinner from "elements/Spinner";
+import Star from "elements/Star";
+import config from "config";
 
 class RatingPage extends Component {
-    static contextType = AuthContext;
 
     constructor(props, context) {
         super(props, context);
@@ -20,6 +19,8 @@ class RatingPage extends Component {
             data: {
                 rating: 0,
                 review: '',
+                imageUrl: '',
+                image: '',
             },
             errors: {}
         }
@@ -38,7 +39,9 @@ class RatingPage extends Component {
             this.setState({
                 data: {
                     rating: result.rating || 0,
-                    review: result.review || ''
+                    review: result.review || '',
+                    image: result.reviewImage || '',
+                    imageUrl: result.reviewImage || '',
                 }
             })
         });
@@ -81,7 +84,7 @@ class RatingPage extends Component {
 
     handleSubmitRating(event) {
         event.preventDefault();
-        const {rating, review} = this.state.data;
+        const {rating, review, image} = this.state.data;
         const errors = {};
 
         if (!rating || rating <= 0) errors.rating = ["Rating is required"];
@@ -89,35 +92,37 @@ class RatingPage extends Component {
         this.setState({errors: errors});
 
         if (Object.keys(errors).length === 0 && errors.constructor === Object) {
-            const payload = {
-                _id: this.props.match.params.id,
-                rating: rating,
-                review: review
-            };
-            this.setState({isSubmitting: true});
-            this.props.submitRating(payload)
-                .then(() => {
-                    this.setState({isSubmitting: false}, () => {
-                        this.props.history.push('/profile/all-bookings');
-                    });
-                })
-                .catch(error => {
-                    this.setState({
-                        isSubmitting: false,
-                        errors: {
-                            alert: {
-                                status: 'danger',
-                                message: error.message || error.response.data.message
+            this.setState({isSubmitting: true}, () => {
+                const payload = new FormData();
+                payload.append('rating', rating);
+                payload.append('review', review);
+                if (image && image.length) {
+                    payload.append('image', image[0]);
+                }
+                this.props.submitRating(payload, this.props.match.params.id)
+                    .then(() => {
+                        this.setState({isSubmitting: false}, () => {
+                            this.props.history.push('/profile/all-bookings');
+                        });
+                    })
+                    .catch(error => {
+                        this.setState({
+                            isSubmitting: false,
+                            errors: {
+                                alert: {
+                                    status: 'danger',
+                                    message: error.message || error.response.data.message
+                                }
                             }
-                        }
+                        });
                     });
-                });
+            });
         }
     }
 
     render() {
         const booking = this.props.booking;
-        const {rating, review} = this.state.data;
+        const {rating, review, image, imageUrl} = this.state.data;
 
         return (
             this.props.isLoading || !booking ? <Spinner className="text-center" style={{minHeight: 200}}/> :
@@ -149,6 +154,13 @@ class RatingPage extends Component {
                                     </div>
                                     {this.renderErrorFor('rating')}
                                 </div>
+                                {
+                                    imageUrl &&
+                                    <figure className="img-wrapper mb-3" style={{height: 200}}>
+                                        <img src={imageUrl} alt={booking.item.title} className="img-cover"/>
+                                    </figure>
+                                }
+                                <InputFile accept="image/*" id="image" name="image" value={image} onChange={this.handleFieldChange}/>
                                 <div className="input-text mb-3">
                                     <div className="form-group">
                                     <textarea

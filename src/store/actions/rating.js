@@ -9,6 +9,6 @@ export const rateBooking = (payload) => (dispatch) => {
     })
 }
 
-export const submitRating = (payload) => () => {
-    return axios.put(`${config.apiUrl}/api/booking/rate/${payload._id}`, payload);
+export const submitRating = (payload, id) => () => {
+    return axios.put(`${config.apiUrl}/api/booking/rate/${id}`, payload);
 }

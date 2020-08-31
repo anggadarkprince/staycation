@@ -27,7 +27,7 @@ router.post('/booking', authApi, booking.save);
 router.post('/booking/payment', authApi, upload.single("image"), booking.payment);
 router.get('/booking/invoice/:id', authApi, booking.print);
 router.get('/booking/:id', authApi, booking.view);
-router.put('/booking/rate/:id', authApi, booking.rate);
+router.put('/booking/rate/:id', authApi, upload.single("image"), booking.rate);
 router.get('/profile', authApi, profile.index);
 router.post('/setting/basic', authApi, profile.basic);
 router.post('/setting/notification', authApi, profile.notification);
