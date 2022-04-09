@@ -48,7 +48,7 @@
     "jquery.easing": "^1.4.1",
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "mongo-seeding": "^3.4.1",
     "mongoose": "^5.9.21",
     "mongoose-aggregate-paginate-v2": "^1.0.42",
