@@ -44,7 +44,7 @@
     "http-errors": "^1.8.0",
     "jquery": "^3.5.1",
     "jquery-ui": "^1.12.1",
-    "jquery-validation": "^1.19.2",
+    "jquery-validation": "^1.19.5",
     "jquery.easing": "^1.4.1",
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
